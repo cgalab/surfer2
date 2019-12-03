@@ -1,0 +1,21 @@
+# this should work for all editors that support .editorconfig!
+#
+# on debian, emacs users should install elpa-editorconfig and vim
+# users should install vim-editorconfig.
+
+root = true
+
+[*]
+indent_style = space
+trim_trailing_whitespace = true
+end_of_line = lf
+charset = utf-8
+
+[*.{c,h,cpp}]
+indent_size = 2
+
+[Makefile]
+indent_style = tab
+
+[*.am]
+indent_style = tab

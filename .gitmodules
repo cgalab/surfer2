@@ -1,0 +1,3 @@
+[submodule "surf/easyloggingpp"]
+	path = surf/easyloggingpp
+	url = https://github.com/cgalab/easyloggingpp

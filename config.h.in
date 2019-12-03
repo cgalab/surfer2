@@ -1,0 +1,49 @@
+#pragma once
+
+/** comparisons, when both arguments are actually equal, are often expensive.
+ * This enables or disables the more expensive asserts of this kind.
+ */
+#cmakedefine DEBUG_EXPENSIVE_PREDICATES @DEBUG_EXPENSIVE_PREDICATES@
+
+
+/** refine triangulation to avoid flip events sooner.
+ */
+#cmakedefine REFINE_TRIANGULATION
+
+
+/** do or do not compile with debug output.
+ */
+#cmakedefine DEBUG_OUTPUT
+
+/** include filename and line numbers in log output.
+ */
+#cmakedefine DEBUG_OUTPUT_WITH_FILES
+
+///** Use two means to compute collapse times and event classification, and compare.
+// *
+// * only used in debug builds
+// */
+////#define DEBUG_ALL_COLLAPSE_TIMES_EXPENSIVE
+
+/** Do quick checks for collapse time correctness/classification
+ *
+ * only used in debug builds
+ */
+#cmakedefine DEBUG_COLLAPSE_TIMES
+
+
+/** The cmake build type, if we have it.
+ */
+#cmakedefine CMAKE_BUILD_TYPE "@UPPERCASE_CMAKE_BUILD_TYPE@"
+
+/** the version as supplied by CMake
+ */
+#cmakedefine VERSIONGIT "@VERSIONGIT@"
+
+/** Use double instead of CORE Expressions
+ */
+#cmakedefine NT_USE_DOUBLE
+
+/** Collect stats on heap stuff
+ */
+#cmakedefine HEAP_STATS

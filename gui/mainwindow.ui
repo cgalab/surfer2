@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>418</width>
+    <height>342</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="MyQGraphicsView" name="gV"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="movable">
+    <bool>false</bool>
+   </property>
+   <property name="floatable">
+    <bool>false</bool>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionQuit"/>
+   <addaction name="actionResize"/>
+   <addaction name="separator"/>
+   <addaction name="actionVisToggleInput"/>
+   <addaction name="actionVisToggleInputLabels"/>
+   <addaction name="actionVisToggleWavefront"/>
+   <addaction name="actionVisToggleArcs"/>
+   <addaction name="actionVisToggleKineticTriangulation"/>
+   <addaction name="actionVisToggleKineticTriangulationLabels"/>
+   <addaction name="actionVisToggleHighlightCircle"/>
+   <addaction name="separator"/>
+   <addaction name="actionTimeForwardNext"/>
+   <addaction name="actionTimeReset"/>
+   <addaction name="separator"/>
+   <addaction name="actionTimeBackward"/>
+   <addaction name="actionTimeForward"/>
+   <addaction name="actionTimeForwardThrough"/>
+   <addaction name="actionEventStep"/>
+   <addaction name="actionEventStepEnd"/>
+   <addaction name="separator"/>
+   <addaction name="actionTimeOffsetMinus"/>
+   <addaction name="actionTimeOffsetPlus"/>
+   <addaction name="actionTimeOffsetReset"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionQuit">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Quit</string>
+   </property>
+   <property name="toolTip">
+    <string>Exit application (Q)</string>
+   </property>
+   <property name="shortcut">
+    <string>Q</string>
+   </property>
+  </action>
+  <action name="actionVisToggleInput">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>i</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle Input Visibility (Alt+I)</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+I</string>
+   </property>
+  </action>
+  <action name="actionResize">
+   <property name="text">
+    <string>resize</string>
+   </property>
+   <property name="toolTip">
+    <string>reset Zoom</string>
+   </property>
+  </action>
+  <action name="actionVisToggleInputLabels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>I</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle Input Label Visibility (Alt+Shift+I)</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+Shift+I</string>
+   </property>
+  </action>
+  <action name="actionVisToggleWavefront">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>w</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle Wavefront Visibility (Alt+W)</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+W</string>
+   </property>
+  </action>
+  <action name="actionVisToggleArcs">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>s</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle Straight-Skeleton Arcs Visibility (Alt+S)</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+S</string>
+   </property>
+  </action>
+  <action name="actionVisToggleKineticTriangulation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>t</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle Kinetic Triangulation Visibility (Alt+T)</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+T</string>
+   </property>
+  </action>
+  <action name="actionVisToggleKineticTriangulationLabels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>T</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle Kinetic Triangulation Labels Visibility (Alt+Shift+T)</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+Shift+T</string>
+   </property>
+  </action>
+  <action name="actionVisToggleHighlightCircle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>H</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle highlight circle (Alt+Shift+H)</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+Shift+H</string>
+   </property>
+  </action>
+  <action name="actionTimeForwardNext">
+   <property name="text">
+    <string>,</string>
+   </property>
+   <property name="toolTip">
+    <string>time to next event (,)</string>
+   </property>
+   <property name="shortcut">
+    <string>,</string>
+   </property>
+  </action>
+  <action name="actionTimeReset">
+   <property name="text">
+    <string>BS</string>
+   </property>
+   <property name="toolTip">
+    <string>reset time to last event (Backspace)</string>
+   </property>
+   <property name="shortcut">
+    <string>Backspace</string>
+   </property>
+  </action>
+  <action name="actionTimeBackward">
+   <property name="text">
+    <string>b</string>
+   </property>
+   <property name="toolTip">
+    <string>reverse time (B)</string>
+   </property>
+   <property name="shortcut">
+    <string>B</string>
+   </property>
+  </action>
+  <action name="actionTimeForward">
+   <property name="text">
+    <string>N</string>
+   </property>
+   <property name="toolTip">
+    <string>advance time (Shift+N)</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+N</string>
+   </property>
+  </action>
+  <action name="actionTimeForwardThrough">
+   <property name="text">
+    <string>M</string>
+   </property>
+   <property name="toolTip">
+    <string>advance time ignoring event (Shift+M)</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+M</string>
+   </property>
+  </action>
+  <action name="actionEventStep">
+   <property name="text">
+    <string>n</string>
+   </property>
+   <property name="toolTip">
+    <string>step to and execute next event (N)</string>
+   </property>
+   <property name="shortcut">
+    <string>N</string>
+   </property>
+  </action>
+  <action name="actionEventStepEnd">
+   <property name="text">
+    <string>⏎</string>
+   </property>
+   <property name="toolTip">
+    <string>Run until end of wavefront propagation (Enter)</string>
+   </property>
+   <property name="shortcut">
+    <string>Return</string>
+   </property>
+  </action>
+  <action name="actionTimeOffsetMinus">
+   <property name="text">
+    <string>-</string>
+   </property>
+   <property name="toolTip">
+    <string>Decrease drawing offset (draw things earlier than current time)</string>
+   </property>
+   <property name="shortcut">
+    <string>-</string>
+   </property>
+  </action>
+  <action name="actionTimeOffsetPlus">
+   <property name="text">
+    <string>+</string>
+   </property>
+   <property name="toolTip">
+    <string>Increase drawing offset (draw things later than current time)</string>
+   </property>
+   <property name="shortcut">
+    <string>+</string>
+   </property>
+  </action>
+  <action name="actionTimeOffsetReset">
+   <property name="text">
+    <string>=</string>
+   </property>
+   <property name="toolTip">
+    <string>Reset drawing offset to zero.</string>
+   </property>
+   <property name="shortcut">
+    <string>=</string>
+   </property>
+  </action>
+
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>MyQGraphicsView</class>
+   <extends>QGraphicsView</extends>
+   <header location="global">MyQtThings.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
