@@ -33,6 +33,7 @@ On Debian 10 (buster), installing the following packages is sufficient to build 
   * libqt5opengl5-dev
   * libqt5svg5-dev
   * qtbase5-dev
+  * clang
 
 # building
 
@@ -40,15 +41,11 @@ To build surfer, run cmake and make:
 
     mkdir build &&
     cd build &&
-    cmake .. &&
+    CXX=clang++ cmake -DCMAKE_BUILD_TYPE=Release .. &&
     make
 
-To build with e.g. clang, use `CXX=clang++ cmake ..`.
-
-By default, this will create a (slow) debug build.  To create the release
-build, pass `-DCMAKE\_BUILD\_TYPE=Release` to cmake:
-`cmake -DCMAKE\_BUILD\_TYPE=Release ..`
-
+This will create a release build, without expensive assertions.  To build the debug build,
+pass `-DCMAKE\_BUILD\_TYPE=Debug` to cmake, or nothing at all.
 
 # running the gui
 
