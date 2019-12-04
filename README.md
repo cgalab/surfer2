@@ -45,7 +45,7 @@ To build surfer, run cmake and make:
     make
 
 This will create a release build, without expensive assertions.  To build the debug build,
-pass `-DCMAKE\_BUILD\_TYPE=Debug` to cmake, or nothing at all.
+pass `-DCMAKE_BUILD_TYPE=Debug` to cmake, or nothing at all.
 
 # Running the command line client or gui
 
