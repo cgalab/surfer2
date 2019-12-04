@@ -52,9 +52,9 @@ pass `-DCMAKE_BUILD_TYPE=Debug` to cmake, or nothing at all.
 Both the command line client, `surfer`, as well as the gui, `surfgui` take
 [GraphML][graphml] files as input.
 
-    ./cc/surfer foo.graphml
+    ./cc/surfer ../test-data/srpg0000025.graphml
 
-    ./gui/surfgui foo.graphml
+    ./gui/surfgui ../test-data/srpg0000028.graphml
 
 
 They accept several options, one of them is `--help` which prints a list of all
@@ -72,3 +72,8 @@ from the [format-converter repository][format-converter].
 
 [graphml]: http://graphml.graphdrawing.org/
 [format-converter]: https://github.com/cgalab/format-converter
+
+# License
+
+Surfer is free software.  You may redistribute it and/or modify
+it under the terms of the GNU General Public License (v3).
