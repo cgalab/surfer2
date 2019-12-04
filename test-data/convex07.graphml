@@ -1,0 +1,57 @@
+<graphml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://graphml.graphdrawing.org/xmlns" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key attr.name="vertex-coordinate-x" attr.type="string" for="node" id="x"/>
+  <key attr.name="vertex-coordinate-y" attr.type="string" for="node" id="y"/>
+  <key attr.name="edge-weight" attr.type="string" for="edge" id="w"/>
+  <key attr.name="edge-weight-additive" attr.type="string" for="edge" id="wa"/>
+  <graph edgedefault="undirected">
+    <node id="0">
+      <data key="x">-0.5386533666</data>
+      <data key="y">0.1970074813</data>
+    </node>
+    <node id="1">
+      <data key="x">-0.6658354115</data>
+      <data key="y">-0.1346633416</data>
+    </node>
+    <node id="2">
+      <data key="x">-0.536159601</data>
+      <data key="y">-0.5985037406</data>
+    </node>
+    <node id="3">
+      <data key="x">-0.0498753117</data>
+      <data key="y">-0.6982543641</data>
+    </node>
+    <node id="4">
+      <data key="x">0.2294264339</data>
+      <data key="y">-0.2369077307</data>
+    </node>
+    <node id="5">
+      <data key="x">0.0897755611</data>
+      <data key="y">0.1546134663</data>
+    </node>
+    <node id="6">
+      <data key="x">-0.2967581047</data>
+      <data key="y">0.3017456359</data>
+    </node>
+    <edge source="0" target="1">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="1" target="2">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="5" target="6">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="4" target="5">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="0" target="6">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="2" target="3">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="3" target="4">
+      <data key="w">1.0</data>
+    </edge>
+  </graph>
+</graphml>

@@ -1,0 +1,211 @@
+<graphml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://graphml.graphdrawing.org/xmlns" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key attr.name="vertex-coordinate-x" attr.type="string" for="node" id="x"/>
+  <key attr.name="vertex-coordinate-y" attr.type="string" for="node" id="y"/>
+  <key attr.name="edge-weight" attr.type="string" for="edge" id="w"/>
+  <key attr.name="edge-weight-additive" attr.type="string" for="edge" id="wa"/>
+  <graph edgedefault="undirected">
+    <node id="0">
+      <data key="x">76.676</data>
+      <data key="y">13.877</data>
+    </node>
+    <node id="1">
+      <data key="x">77.797</data>
+      <data key="y">13.304</data>
+    </node>
+    <node id="2">
+      <data key="x">79.214</data>
+      <data key="y">12.987</data>
+    </node>
+    <node id="3">
+      <data key="x">79.293</data>
+      <data key="y">12.34</data>
+    </node>
+    <node id="4">
+      <data key="x">77.604</data>
+      <data key="y">11.23</data>
+    </node>
+    <node id="5">
+      <data key="x">78.581</data>
+      <data key="y">10.052</data>
+    </node>
+    <node id="6">
+      <data key="x">81.188</data>
+      <data key="y">10.364</data>
+    </node>
+    <node id="7">
+      <data key="x">80.966</data>
+      <data key="y">10.869</data>
+    </node>
+    <node id="8">
+      <data key="x">80.227</data>
+      <data key="y">11.01</data>
+    </node>
+    <node id="9">
+      <data key="x">80.281</data>
+      <data key="y">11.914</data>
+    </node>
+    <node id="10">
+      <data key="x">81.435</data>
+      <data key="y">13.296</data>
+    </node>
+    <node id="11">
+      <data key="x">82.364</data>
+      <data key="y">12.671</data>
+    </node>
+    <node id="12">
+      <data key="x">82.845</data>
+      <data key="y">11.907</data>
+    </node>
+    <node id="13">
+      <data key="x">84.143</data>
+      <data key="y">12.966</data>
+    </node>
+    <node id="14">
+      <data key="x">83.866</data>
+      <data key="y">14.868</data>
+    </node>
+    <node id="15">
+      <data key="x">83.306</data>
+      <data key="y">15.674</data>
+    </node>
+    <node id="16">
+      <data key="x">82.877</data>
+      <data key="y">19.236</data>
+    </node>
+    <node id="17">
+      <data key="x">84.11</data>
+      <data key="y">18.646</data>
+    </node>
+    <node id="18">
+      <data key="x">84.354</data>
+      <data key="y">20.958</data>
+    </node>
+    <node id="19">
+      <data key="x">83.119</data>
+      <data key="y">21.403</data>
+    </node>
+    <node id="20">
+      <data key="x">82.744</data>
+      <data key="y">20.144</data>
+    </node>
+    <node id="21">
+      <data key="x">82.011</data>
+      <data key="y">20.065</data>
+    </node>
+    <node id="22">
+      <data key="x">82.064</data>
+      <data key="y">19.11</data>
+    </node>
+    <node id="23">
+      <data key="x">81.066</data>
+      <data key="y">19.423</data>
+    </node>
+    <node id="24">
+      <data key="x">79.675</data>
+      <data key="y">19.59</data>
+    </node>
+    <node id="25">
+      <data key="x">78.893</data>
+      <data key="y">19.243</data>
+    </node>
+    <node id="26">
+      <data key="x">79.331</data>
+      <data key="y">15.813</data>
+    </node>
+    <node id="27">
+      <data key="x">78.046</data>
+      <data key="y">15.731</data>
+    </node>
+    <node id="28">
+      <data key="x">77.164</data>
+      <data key="y">14.744</data>
+    </node>
+    <edge source="10" target="11">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="22" target="23">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="5" target="6">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="8" target="9">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="15" target="16">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="18" target="19">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="0" target="28">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="1" target="2">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="16" target="17">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="6" target="7">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="12" target="13">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="20" target="21">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="25" target="26">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="3" target="4">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="27" target="28">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="4" target="5">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="9" target="10">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="2" target="3">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="14" target="15">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="11" target="12">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="19" target="20">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="23" target="24">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="0" target="1">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="17" target="18">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="26" target="27">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="13" target="14">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="21" target="22">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="24" target="25">
+      <data key="w">1.0</data>
+    </edge>
+    <edge source="7" target="8">
+      <data key="w">1.0</data>
+    </edge>
+  </graph>
+</graphml>

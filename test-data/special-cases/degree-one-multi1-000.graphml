@@ -1,0 +1,31 @@
+<graphml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://graphml.graphdrawing.org/xmlns" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key attr.name="vertex-coordinate-x" attr.type="string" for="node" id="x"/>
+  <key attr.name="vertex-coordinate-y" attr.type="string" for="node" id="y"/>
+  <key attr.name="edge-weight" attr.type="string" for="edge" id="w">
+    <default>1.0</default>
+  </key>
+  <key attr.name="edge-weight-additive" attr.type="string" for="edge" id="wa">
+    <default>0.0</default>
+  </key>
+  <graph edgedefault="undirected">
+    <node id="0">
+      <data key="x">224.0</data>
+      <data key="y">752.0</data>
+    </node>
+    <node id="1">
+      <data key="x">224.0</data>
+      <data key="y">704.0</data>
+    </node>
+    <node id="2">
+      <data key="x">160.0</data>
+      <data key="y">688.0</data>
+    </node>
+    <node id="3">
+      <data key="x">288.0</data>
+      <data key="y">656.0</data>
+    </node>
+    <edge source="0" target="1"/>
+    <edge source="1" target="2"/>
+    <edge source="1" target="3"/>
+  </graph>
+</graphml>
