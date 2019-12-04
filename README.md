@@ -10,7 +10,7 @@ Clone the git repository:
 The logging class is included via a git submodule, so either clone the source
 using `
 
-    git clone --recurse-submodules git@gitlab.cosy.sbg.ac.at:cg/ord/surfer2.git
+    git clone --recurse-submodules https://github.com/cgalab/surfer2
 
 or, if you already have a checkout without the submodule, go to the working copy and
 
@@ -35,7 +35,7 @@ On Debian 10 (buster), installing the following packages is sufficient to build 
   * qtbase5-dev
   * clang
 
-# building
+# Building
 
 To build surfer, run cmake and make:
 
@@ -47,12 +47,28 @@ To build surfer, run cmake and make:
 This will create a release build, without expensive assertions.  To build the debug build,
 pass `-DCMAKE\_BUILD\_TYPE=Debug` to cmake, or nothing at all.
 
-# running the gui
+# Running the command line client or gui
+
+Both the command line client, `surfer`, as well as the gui, `surfgui` take
+[GraphML][graphml] files as input.
+
+    ./cc/surfer foo.graphml
 
     ./gui/surfgui foo.graphml
+
+
+They accept several options, one of them is `--help` which prints a list of all
+options.  The `--component=<component>` option restricts computation to
+component number `<component>`, an integer number starting at 0.  For polygonal
+input, `l` and `r` are accepted for (left and right).  The default is `-1`, which
+computes all components' straight skeleton, one after the other.  A value of `-2`
+propagates the wavefront in all components at the same time.
 
 To create a .graphml file from a .line or .ipe file use
 
     ord-format <linefile>
 
-from the format-converter repository.
+from the [format-converter repository][format-converter].
+
+[graphml]: http://graphml.graphdrawing.org/
+[format-converter]: https://github.com/cgalab/format-converter
