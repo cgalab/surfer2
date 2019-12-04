@@ -158,6 +158,10 @@ initialize(const BasicInput& input) {
     ct_vertex_handles.push_back(vh);
   }
 
+  if (input.edges().size() == 0) {
+    LOG(ERROR) << "Invalid input: no edges.";
+    exit(EXIT_INVALID_INPUT);
+  }
   /* Insert constraints.
    *
    * We insert constraints by providing the proper vertex handles from the CDT.
