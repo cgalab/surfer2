@@ -50,7 +50,8 @@ pass `-DCMAKE_BUILD_TYPE=Debug` to cmake, or nothing at all.
 # Running the command line client or gui
 
 Both the command line client, `surfer`, as well as the gui, `surfgui` take
-[GraphML][graphml] files as input.
+[GraphML][graphml] files with coordinates as specified in
+[Graph-Attributes][graph-attributes] as input.
 
     ./cc/surfer ../test-data/srpg0000025.graphml
 
@@ -72,6 +73,7 @@ from the [format-converter repository][format-converter].
 
 [graphml]: http://graphml.graphdrawing.org/
 [format-converter]: https://github.com/cgalab/format-converter
+[graph-attributes]: https://github.com/cgalab/format-converter/blob/master/GRAPH-ATTRIBUTES.md
 
 # License
 
