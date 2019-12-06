@@ -21,6 +21,9 @@
 
 #include "WavefrontEdge.h"
 
+enum class InfiniteSpeedType { NONE, OPPOSING, WEIGHTED };
+std::ostream& operator<<(std::ostream& os, const InfiniteSpeedType &a);
+
 class WavefrontVertex {
   friend class KineticTriangulationGraphicsItem;
   friend class VertexList;
@@ -45,7 +48,10 @@ class WavefrontVertex {
     const bool is_initial;
     const bool is_beveling;
     const bool is_infinite;
-    const bool infinite_speed;
+    const InfiniteSpeedType infinite_speed; /** This wavefront vertex is
+      either between parallel, opposing wavefront elements that have crashed
+      into each other and become collinear, or it is between neighboring
+      wavefront edges that have become collinear yet have different weights. */
     const Vector_2 velocity;
   private:
     const Polynomial_1 px_, py_;
@@ -85,6 +91,7 @@ class WavefrontVertex {
       };
     friend std::ostream& operator<<(std::ostream& os, const WavefrontVertex::LineIntersectionType t);
 
+    static InfiniteSpeedType get_infinite_speed_type(const WavefrontEdge * const a, const WavefrontEdge * const b, const VertexAngle& angle);
     static std::tuple<LineIntersectionType, Point_2> compute_intersection(const Line_2& a, const Line_2& b);
 
     static Vector_2 compute_velocity(
@@ -140,7 +147,7 @@ class WavefrontVertex {
 
     void stop(const NT& t) {
       assert(!has_stopped_);
-      assert(!infinite_speed);
+      assert(infinite_speed == InfiniteSpeedType::NONE);
       time_stop_ = t;
       pos_stop_ = p_at(t);
       has_stopped_ = true;
@@ -153,7 +160,7 @@ class WavefrontVertex {
 
     void stop(const NT& t, const Point_2& p) {
       assert(!has_stopped_);
-      assert(infinite_speed);
+      assert(infinite_speed != InfiniteSpeedType::NONE);
       time_stop_ = t;
       pos_stop_ = p;
       has_stopped_ = true;
@@ -218,7 +225,7 @@ class WavefrontVertex {
                kv->angle == REFLEX ? "r" :
                kv->angle == STRAIGHT ? "=" :
                                        "XXX-INVALID-ANGLE")
-           << (kv->infinite_speed ? "^" : "")
+           << kv->infinite_speed
            << (kv->has_stopped_ ? "s" : "");
       } else {
         os << "kv*";

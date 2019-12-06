@@ -20,6 +20,7 @@
 #include "surf.h"
 
 #include "TriangulationUtils.h"
+#include "WavefrontVertex.h"
 #include "CollapseSpec.h"
 #include <stddef.h>
 
@@ -224,10 +225,10 @@ class KineticTriangle {
     void set_dead();
     bool is_collapse_spec_valid() const { return collapse_spec_valid; };
 
-    bool unbounded() const;
-    unsigned infinite_vertex_idx() const;
-    bool has_vertex_infinite_speed() const;
-    unsigned infinite_speed_vertex_idx() const;
+    inline bool unbounded() const;
+    inline unsigned infinite_vertex_idx() const;
+    InfiniteSpeedType has_vertex_infinite_speed() const;
+    inline unsigned infinite_speed_opposing_vertex_idx() const;
 
   private:
     enum class VertexOnSupportingLineType : short { ONCE, NEVER, ALWAYS };
@@ -374,3 +375,39 @@ set_neighbor(unsigned idx, KineticTriangle *n) {
   neighbors[idx] = n;
   assert(!n || n->component == component);
 }
+
+/** return the index of one vertex with infinite speed.
+ */
+unsigned
+KineticTriangle::
+infinite_speed_opposing_vertex_idx() const { // {{{
+  //assert(unbounded());
+  assert((vertex(0)->infinite_speed == InfiniteSpeedType::OPPOSING) +
+         (vertex(1)->infinite_speed == InfiniteSpeedType::OPPOSING) +
+         (vertex(2)->infinite_speed == InfiniteSpeedType::OPPOSING) >= 1);
+  unsigned idx =
+    (vertex(0)->infinite_speed == InfiniteSpeedType::OPPOSING) ? 0 :
+    (vertex(1)->infinite_speed == InfiniteSpeedType::OPPOSING) ? 1 :
+    2;
+  return idx;
+} // }}}
+
+unsigned
+KineticTriangle::
+infinite_vertex_idx() const { // {{{
+  //assert(unbounded());
+  assert(vertex(0)->is_infinite + vertex(1)->is_infinite + vertex(2)->is_infinite == 1);
+  unsigned idx =
+    (vertex(0)->is_infinite) ? 0 :
+    (vertex(1)->is_infinite) ? 1 :
+    2;
+  return idx;
+} // }}}
+
+bool
+KineticTriangle::
+unbounded() const { /// {{{
+  return(vertex(0)->is_infinite ||
+         vertex(1)->is_infinite ||
+         vertex(2)->is_infinite);
+} // }}}

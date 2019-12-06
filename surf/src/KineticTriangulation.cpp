@@ -1546,7 +1546,7 @@ do_spoke_collapse_part2(KineticTriangle& t, unsigned edge_idx, const NT& time) {
     queue->needs_dropping(&t);
   } else {
     bool call_constraint_collapse = true;
-    if (v->infinite_speed) {
+    if (v->infinite_speed != InfiniteSpeedType::NONE) {
       int i_1 = mod3(edge_idx + 1);
       int i_2 = mod3(edge_idx + 2);
       if (!t.neighbors[i_1] && !t.neighbors[i_2]) {
@@ -1789,7 +1789,7 @@ handle_constraint_event(const Event& event) {
 
 void
 KineticTriangulation::
-handle_face_with_infintely_fast_vertex(const Event& event) {
+handle_face_with_infintely_fast_opposing_vertex(const Event& event) {
   DBG_FUNC_BEGIN(DBG_KT_EVENT);
   DBG(DBG_KT_EVENT) << event;
 
@@ -1801,7 +1801,9 @@ handle_face_with_infintely_fast_vertex(const Event& event) {
   DBG(DBG_KT_EVENT2) << "t:  " << t;
 
   unsigned num_constraints = t->is_constrained(0) +  t->is_constrained(1) +  t->is_constrained(2);
-  unsigned num_fast = t->vertex(0)->infinite_speed + t->vertex(1)->infinite_speed + t->vertex(2)->infinite_speed;
+  unsigned num_fast = (t->vertex(0)->infinite_speed != InfiniteSpeedType::NONE) +
+                      (t->vertex(1)->infinite_speed != InfiniteSpeedType::NONE) +
+                      (t->vertex(2)->infinite_speed != InfiniteSpeedType::NONE);
   assert(num_fast >= 1);
   assert(num_fast < 3);
   if (num_constraints == 3) {
@@ -1811,7 +1813,7 @@ handle_face_with_infintely_fast_vertex(const Event& event) {
     Point_2 p;
     bool first=true;
     for (unsigned i=0; i<3; ++i) {
-      if (t->vertex(i)->infinite_speed) continue;
+      if (t->vertex(i)->infinite_speed != InfiniteSpeedType::NONE) continue;
       t->vertices[i]->stop(time);
       if (first) {
         p = t->vertices[i]->pos_stop();
@@ -1822,7 +1824,7 @@ handle_face_with_infintely_fast_vertex(const Event& event) {
     }
     assert(!first);
     for (unsigned i=0; i<3; ++i) {
-      if (!t->vertex(i)->infinite_speed) continue;
+      if (t->vertex(i)->infinite_speed == InfiniteSpeedType::NONE) continue;
       t->vertices[i]->stop(time, p);
     }
 
@@ -1840,7 +1842,7 @@ handle_face_with_infintely_fast_vertex(const Event& event) {
   } else {
     DBG(DBG_KT_EVENT2) << "infinitely fast triangle with fewer than 3 constraints.";
     assert(num_fast <= 2);
-    unsigned t_fast_idx = t->infinite_speed_vertex_idx();
+    unsigned t_fast_idx = t->infinite_speed_opposing_vertex_idx();
     WavefrontVertex* v = t->vertices[t_fast_idx];
     DBG(DBG_KT_EVENT2) << "infinitely fast vertex: " << t_fast_idx;
 
@@ -1889,17 +1891,18 @@ handle_face_with_infintely_fast_vertex(const Event& event) {
     DBG(DBG_KT_EVENT) << "v_cw  is " << v_cw;
     DBG(DBG_KT_EVENT) << "v_ccw is " << v_ccw;
 
-    assert(!v_cw->infinite_speed || !v_ccw->infinite_speed);
+    assert((v_cw->infinite_speed == InfiniteSpeedType::NONE) ||
+           (v_ccw->infinite_speed == InfiniteSpeedType::NONE));
 
     unsigned collapse;
     WavefrontVertex* o = NULL;
     bool spoke_collapse = false;
     /* collapse the shorter edge, or the edge to the non-fast vertex (i.e, the one opposite of the fast). */
-    if (v_cw->infinite_speed) {
+    if (v_cw->infinite_speed != InfiniteSpeedType::NONE) {
       collapse = cw(vidx_in_tc);
       o = v_ccw;
       DBG(DBG_KT_EVENT) << "v_cw has infinite speed";
-    } else if (v_ccw->infinite_speed) {
+    } else if (v_ccw->infinite_speed != InfiniteSpeedType::NONE) {
       collapse = ccw(vidx_in_tc);
       o = v_cw;
       DBG(DBG_KT_EVENT) << "v_ccw has infinite speed";
@@ -2333,7 +2336,7 @@ handle_event(const Event& event) {
       handle_constraint_event(event);
       break;
     case CollapseType::FACE_HAS_INFINITELY_FAST_VERTEX:
-      handle_face_with_infintely_fast_vertex(event);
+      handle_face_with_infintely_fast_opposing_vertex(event);
       break;
     case CollapseType::SPOKE_COLLAPSE:
       handle_spoke_collapse_event(event);

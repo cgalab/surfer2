@@ -37,16 +37,33 @@ WavefrontVertex(
   , is_initial(p_is_initial)
   , is_beveling(p_is_beveling)
   , is_infinite(p_is_infinite)
-  , infinite_speed(a && b && angle == STRAIGHT && CGAL::orientation(a->l()->l.to_vector(), b->l()->l.to_vector().perpendicular(CGAL::CLOCKWISE)) == CGAL::LEFT_TURN)
-  , velocity(a && b && !infinite_speed ? compute_velocity(pos_zero, *a->l(), *b->l(), angle) : CGAL::NULL_VECTOR)
-  , px_( infinite_speed ? Polynomial_1(0) : Polynomial_1(pos_zero.x(), velocity.x()) )
-  , py_( infinite_speed ? Polynomial_1(0) : Polynomial_1(pos_zero.y(), velocity.y()) )
+  , infinite_speed(get_infinite_speed_type(a, b, angle))
+  , velocity( (a && b && (infinite_speed == InfiniteSpeedType::NONE)) ? compute_velocity(pos_zero, *a->l(), *b->l(), angle) : CGAL::NULL_VECTOR)
+  , px_( (infinite_speed != InfiniteSpeedType::NONE) ? Polynomial_1(0) : Polynomial_1(pos_zero.x(), velocity.x()) )
+  , py_( (infinite_speed != InfiniteSpeedType::NONE) ? Polynomial_1(0) : Polynomial_1(pos_zero.y(), velocity.y()) )
   , skeleton_dcel_halfedge_ { NULL, NULL }
   , next_vertex_ { NULL, NULL }
   , prev_vertex_ { NULL, NULL }
 
 {
   assert(!!a == !!b);
+}
+
+InfiniteSpeedType
+WavefrontVertex::
+get_infinite_speed_type(const WavefrontEdge * const a, const WavefrontEdge * const b, const VertexAngle& angle) {
+  if (a && b && angle == STRAIGHT) {
+    if (CGAL::orientation(a->l()->l.to_vector(), b->l()->l.to_vector().perpendicular(CGAL::CLOCKWISE)) == CGAL::LEFT_TURN) {
+      return InfiniteSpeedType::OPPOSING;
+    } else if (a->l()->weight != b->l()->weight) {
+      return InfiniteSpeedType::WEIGHTED;
+    } else {
+      assert(a->l()->normal == b->l()->normal);
+      return InfiniteSpeedType::NONE;
+    }
+  } else {
+    return InfiniteSpeedType::NONE;
+  }
 }
 
 std::tuple<WavefrontVertex::LineIntersectionType, Point_2>
@@ -104,7 +121,7 @@ make_vertex(
   }
 
   WavefrontVertex v = WavefrontVertex(pos_zero, pos, time, a, b);
-  assert( (lit == LineIntersectionType::NONE) == v.infinite_speed);
+  assert( (lit == LineIntersectionType::NONE) == (v.infinite_speed != InfiniteSpeedType::NONE));
 
   assert(v.p_at(time) == pos);
   DBG_FUNC_END(DBG_KT);
@@ -167,10 +184,9 @@ details() const {
     oss << "wf: " << *incident_wavefront_edges[0]
         << "; "   << *incident_wavefront_edges[1];
     oss << "; o: " << CGAL_point(pos_zero);
-    if (infinite_speed) {
-      oss << "; v^";
-    } else {
-      oss << "; v: (" << CGAL_vector(velocity);
+    oss << "; v" << infinite_speed;
+    if (infinite_speed != InfiniteSpeedType::NONE) {
+      oss << ": (" << CGAL_vector(velocity);
     }
     oss << "; s: (" << CGAL_point(pos_start) << ") @ " << CGAL::to_double(time_start);
     if (has_stopped_) {
@@ -190,4 +206,20 @@ std::ostream& operator<<(std::ostream& os, const WavefrontVertex::LineIntersecti
   CANNOTHAPPEN_MSG << "Fell through switch which should cover all cases.";
   assert(false);
   abort();
+}
+
+std::ostream&
+operator<<(std::ostream& os, const InfiniteSpeedType &a) {
+  switch (a) {
+    case InfiniteSpeedType::NONE:
+      os << "";
+      break;
+    case InfiniteSpeedType::OPPOSING:
+      os << "^";
+      break;
+    case InfiniteSpeedType::WEIGHTED:
+      os << "~";
+      break;
+  }
+  return os;
 }

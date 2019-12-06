@@ -74,12 +74,14 @@ compute_collapse(const NT& time_now) const { // {{{
   DBG_FUNC_BEGIN(DBG_TRIANGLE);
   DBG(DBG_TRIANGLE) << this;
   CollapseSpec result(component);
+  InfiniteSpeedType infinite_speed_type;
   if (unbounded()) {
     result = compute_collapse_unbounded(time_now);
   // } else {
   //  CGAL_assertion(!swept);
   //  return computeCollapseUnbounded(time_now);
-  } else if (has_vertex_infinite_speed()) {
+  } else if ((infinite_speed_type = has_vertex_infinite_speed()) != InfiniteSpeedType::NONE) {
+    /* XXX INF */
     result = CollapseSpec(component, CollapseType::FACE_HAS_INFINITELY_FAST_VERTEX, time_now);
   } else {
     result = compute_collapse_bounded(time_now);
@@ -89,46 +91,28 @@ compute_collapse(const NT& time_now) const { // {{{
   return result;
 } // }}}
 
-bool
+/** Checks what kind, if any, of infinitely fast vertices this triangle has.
+ *
+ * Returns OPPOSING if there is at least one vertex of that type, else,
+ * WEIGHTED  if there is at least one vertex of that, else NONE.
+ */
+InfiniteSpeedType
 KineticTriangle::
 has_vertex_infinite_speed() const { // {{{{
-  return vertex(0)->infinite_speed ||
-         vertex(1)->infinite_speed ||
-         vertex(2)->infinite_speed;
-} // }}}
-
-/** return the index of one vertex with infinite speed.
- */
-unsigned
-KineticTriangle::
-infinite_speed_vertex_idx() const { // {{{
-  //assert(unbounded());
-  assert(vertex(0)->infinite_speed + vertex(1)->infinite_speed + vertex(2)->infinite_speed >= 1);
-  unsigned idx =
-    (vertex(0)->infinite_speed) ? 0 :
-    (vertex(1)->infinite_speed) ? 1 :
-    2;
-  return idx;
-} // }}}
-
-unsigned
-KineticTriangle::
-infinite_vertex_idx() const { // {{{
-  //assert(unbounded());
-  assert(vertex(0)->is_infinite + vertex(1)->is_infinite + vertex(2)->is_infinite == 1);
-  unsigned idx =
-    (vertex(0)->is_infinite) ? 0 :
-    (vertex(1)->is_infinite) ? 1 :
-    2;
-  return idx;
-} // }}}
-
-bool
-KineticTriangle::
-unbounded() const { /// {{{
-  return(vertex(0)->is_infinite ||
-         vertex(1)->is_infinite ||
-         vertex(2)->is_infinite);
+  if (vertex(0)->infinite_speed == InfiniteSpeedType::NONE &&
+      vertex(1)->infinite_speed == InfiniteSpeedType::NONE &&
+      vertex(2)->infinite_speed == InfiniteSpeedType::NONE) {
+    return InfiniteSpeedType::NONE;
+  } else if (vertex(0)->infinite_speed == InfiniteSpeedType::OPPOSING ||
+      vertex(1)->infinite_speed == InfiniteSpeedType::OPPOSING ||
+      vertex(2)->infinite_speed == InfiniteSpeedType::OPPOSING) {
+    return InfiniteSpeedType::OPPOSING;
+  } else {
+    assert(vertex(0)->infinite_speed == InfiniteSpeedType::WEIGHTED ||
+           vertex(1)->infinite_speed == InfiniteSpeedType::WEIGHTED ||
+           vertex(2)->infinite_speed == InfiniteSpeedType::WEIGHTED);
+    return InfiniteSpeedType::WEIGHTED;
+  }
 } // }}}
 
 CollapseSpec
@@ -938,7 +922,7 @@ compute_collapse_unbounded(const NT& time_now) const { // {{{
   CollapseSpec edge_collapse(component);
 
   assert(unbounded());
-  assert(!has_vertex_infinite_speed());
+  assert(has_vertex_infinite_speed() == InfiniteSpeedType::NONE);
   unsigned idx = infinite_vertex_idx();
   if (is_constrained(idx)) {
     edge_collapse = wavefronts[idx]->get_collapse(component, time_now, idx);

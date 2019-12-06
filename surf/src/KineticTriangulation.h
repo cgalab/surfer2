@@ -244,7 +244,7 @@ class KineticTriangulation {
     void do_constraint_collapse_part2(KineticTriangle& t, unsigned edge_idx, const NT& time);
 
     void handle_constraint_event(const Event& event);
-    void handle_face_with_infintely_fast_vertex(const Event& event);
+    void handle_face_with_infintely_fast_opposing_vertex(const Event& event);
     void handle_spoke_collapse_event(const Event& event);
     void handle_triangle_collapse_event(const Event& event);
     void handle_split_event(const Event& event);
