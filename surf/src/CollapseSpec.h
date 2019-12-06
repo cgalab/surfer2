@@ -68,9 +68,6 @@ enum class CollapseType : short {
                        which is between parallel, opposing wavefront elements
                        that have crashed into each other and their intersection
                        is now a line segment. */
-  FACE_HAS_INFINITELY_FAST_VERTEX_WEIGHTED, /** This triangle has a vertex which is
-                       between parallel adjacent wavefront elements that have
-                       different weights but move in the same direction. */
   TRIANGLE_COLLAPSE,
   // NEIGHBORING_TRIANGLE_COLLAPSES,  /* do we ever need to handle this */
   CONSTRAINT_COLLAPSE,
@@ -79,6 +76,9 @@ enum class CollapseType : short {
                               UNUSED except in get_generic */
   SPLIT_OR_FLIP_REFINE,    /* vertex moves onto supporting line of constraint,
                               can refine event type when it comes to it.  */
+  FACE_HAS_INFINITELY_FAST_VERTEX_WEIGHTED, /** This triangle has a vertex which is
+                       between parallel adjacent wavefront elements that have
+                       different weights but move in the same direction. */
   VERTEX_MOVES_OVER_SPOKE, /* vertex moves into spoke (triangulation edge interior),
                               flip event */
   CCW_VERTEX_LEAVES_CH,    /* the ccw vertex of the infinite vertex in an

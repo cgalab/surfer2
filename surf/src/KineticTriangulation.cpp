@@ -2037,21 +2037,60 @@ handle_face_with_infintely_fast_weighted_vertex(const Event& event) {
     idx_fast_in_most_cw_triangle = most_cw_triangle->index(v_fast);
   };
 
+  /* The triangle should not have collapsed yet. */
+  {
+    const Point_2 pos_v0 = most_cw_triangle->vertex(0)->p_at(time);
+    const Point_2 pos_v1 = most_cw_triangle->vertex(1)->p_at(time);
+    const Point_2 pos_v2 = most_cw_triangle->vertex(2)->p_at(time);
+    assert(CGAL::orientation(pos_v0, pos_v1, pos_v2) == CGAL::LEFT_TURN);
+  }
+
   /* Flip away any spoke at the infinitely fast vertex. */
-  /* XXX THIS IS NOT RIGHT, we can't just flip everything to one side.
-   */
   DBG(DBG_KT_EVENT2) << "flipping all spokes away from " << v_fast;
-  unsigned nidx = ccw(idx_fast_in_most_cw_triangle);
+  AroundVertexIterator flipping_triangle = incident_faces_iterator(most_cw_triangle, idx_fast_in_most_cw_triangle);
+  unsigned nidx_in_most_cw_triangle = ccw(idx_fast_in_most_cw_triangle);
   while (1) {
     assert(most_cw_triangle->vertices[idx_fast_in_most_cw_triangle] == v_fast);
-    if (most_cw_triangle->is_constrained(nidx)) {
+    if (most_cw_triangle->is_constrained(nidx_in_most_cw_triangle)) {
       break;
     }
-    KineticTriangle *n = most_cw_triangle->neighbor( nidx );
-    DBG(DBG_KT_EVENT2) << "- flipping: " << most_cw_triangle;
-    DBG(DBG_KT_EVENT2) << "  towards:  " << n;
-    do_raw_flip(most_cw_triangle, nidx, time, true);
-    modified(n);
+
+    const Point_2 pos_v0 = flipping_triangle.t()->vertex( ccw(flipping_triangle.v_in_t_idx()) )->p_at(time);
+    const Point_2 pos_v1 = flipping_triangle.t()->vertex( cw (flipping_triangle.v_in_t_idx()) )->p_at(time);
+    if (flipping_triangle.t() != most_cw_triangle) {
+      /* We already delayed flipping at least once.  Let's see if we can go back */
+      unsigned nidx = cw(flipping_triangle.v_in_t_idx()); /* previous guy, the one cw */
+      KineticTriangle *n = flipping_triangle.t()->neighbor( nidx );
+      unsigned idx_in_n = n->index(flipping_triangle.t());
+      assert(n->vertex( ccw (idx_in_n) ) == flipping_triangle.t()->vertex( ccw (flipping_triangle.v_in_t_idx()) ) );
+      const Point_2 pos_v2 = n->vertex(idx_in_n)->p_at(time);
+
+      if (CGAL::orientation(pos_v2, pos_v0, pos_v1) == CGAL::LEFT_TURN) {
+        DBG(DBG_KT_EVENT2) << "- We can go back, and do a flip: " << flipping_triangle.t();
+        ++flipping_triangle;
+        continue; /* We will flip in the next iteration. */
+      } else {
+        DBG(DBG_KT_EVENT2) << "- We cannot go back just yet";
+      }
+    };
+
+    /* Check if we can flip to the neighbor ccw. */
+    unsigned nidx = ccw(flipping_triangle.v_in_t_idx()); /* next guy, the one ccw */
+    KineticTriangle *n = flipping_triangle.t()->neighbor( nidx );
+    unsigned idx_in_n = n->index(flipping_triangle.t());
+
+    assert(n->vertex( cw (idx_in_n) ) == flipping_triangle.t()->vertex( cw (flipping_triangle.v_in_t_idx()) ) );
+    const Point_2 pos_v2 = n->vertex(idx_in_n)->p_at(time);
+    if (CGAL::orientation(pos_v0, pos_v1, pos_v2) != CGAL::LEFT_TURN) {
+      /* No, not right now.  Try in the next ccw triangle. */
+      DBG(DBG_KT_EVENT2) << "- not flipping right now: " << flipping_triangle.t();
+      --flipping_triangle;
+    } else {
+      DBG(DBG_KT_EVENT2) << "- flipping: " << flipping_triangle.t();
+      DBG(DBG_KT_EVENT2) << "  towards:  " << n;
+      do_raw_flip(flipping_triangle.t(), nidx, time, true);
+      modified(n);
+    }
   }
   DBG(DBG_KT_EVENT2) << "flipping done; " << most_cw_triangle;
 
