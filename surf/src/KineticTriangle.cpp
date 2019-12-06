@@ -74,43 +74,41 @@ compute_collapse(const NT& time_now) const { // {{{
   DBG_FUNC_BEGIN(DBG_TRIANGLE);
   DBG(DBG_TRIANGLE) << this;
   CollapseSpec result(component);
-  InfiniteSpeedType infinite_speed_type;
-  if (unbounded()) {
-    result = compute_collapse_unbounded(time_now);
-  // } else {
-  //  CGAL_assertion(!swept);
-  //  return computeCollapseUnbounded(time_now);
-  } else if ((infinite_speed_type = has_vertex_infinite_speed()) != InfiniteSpeedType::NONE) {
-    if (infinite_speed_type == InfiniteSpeedType::OPPOSING) {
-      result = CollapseSpec(component, CollapseType::FACE_HAS_INFINITELY_FAST_VERTEX_OPPOSING, time_now);
+  InfiniteSpeedType infinite_speed_type = has_vertex_infinite_speed();
+  if (infinite_speed_type == InfiniteSpeedType::NONE) {
+    if (unbounded()) {
+      result = compute_collapse_unbounded(time_now);
     } else {
-      /* Only triangles with wavefront edges incident to the infinitely fast weighted vertex
-       * need to witness this.  As a secondary key, we prefer the triangle with the faster edge
-       * since that edge wins.
-       */
-      int relevant_edge = -1;
-      NT relevant_edge_speed;
-      for (int i=0; i<3; ++i) {
-        if (!wavefronts[i]) continue;
-        assert(wavefronts[i]->vertex(0) == vertices[ccw(i)]);
-        assert(wavefronts[i]->vertex(1) == vertices[cw (i)]);
-        if ((vertices[ccw(i)]->infinite_speed != InfiniteSpeedType::WEIGHTED) &&
-            (vertices[cw (i)]->infinite_speed != InfiniteSpeedType::WEIGHTED)) continue;
+      result = compute_collapse_bounded(time_now);
+    }
+  } else if (infinite_speed_type == InfiniteSpeedType::OPPOSING) {
+    result = CollapseSpec(component, CollapseType::FACE_HAS_INFINITELY_FAST_VERTEX_OPPOSING, time_now);
+  } else {
+    assert(infinite_speed_type == InfiniteSpeedType::WEIGHTED);
+    /* Only triangles with wavefront edges incident to the infinitely fast weighted vertex
+     * need to witness this.  As a secondary key, we prefer the triangle with the faster edge
+     * since that edge wins.
+     */
+    int relevant_edge = -1;
+    NT relevant_edge_speed;
+    for (int i=0; i<3; ++i) {
+      if (!wavefronts[i]) continue;
+      assert(wavefronts[i]->vertex(0) == vertices[ccw(i)]);
+      assert(wavefronts[i]->vertex(1) == vertices[cw (i)]);
+      if ((vertices[ccw(i)]->infinite_speed != InfiniteSpeedType::WEIGHTED) &&
+          (vertices[cw (i)]->infinite_speed != InfiniteSpeedType::WEIGHTED)) continue;
 
-        if (relevant_edge < 0 ||
-          relevant_edge_speed < wavefronts[i]->l()->weight * FASTER_EDGE_WINS_IN_COLLINEAR_CASES) {
-          relevant_edge = i;
-          relevant_edge_speed = wavefronts[i]->l()->weight * FASTER_EDGE_WINS_IN_COLLINEAR_CASES;
-        }
-      }
-      if (relevant_edge < 0) {
-        result = CollapseSpec(component, CollapseType::INVALID_EVENT, time_now);
-      } else {
-        result = CollapseSpec(component, CollapseType::FACE_HAS_INFINITELY_FAST_VERTEX_WEIGHTED, time_now, relevant_edge, relevant_edge_speed);
+      if (relevant_edge < 0 ||
+        relevant_edge_speed < wavefronts[i]->l()->weight * FASTER_EDGE_WINS_IN_COLLINEAR_CASES) {
+        relevant_edge = i;
+        relevant_edge_speed = wavefronts[i]->l()->weight * FASTER_EDGE_WINS_IN_COLLINEAR_CASES;
       }
     }
-  } else {
-    result = compute_collapse_bounded(time_now);
+    if (relevant_edge < 0) {
+      result = CollapseSpec(component, CollapseType::INVALID_EVENT, time_now);
+    } else {
+      result = CollapseSpec(component, CollapseType::FACE_HAS_INFINITELY_FAST_VERTEX_WEIGHTED, time_now, relevant_edge, relevant_edge_speed);
+    }
   }
   DBG(DBG_TRIANGLE) << this << " returning " << result;
   DBG_FUNC_END(DBG_TRIANGLE);
