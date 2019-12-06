@@ -81,8 +81,34 @@ compute_collapse(const NT& time_now) const { // {{{
   //  CGAL_assertion(!swept);
   //  return computeCollapseUnbounded(time_now);
   } else if ((infinite_speed_type = has_vertex_infinite_speed()) != InfiniteSpeedType::NONE) {
-    /* XXX INF */
-    result = CollapseSpec(component, CollapseType::FACE_HAS_INFINITELY_FAST_VERTEX, time_now);
+    if (infinite_speed_type == InfiniteSpeedType::OPPOSING) {
+      result = CollapseSpec(component, CollapseType::FACE_HAS_INFINITELY_FAST_VERTEX_OPPOSING, time_now);
+    } else {
+      /* Only triangles with wavefront edges incident to the infinitely fast weighted vertex
+       * need to witness this.  As a secondary key, we prefer the triangle with the faster edge
+       * since that edge wins.
+       */
+      int relevant_edge = -1;
+      NT relevant_edge_speed;
+      for (int i=0; i<3; ++i) {
+        if (!wavefronts[i]) continue;
+        assert(wavefronts[i]->vertex(0) == vertices[ccw(i)]);
+        assert(wavefronts[i]->vertex(1) == vertices[cw (i)]);
+        if ((vertices[ccw(i)]->infinite_speed != InfiniteSpeedType::WEIGHTED) &&
+            (vertices[cw (i)]->infinite_speed != InfiniteSpeedType::WEIGHTED)) continue;
+
+        if (relevant_edge < 0 ||
+          relevant_edge_speed < wavefronts[i]->l()->weight * FASTER_EDGE_WINS_IN_COLLINEAR_CASES) {
+          relevant_edge = i;
+          relevant_edge_speed = wavefronts[i]->l()->weight * FASTER_EDGE_WINS_IN_COLLINEAR_CASES;
+        }
+      }
+      if (relevant_edge < 0) {
+        result = CollapseSpec(component, CollapseType::INVALID_EVENT, time_now);
+      } else {
+        result = CollapseSpec(component, CollapseType::FACE_HAS_INFINITELY_FAST_VERTEX_WEIGHTED, time_now, relevant_edge, relevant_edge_speed);
+      }
+    }
   } else {
     result = compute_collapse_bounded(time_now);
   }
@@ -620,7 +646,8 @@ compute_flip_event(const NT& time_now, const Polynomial_1& determinant) const { 
           #endif
         }
         break;
-      case CollapseType::FACE_HAS_INFINITELY_FAST_VERTEX:
+      case CollapseType::FACE_HAS_INFINITELY_FAST_VERTEX_OPPOSING:
+      case CollapseType::FACE_HAS_INFINITELY_FAST_VERTEX_WEIGHTED:
       case CollapseType::SPLIT_OR_FLIP_REFINE:
       case CollapseType::CONSTRAINT_COLLAPSE:
       case CollapseType::UNDEFINED:

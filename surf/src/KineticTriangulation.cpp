@@ -1793,7 +1793,7 @@ handle_face_with_infintely_fast_opposing_vertex(const Event& event) {
   DBG_FUNC_BEGIN(DBG_KT_EVENT);
   DBG(DBG_KT_EVENT) << event;
 
-  assert(event.type() == CollapseType::FACE_HAS_INFINITELY_FAST_VERTEX);
+  assert(event.type() == CollapseType::FACE_HAS_INFINITELY_FAST_VERTEX_OPPOSING);
   KineticTriangle& tref = triangles[event.t->id];
   KineticTriangle* t = &tref;
   const NT& time(event.time());
@@ -1985,6 +1985,96 @@ handle_face_with_infintely_fast_opposing_vertex(const Event& event) {
   DBG_FUNC_END(DBG_KT_EVENT);
 }
 
+
+void
+KineticTriangulation::
+handle_face_with_infintely_fast_weighted_vertex(const Event& event) {
+  DBG_FUNC_BEGIN(DBG_KT_EVENT);
+  DBG(DBG_KT_EVENT) << event;
+
+  assert(event.type() == CollapseType::FACE_HAS_INFINITELY_FAST_VERTEX_WEIGHTED);
+  KineticTriangle& tref = triangles[event.t->id];
+  KineticTriangle* t = &tref;
+  const NT& time(event.time());
+  int edge_idx = event.relevant_edge();
+
+  DBG(DBG_KT_EVENT2) << "t:  " << t;
+
+  assert((t->vertex(0)->infinite_speed == InfiniteSpeedType::WEIGHTED) ||
+         (t->vertex(1)->infinite_speed == InfiniteSpeedType::WEIGHTED) ||
+         (t->vertex(2)->infinite_speed == InfiniteSpeedType::WEIGHTED));
+
+  /* Find vertex with the fastest incident edge,
+   * This will then gobble up one incident slower edge. */
+  assert(t->wavefront(edge_idx));
+  assert(t->wavefronts[edge_idx]->vertex(0) == t->vertices[ccw(edge_idx)]);
+  assert(t->wavefronts[edge_idx]->vertex(1) == t->vertices[cw (edge_idx)]);
+
+  assert((t->vertices[ccw(edge_idx)]->infinite_speed == InfiniteSpeedType::WEIGHTED) ||
+         (t->vertices[cw (edge_idx)]->infinite_speed == InfiniteSpeedType::WEIGHTED));
+
+  const WavefrontEdge * const winning_edge = t->wavefront(edge_idx);
+
+  WavefrontVertex *v_fast;
+  KineticTriangle *most_cw_triangle;
+  int idx_fast_in_most_cw_triangle;
+  int winning_edge_idx_in_v;
+  /* If both vertices are of type InfiniteSpeedType::WEIGHTED, pick one. */
+  if (t->vertices[ccw(edge_idx)]->infinite_speed == InfiniteSpeedType::WEIGHTED) {
+    /* The left vertex of the edge is the one in question. */
+    v_fast = t->vertices[ccw(edge_idx)];
+    winning_edge_idx_in_v = 1;
+    most_cw_triangle = t;
+    idx_fast_in_most_cw_triangle = ccw(edge_idx);
+  } else {
+    /* The right vertex of the edge is the one in question,
+     * find the triangle that is incident to the other edge */
+    v_fast = t->vertices[cw(edge_idx)];
+    winning_edge_idx_in_v = 0;
+    assert(t->wavefronts[edge_idx]->vertex(1)->wavefronts()[0] == t->wavefront(edge_idx));
+
+    most_cw_triangle = t->wavefronts[edge_idx]->vertex(1)->wavefronts()[1]->incident_triangle();
+    idx_fast_in_most_cw_triangle = most_cw_triangle->index(v_fast);
+  };
+
+  /* Flip away any spoke at the infinitely fast vertex. */
+  /* XXX THIS IS NOT RIGHT, we can't just flip everything to one side.
+   */
+  DBG(DBG_KT_EVENT2) << "flipping all spokes away from " << v_fast;
+  unsigned nidx = ccw(idx_fast_in_most_cw_triangle);
+  while (1) {
+    assert(most_cw_triangle->vertices[idx_fast_in_most_cw_triangle] == v_fast);
+    if (most_cw_triangle->is_constrained(nidx)) {
+      break;
+    }
+    KineticTriangle *n = most_cw_triangle->neighbor( nidx );
+    DBG(DBG_KT_EVENT2) << "- flipping: " << most_cw_triangle;
+    DBG(DBG_KT_EVENT2) << "  towards:  " << n;
+    do_raw_flip(most_cw_triangle, nidx, time, true);
+    modified(n);
+  }
+  DBG(DBG_KT_EVENT2) << "flipping done; " << most_cw_triangle;
+
+
+  assert(winning_edge == v_fast->wavefronts()[winning_edge_idx_in_v]);
+  const WavefrontEdge * const losing_edge = v_fast->wavefronts()[1-winning_edge_idx_in_v];
+  assert(v_fast == losing_edge->vertex(winning_edge_idx_in_v));
+  WavefrontVertex* o = losing_edge->vertex(1-winning_edge_idx_in_v);
+
+  DBG(DBG_KT_EVENT) << "v_fast " << v_fast;
+  DBG(DBG_KT_EVENT) << "o      " << o;
+
+  o->stop(time);
+  v_fast->stop(time, o->pos_stop());
+
+  // update prev/next for the DCEL that is the wavefront vertices
+  v_fast->set_next_vertex(1-winning_edge_idx_in_v, o, false);
+  LOG(WARNING) << __FILE__ << ":" << __LINE__ << " " << "untested code path: DECL linking.";
+
+  do_constraint_collapse_part2(*most_cw_triangle, most_cw_triangle->index(losing_edge), time);
+
+  DBG_FUNC_END(DBG_KT_EVENT);
+}
 
 void
 KineticTriangulation::
@@ -2335,8 +2425,11 @@ handle_event(const Event& event) {
     case CollapseType::CONSTRAINT_COLLAPSE:
       handle_constraint_event(event);
       break;
-    case CollapseType::FACE_HAS_INFINITELY_FAST_VERTEX:
+    case CollapseType::FACE_HAS_INFINITELY_FAST_VERTEX_OPPOSING:
       handle_face_with_infintely_fast_opposing_vertex(event);
+      break;
+    case CollapseType::FACE_HAS_INFINITELY_FAST_VERTEX_WEIGHTED:
+      handle_face_with_infintely_fast_weighted_vertex(event);
       break;
     case CollapseType::SPOKE_COLLAPSE:
       handle_spoke_collapse_event(event);

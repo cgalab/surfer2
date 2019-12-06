@@ -24,6 +24,11 @@
 #include "CollapseSpec.h"
 #include <stddef.h>
 
+
+/** Set to -1 for slower edge wins.  Changing this during the propagation will
+ * yield undefined behaviour as the event queue is not correct then.  */
+#define FASTER_EDGE_WINS_IN_COLLINEAR_CASES 1.0
+
 /* A triangle, part of our kinetic triangulation.
  *
  * We maintain a kinetic triangulation of the area not yet swept by the

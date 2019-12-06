@@ -25,8 +25,11 @@ operator<<(std::ostream& os, const CollapseType a) {
     case CollapseType::UNDEFINED:
       os << "UNDEFINED";
       break;
-    case CollapseType::FACE_HAS_INFINITELY_FAST_VERTEX:
-      os << "FACE_HAS_INFINITELY_FAST_VERTEX";
+    case CollapseType::FACE_HAS_INFINITELY_FAST_VERTEX_OPPOSING:
+      os << "FACE_HAS_INFINITELY_FAST_VERTEX_OPPOSING";
+      break;
+    case CollapseType::FACE_HAS_INFINITELY_FAST_VERTEX_WEIGHTED:
+      os << "FACE_HAS_INFINITELY_FAST_VERTEX_WEIGHTED";
       break;
     case CollapseType::TRIANGLE_COLLAPSE:
       os << "TRIANGLE_COLLAPSE";
@@ -68,7 +71,10 @@ operator<<(std::ostream& os, const CollapseSpec& s) {
     os << "(" << s.relevant_edge() << ")";
   }
   if (s.type() != CollapseType::NEVER) {
-    os << " at time " << s.get_printable_time();// << " (" << CGAL::to_double(s.longest_spoke()) << ")";
+    os << " at time " << s.get_printable_time();
+    if (s.requires_relevant_edge_plus_secondary_key()) {
+      os << " (" << s.get_printable_secondary_key() << ")";
+    }
   }
   os << " (component " << s.component << ")";
   return os;

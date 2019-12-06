@@ -64,7 +64,13 @@ std::ostream& operator<<(std::ostream& os, const EdgeCollapseSpec& s);
 
 enum class CollapseType : short {
   UNDEFINED = 1,
-  FACE_HAS_INFINITELY_FAST_VERTEX,
+  FACE_HAS_INFINITELY_FAST_VERTEX_OPPOSING, /** This triangle has a vertex
+                       which is between parallel, opposing wavefront elements
+                       that have crashed into each other and their intersection
+                       is now a line segment. */
+  FACE_HAS_INFINITELY_FAST_VERTEX_WEIGHTED, /** This triangle has a vertex which is
+                       between parallel adjacent wavefront elements that have
+                       different weights but move in the same direction. */
   TRIANGLE_COLLAPSE,
   // NEIGHBORING_TRIANGLE_COLLAPSES,  /* do we ever need to handle this */
   CONSTRAINT_COLLAPSE,
@@ -99,10 +105,13 @@ class CollapseSpec {
     // for all collapses listed in requires_relevant_edge(), such as CONSTRAINT_COLLAPSE
     int relevant_edge_ = -1;
     // for VERTEX_MOVES_OVER_SPOKE
-    NT longest_spoke_squared_length_; // for flip events
+    NT secondary_key_; // Higher number is more important
+                       // - for flip events: longest spoke: squared length
+                       // - for weighted infinite one: higher edge speed (if faster edge wins)
 
     static bool requires_relevant_edge(const CollapseType& type) {
       return
+         type == CollapseType::FACE_HAS_INFINITELY_FAST_VERTEX_WEIGHTED ||
          type == CollapseType::CONSTRAINT_COLLAPSE ||
          type == CollapseType::SPOKE_COLLAPSE ||
          type == CollapseType::SPLIT_OR_FLIP_REFINE ||
@@ -110,8 +119,9 @@ class CollapseSpec {
          type == CollapseType::CCW_VERTEX_LEAVES_CH ||
          false;
     }
-    static bool requires_relevant_edge_length(const CollapseType& type) {
+    static bool requires_relevant_edge_plus_secondary_key(const CollapseType& type) {
       return
+         type == CollapseType::FACE_HAS_INFINITELY_FAST_VERTEX_WEIGHTED ||
          type == CollapseType::VERTEX_MOVES_OVER_SPOKE ||
          false;
     }
@@ -120,6 +130,9 @@ class CollapseSpec {
 
     bool requires_relevant_edge() const {
       return requires_relevant_edge(type_);
+    }
+    bool requires_relevant_edge_plus_secondary_key() const {
+      return requires_relevant_edge_plus_secondary_key(type_);
     }
 
 
@@ -132,7 +145,7 @@ class CollapseSpec {
       type_ = o.type_;
       time_ = o.time_;
       relevant_edge_ = o.relevant_edge_;
-      longest_spoke_squared_length_ = o.longest_spoke_squared_length_;
+      secondary_key_ = o.secondary_key_;
       return *this;
     }
 
@@ -168,22 +181,22 @@ class CollapseSpec {
       , component(p_component)
     {
       assert(requires_relevant_edge(type_));
-      assert(!requires_relevant_edge_length(type_));
+      assert(!requires_relevant_edge_plus_secondary_key(type_));
       assert(0 <= relevant_edge_ && relevant_edge_ < 3);
     };
     CollapseSpec(int p_component,
                  const CollapseType& type,
                  const NT& time,
                  int relevant_edge,
-                 const NT& longest_spoke_squared_length)
+                 const NT& secondary_key)
       : type_(type)
       , time_(time)
       , relevant_edge_(relevant_edge)
-      , longest_spoke_squared_length_(longest_spoke_squared_length)
+      , secondary_key_(secondary_key)
       , component(p_component)
     {
       assert(requires_relevant_edge(type_));
-      assert(requires_relevant_edge_length(type_));
+      assert(requires_relevant_edge_plus_secondary_key(type_));
       assert(0 <= relevant_edge_ && relevant_edge_ < 3);
     };
     CollapseSpec(int p_component,
@@ -212,6 +225,7 @@ class CollapseSpec {
     CollapseType type() const { return type_; }
     const NT& time() const { return time_; };
     double get_printable_time() const { return CGAL::to_double(time_); }
+    double get_printable_secondary_key() const { return CGAL::to_double(secondary_key_); }
     int relevant_edge() const {
       assert(requires_relevant_edge());
       assert(0 <= relevant_edge_ && relevant_edge_ < 3);
@@ -268,8 +282,8 @@ class CollapseSpec {
           c = CGAL::SMALLER;
         } else if (type_ > o.type_) {
           c = CGAL::LARGER;
-        } else if (type_ == CollapseType::VERTEX_MOVES_OVER_SPOKE) {
-          c = -compare_NT(longest_spoke_squared_length_, o.longest_spoke_squared_length_);
+        } else if (requires_relevant_edge_plus_secondary_key()) {
+          c = -compare_NT(secondary_key_, o.secondary_key_);
         }
       }
       return c;

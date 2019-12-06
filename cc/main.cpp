@@ -111,14 +111,15 @@ do_surf(std::istream& is, std::ostream& os, int restrict_component, int stats_fd
     }
     stats_os << "[SURF] MAXRSS                 "  << usage.ru_maxrss << std::endl;
 
-    stats_os << "[SURF] NUM_EVENTS                                 "  << s.get_kt().event_type_counter[int(CollapseType::UNDEFINED)] << std::endl;
-    stats_os << "[SURF] NUM_EVENTS_FACE_HAS_INFINITELY_FAST_VERTEX "  << s.get_kt().event_type_counter[int(CollapseType::FACE_HAS_INFINITELY_FAST_VERTEX)] << std::endl;
-    stats_os << "[SURF] NUM_EVENTS_TRIANGLE_COLLAPSE               "  << s.get_kt().event_type_counter[int(CollapseType::TRIANGLE_COLLAPSE)] << std::endl;
-    stats_os << "[SURF] NUM_EVENTS_CONSTRAINT_COLLAPSE             "  << s.get_kt().event_type_counter[int(CollapseType::CONSTRAINT_COLLAPSE)] << std::endl;
-    stats_os << "[SURF] NUM_EVENTS_SPOKE_COLLAPSE                  "  << s.get_kt().event_type_counter[int(CollapseType::SPOKE_COLLAPSE)] << std::endl;
-    stats_os << "[SURF] NUM_EVENTS_SPLIT_OR_FLIP_REFINE            "  << s.get_kt().event_type_counter[int(CollapseType::SPLIT_OR_FLIP_REFINE)] << std::endl;
-    stats_os << "[SURF] NUM_EVENTS_VERTEX_MOVES_OVER_SPOKE         "  << s.get_kt().event_type_counter[int(CollapseType::VERTEX_MOVES_OVER_SPOKE)] << std::endl;
-    stats_os << "[SURF] NUM_EVENTS_CCW_VERTEX_LEAVES_CH            "  << s.get_kt().event_type_counter[int(CollapseType::CCW_VERTEX_LEAVES_CH)] << std::endl;
+    stats_os << "[SURF] NUM_EVENTS                                          "  << s.get_kt().event_type_counter[int(CollapseType::UNDEFINED)] << std::endl;
+    stats_os << "[SURF] NUM_EVENTS_FACE_HAS_INFINITELY_FAST_VERTEX_OPPOSING "  << s.get_kt().event_type_counter[int(CollapseType::FACE_HAS_INFINITELY_FAST_VERTEX_OPPOSING)] << std::endl;
+    stats_os << "[SURF] NUM_EVENTS_FACE_HAS_INFINITELY_FAST_VERTEX_WEIGHTED "  << s.get_kt().event_type_counter[int(CollapseType::FACE_HAS_INFINITELY_FAST_VERTEX_WEIGHTED)] << std::endl;
+    stats_os << "[SURF] NUM_EVENTS_TRIANGLE_COLLAPSE                        "  << s.get_kt().event_type_counter[int(CollapseType::TRIANGLE_COLLAPSE)] << std::endl;
+    stats_os << "[SURF] NUM_EVENTS_CONSTRAINT_COLLAPSE                      "  << s.get_kt().event_type_counter[int(CollapseType::CONSTRAINT_COLLAPSE)] << std::endl;
+    stats_os << "[SURF] NUM_EVENTS_SPOKE_COLLAPSE                           "  << s.get_kt().event_type_counter[int(CollapseType::SPOKE_COLLAPSE)] << std::endl;
+    stats_os << "[SURF] NUM_EVENTS_SPLIT_OR_FLIP_REFINE                     "  << s.get_kt().event_type_counter[int(CollapseType::SPLIT_OR_FLIP_REFINE)] << std::endl;
+    stats_os << "[SURF] NUM_EVENTS_VERTEX_MOVES_OVER_SPOKE                  "  << s.get_kt().event_type_counter[int(CollapseType::VERTEX_MOVES_OVER_SPOKE)] << std::endl;
+    stats_os << "[SURF] NUM_EVENTS_CCW_VERTEX_LEAVES_CH                     "  << s.get_kt().event_type_counter[int(CollapseType::CCW_VERTEX_LEAVES_CH)] << std::endl;
     #ifdef HEAP_STATS
       stats_os << "[SURF] HEAP_EQUALITIES                            "  << heap_eq_ctr << std::endl;
     #endif
