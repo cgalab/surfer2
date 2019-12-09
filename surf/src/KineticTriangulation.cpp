@@ -2039,6 +2039,11 @@ handle_face_with_infintely_fast_weighted_vertex(const Event& event) {
   KineticTriangle *most_cw_triangle;
   int idx_fast_in_most_cw_triangle;
   int winning_edge_idx_in_v;
+  DBG(DBG_KT_EVENT2) << " edge_idx:  " << edge_idx;
+  DBG(DBG_KT_EVENT2) << " t->vertices[    edge_idx ]:  " << t->vertices[    edge_idx ];
+  DBG(DBG_KT_EVENT2) << " t->vertices[ccw(edge_idx)]:  " << t->vertices[ccw(edge_idx)];
+  DBG(DBG_KT_EVENT2) << " t->vertices[cw (edge_idx)]:  " << t->vertices[cw (edge_idx)];
+
   /* If both vertices are of type InfiniteSpeedType::WEIGHTED, pick one. */
   if (t->vertices[ccw(edge_idx)]->infinite_speed == InfiniteSpeedType::WEIGHTED) {
     /* The left vertex of the edge is the one in question. */
@@ -2072,13 +2077,18 @@ handle_face_with_infintely_fast_weighted_vertex(const Event& event) {
     modified(n);
   } else {
     DBG(DBG_KT_EVENT2) << "Bounded triangle";
+
     /* The triangle should not have collapsed yet. */
+    /*
+     * Actually it may have
     {
+      DBG(DBG_KT_EVENT2) << "most_cw_triangle is " << most_cw_triangle;
       const Point_2 pos_v0 = most_cw_triangle->vertex(0)->p_at(time);
       const Point_2 pos_v1 = most_cw_triangle->vertex(1)->p_at(time);
       const Point_2 pos_v2 = most_cw_triangle->vertex(2)->p_at(time);
       assert(CGAL::orientation(pos_v0, pos_v1, pos_v2) == CGAL::LEFT_TURN);
     }
+    */
 
     /* Flip away any spoke at the infinitely fast vertex. */
     DBG(DBG_KT_EVENT2) << "flipping all spokes away from " << v_fast;
@@ -2100,7 +2110,7 @@ handle_face_with_infintely_fast_weighted_vertex(const Event& event) {
         assert(n->vertex( ccw (idx_in_n) ) == flipping_triangle.t()->vertex( ccw (flipping_triangle.v_in_t_idx()) ) );
         const Point_2 pos_v2 = n->vertex(idx_in_n)->p_at(time);
 
-        if (CGAL::orientation(pos_v2, pos_v0, pos_v1) == CGAL::LEFT_TURN) {
+        if (CGAL::orientation(pos_v2, pos_v0, pos_v1) != CGAL::RIGHT_TURN) {
           DBG(DBG_KT_EVENT2) << "- We can go back, and do a flip: " << flipping_triangle.t();
           ++flipping_triangle;
           continue; /* We will flip in the next iteration. */
@@ -2116,7 +2126,7 @@ handle_face_with_infintely_fast_weighted_vertex(const Event& event) {
 
       assert(n->vertex( cw (idx_in_n) ) == flipping_triangle.t()->vertex( cw (flipping_triangle.v_in_t_idx()) ) );
       const Point_2 pos_v2 = n->vertex(idx_in_n)->p_at(time);
-      if (CGAL::orientation(pos_v0, pos_v1, pos_v2) != CGAL::LEFT_TURN) {
+      if (CGAL::orientation(pos_v0, pos_v1, pos_v2) == CGAL::RIGHT_TURN) {
         /* No, not right now.  Try in the next ccw triangle. */
         DBG(DBG_KT_EVENT2) << "- not flipping right now: " << flipping_triangle.t();
         --flipping_triangle;
@@ -2140,7 +2150,12 @@ handle_face_with_infintely_fast_weighted_vertex(const Event& event) {
   DBG(DBG_KT_EVENT) << "most_cw_triangle:  " << most_cw_triangle;
   DBG(DBG_KT_EVENT) << "winning edge at v: " << winning_edge_idx_in_v;
 
-  o->stop(time);
+  if (o->infinite_speed != InfiniteSpeedType::NONE) {
+    assert(o->infinite_speed == InfiniteSpeedType::WEIGHTED);
+    o->stop(time, o->pos_start);
+  } else {
+    o->stop(time);
+  }
   v_fast->stop(time, o->pos_stop());
 
   // update prev/next for the DCEL that is the wavefront vertices
