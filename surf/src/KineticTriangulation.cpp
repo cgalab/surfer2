@@ -784,6 +784,9 @@ link_dcel_halfedges_on_ignored_side() {
 }
 
 /** Set up DCEL half-edges around one straight skeleton face
+ *
+ * The kinetic vertex start is the "right" vertex of base, which traces out f.  We are walking
+ * along the boundary of f counter-clockwise.
  */
 SkeletonDCELHalfedge *
 KineticTriangulation::
@@ -793,13 +796,13 @@ create_remaining_skeleton_dcel_one_face(WavefrontVertex* start, SkeletonDCELHalf
   assert(c);
   assert(f);
 
-  DBG(DBG_SKEL) << "starting at : " << start;
+  DBG(DBG_SKEL) << "starting at : " << start << "; base " << *base;
   SkeletonDCELHalfedge* prev_he = base;
   WavefrontVertex* cur_v = start;
   WavefrontVertex* prev_v;
-  int side_of_f = 1;
+  int side_of_f = 0;
   while (1) {
-    DBG(DBG_SKEL) << " doing " << cur_v;
+    DBG(DBG_SKEL) << " doing " << cur_v << "; " << cur_v->details();
     assert(!cur_v->is_degenerate());
 
     SkeletonDCELHalfedge* new_he;
@@ -813,8 +816,10 @@ create_remaining_skeleton_dcel_one_face(WavefrontVertex* start, SkeletonDCELHalf
       new_he = skeleton.new_edge();
     }
     new_he->set_outer_ccb(c);
+    DBG(DBG_SKEL) << "  he for " << cur_v << ": " << *new_he;
 
     if (prev_he) {
+      assert(prev_he->next() == NULL);
       new_he->set_prev(prev_he);
     }
     prev_he = new_he;
@@ -827,29 +832,29 @@ create_remaining_skeleton_dcel_one_face(WavefrontVertex* start, SkeletonDCELHalf
       /* if side_of_f is 1 (i.e. if the face is to the right of us, we are
        * going forward on this vertex, else we are going backwards. */
       if (side_of_f) {
-        cur_v = cur_v->next_vertex(side_of_f);
-      } else {
         cur_v = cur_v->prev_vertex(side_of_f);
+      } else {
+        cur_v = cur_v->next_vertex(side_of_f);
       }
       DBG(DBG_SKEL) << "  considering " << cur_v;
 
-      if (cur_v == NULL && side_of_f == 1) { /* prev wavefront vertex escapes to infinity */
+      if (cur_v == NULL && side_of_f == 0) { /* prev wavefront vertex escapes to infinity */
         DBG(DBG_SKEL) << "  went to infinity (and beyond?).  jumping over using wavefront edge";
         assert(!prev_v->has_stopped());
-        const WavefrontEdge * const e = prev_v->incident_wavefront_edge(1);
+        const WavefrontEdge * const e = prev_v->incident_wavefront_edge(0);
         assert(!e->is_dead());
-        assert(e->vertex(0) == prev_v);
-        cur_v = e->vertex(1);
-        side_of_f = 0;
+        assert(e->vertex(1) == prev_v);
+        cur_v = e->vertex(0);
+        side_of_f = 1;
         goto foundvertex;
-      } else if (cur_v == NULL && side_of_f == 0) {
+      } else if (cur_v == NULL && side_of_f == 1) {
         DBG(DBG_SKEL) << "  done now, arrived at base.";
         assert(prev_v->is_initial);
         goto looped_around;
       } else if (cur_v == start) {
         DBG(DBG_SKEL) << "  done now, looped around";
-        assert(cur_v->prev_vertex(1) == prev_v);
-        side_of_f = 1;
+        assert(cur_v->prev_vertex(0) == prev_v);
+        side_of_f = 0;
         assert(prev_v->is_initial);
         assert(cur_v->is_beveling || prev_v->is_beveling);
         goto looped_around;
@@ -857,10 +862,10 @@ create_remaining_skeleton_dcel_one_face(WavefrontVertex* start, SkeletonDCELHalf
         assert(cur_v);
 
         /* Figure out which side f is one */
-        if (cur_v->next_vertex(0) == prev_v) {
+        if (cur_v->prev_vertex(0) == prev_v) {
           side_of_f = 0;
         } else {
-          assert(cur_v->prev_vertex(1) == prev_v);
+          assert(cur_v->next_vertex(1) == prev_v);
           side_of_f = 1;
         }
       }
@@ -877,7 +882,9 @@ looped_around:
     assert(side_of_f == 1);
     assert(cur_v->skeleton_dcel_halfedge(side_of_f));
     cur_v->skeleton_dcel_halfedge(side_of_f)->set_prev(prev_he);
+    LOG(WARNING) << __FILE__ << ":" << __LINE__ << " " << "untested code path: DECL setup in beveling.";
   } else {
+    assert(base->prev() == NULL);
     base->set_prev(prev_he);
   }
   DBG_FUNC_END(DBG_SKEL);
@@ -900,6 +907,7 @@ set_dcel_vertex(SkeletonDCELHalfedge* start, const Point_2* p, const NT& time) {
   SkeletonDCELHalfedge* he = start;
   do {
     he->set_vertex(new_v);
+    DBG(DBG_SKEL) << "  Setting vertex for " << *he;
     assert(he->next());
     he = he->next()->opposite();
     degree++;
@@ -941,8 +949,8 @@ create_remaining_skeleton_dcel() {
     if (v->is_degenerate()) continue;
 
     assert(!v->is_degenerate());
-    assert(v->incident_wavefront_edge(1));
-    if (NULL != (f = v->incident_wavefront_edge(1)->skeleton_face)) {
+    assert(v->incident_wavefront_edge(0));
+    if (NULL != (f = v->incident_wavefront_edge(0)->skeleton_face)) {
       new_face = false;
 
       assert(f->outer_ccbs_begin() != f->outer_ccbs_end());
@@ -961,6 +969,11 @@ create_remaining_skeleton_dcel() {
     if (new_face) {
       assert(!base);
       f->add_outer_ccb(c, last_he);
+    }
+    DBG(DBG_SKEL) << "skeleton_face: " << *f;
+    DBG(DBG_SKEL) << "base         : " << *base;
+    for (SkeletonDCELHalfedge *he = base->next(); he != base; he = he->next()) {
+      DBG(DBG_SKEL) << " he        : " << *he;
     }
   }
   for (; v_it != vertices.end(); ++v_it) {
@@ -1003,15 +1016,18 @@ create_remaining_skeleton_dcel() {
     if (v.is_infinite || v.is_degenerate()) {
       continue;
     };
+    DBG(DBG_SKEL) << "  Setting dcel vertex for " << v.details();
     if (v.is_initial) {
-      SkeletonDCELHalfedge* he = v.skeleton_dcel_halfedge(0);
+      SkeletonDCELHalfedge* he = v.skeleton_dcel_halfedge(1);
+      DBG(DBG_SKEL) << "  he (initial): " << *he;
       if (!he->vertex()) {
         assert(v.time_start == CORE_ZERO);
         set_dcel_vertex(he, &v.pos_start, CORE_ZERO);
       }
     }
 
-    SkeletonDCELHalfedge* he = v.skeleton_dcel_halfedge(1);
+    SkeletonDCELHalfedge* he = v.skeleton_dcel_halfedge(0);
+    DBG(DBG_SKEL) << "  he: " << *he;
     if (!he->vertex()) {
       if (v.has_stopped()) {
         set_dcel_vertex(he, &v.pos_stop(), v.time_stop());
@@ -1029,9 +1045,13 @@ create_remaining_skeleton_dcel() {
     if (v.is_infinite || v.is_degenerate()) {
       continue;
     };
+    DBG(DBG_SKEL) << "  at v: " << &v;
 
     SkeletonDCELHalfedge* he0 = v.skeleton_dcel_halfedge(0);
     SkeletonDCELHalfedge* he1 = v.skeleton_dcel_halfedge(1);
+
+    DBG(DBG_SKEL) << "   he0: " << *he0;
+    DBG(DBG_SKEL) << "   he1: " << *he1;
 
     SkeletonDCELHalfedge::X_monotone_curve * p;
     if (v.has_stopped()) {
@@ -1039,10 +1059,10 @@ create_remaining_skeleton_dcel() {
       assert( ! he1->vertex()->has_null_point() );
       p = skeleton.new_segment( Segment_3(he0->vertex()->point(), he1->vertex()->point()) );
     } else {
-      assert( ! he0->vertex()->has_null_point() );
-      assert(   he1->vertex()->has_null_point() );
+      assert(   he0->vertex()->has_null_point() );
+      assert( ! he1->vertex()->has_null_point() );
       Vector_3 vec(v.velocity.x(), v.velocity.y(), CORE_ONE);
-      p = skeleton.new_ray( Ray_3(he0->vertex()->point(), vec) );
+      p = skeleton.new_ray( Ray_3(he1->vertex()->point(), vec) );
     }
     he0->set_curve(p);
     he1->set_curve(p);

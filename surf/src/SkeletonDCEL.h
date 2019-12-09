@@ -31,6 +31,15 @@ class SkeletonDCELVertexBase : public CGAL::Arr_vertex_base<const Point_3> {
   public:
     void set_is_input(bool is_input) { is_input_ = is_input; };
     bool is_input() const { return is_input_; };
+
+  #ifndef NDEBUG
+    public:
+      SkeletonDCELVertexBase() : id(ctr++) {};
+    private:
+      static unsigned ctr;
+    public:
+      const unsigned id;
+  #endif
 };
 /** A halfedge.  The Segment_3/Ray_3 is undirected. */
 class SkeletonDCELHalfedgeBase : public CGAL::Arr_halfedge_base<boost::variant<Segment_3,Ray_3>> {
@@ -40,6 +49,15 @@ class SkeletonDCELHalfedgeBase : public CGAL::Arr_halfedge_base<boost::variant<S
     // std::shared_ptr<const WavefrontSupportingLine> supporting_line; /* for input edges only. */
   public:
     bool is_input() const { return is_input_; };
+
+  #ifndef NDEBUG
+    public:
+      SkeletonDCELHalfedgeBase() : id(ctr++) {};
+    private:
+      static unsigned ctr;
+    public:
+      const unsigned id;
+  #endif
 };
 class SkeletonDCELFaceBase : public CGAL::Arr_face_base {
   private:
@@ -47,6 +65,15 @@ class SkeletonDCELFaceBase : public CGAL::Arr_face_base {
   public:
     void set_is_beveling_face(bool is_beveling_face) { is_beveling_face_ = is_beveling_face; };
     bool is_beveling_face() const { return is_beveling_face_; };
+
+  #ifndef NDEBUG
+    public:
+      SkeletonDCELFaceBase() : id(ctr++) {};
+    private:
+      static unsigned ctr;
+    public:
+      const unsigned id;
+  #endif
 };
 
 class SkeletonDCEL : public CGAL::Arr_dcel_base<SkeletonDCELVertexBase, SkeletonDCELHalfedgeBase, SkeletonDCELFaceBase> {
@@ -140,3 +167,32 @@ using SkeletonDCELVertex = SkeletonDCEL::Vertex;
 using SkeletonDCELHalfedge = SkeletonDCEL::Halfedge;
 using SkeletonDCELCbb = SkeletonDCEL::Outer_ccb;
 using SkeletonDCELFace = SkeletonDCEL::Face;
+
+#ifndef NDEBUG
+inline std::ostream& operator<<(std::ostream& os, const SkeletonDCELVertex& i) {
+  os << "dV" << i.id;
+  if (i.has_null_point()) {
+    os << "(-)";
+  } else {
+    os << CGAL_point(i.point());
+  }
+  return os;
+}
+inline std::ostream& operator<<(std::ostream& os, const SkeletonDCELHalfedge& i) {
+  os << "dH" << i.id;
+  if (i.vertex()) {
+    os << "[" << *i.vertex() << "]";
+  } else {
+    os << "(-)";
+  }
+  return os;
+}
+inline std::ostream& operator<<(std::ostream& os, const SkeletonDCELFace& i) {
+  os << "dF" << i.id;
+  return os;
+}
+#else
+inline std::ostream& operator<<(std::ostream& os, const SkeletonDCELVertex& i) { return os << "dV"; }
+inline std::ostream& operator<<(std::ostream& os, const SkeletonDCELHalfedge& i) { return os << "dH"; }
+inline std::ostream& operator<<(std::ostream& os, const SkeletonDCELFace& i) { return os << "dF"; }
+#endif

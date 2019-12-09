@@ -101,6 +101,17 @@ CGAL_point(const Point_2& p) {
 
 inline
 std::string
+CGAL_point(const Point_3& p) {
+  std::ostringstream oss;
+  oss << "(" << CGAL::to_double(p.x()) <<
+         " " << CGAL::to_double(p.y()) <<
+         " " << CGAL::to_double(p.z()) <<
+         ")";
+  return oss.str();
+}
+
+inline
+std::string
 CGAL_vector(const Vector_2& p) {
   std::ostringstream oss;
   oss << "(" << CGAL::to_double(p.x()) <<

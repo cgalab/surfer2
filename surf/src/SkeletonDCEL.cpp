@@ -18,6 +18,13 @@
 #include "SkeletonDCEL.h"
 #include "WavefrontEdge.h"
 
+
+#ifndef NDEBUG
+unsigned SkeletonDCELVertexBase::ctr = 0;
+unsigned SkeletonDCELHalfedgeBase::ctr = 0;
+unsigned SkeletonDCELFaceBase::ctr = 0;
+#endif
+
 SkeletonDCELFace*
 SkeletonDCEL::
 setup_new_input_edge(const WavefrontEdge * const buddy_wavefront) {
