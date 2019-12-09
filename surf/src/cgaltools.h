@@ -76,6 +76,7 @@
 }
 
 #include <CGAL/Algebraic_kernel_d_1.h>
+#include <CGAL/Plane_3.h>
 #include <utility>
 
 using Point_2 = typename Kernel::Point_2;
@@ -87,6 +88,7 @@ using Point_3 = typename Kernel::Point_3;
 using Segment_3 = typename Kernel::Segment_3;
 using Ray_3 = typename Kernel::Ray_3;
 using Vector_3 = typename Kernel::Vector_3;
+using Plane_3 = typename Kernel::Plane_3;
 
 
 inline

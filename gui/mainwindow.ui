@@ -72,6 +72,8 @@
    <addaction name="actionVisToggleArcs"/>
    <addaction name="actionVisToggleKineticTriangulation"/>
    <addaction name="actionVisToggleKineticTriangulationLabels"/>
+   <addaction name="actionVisToggleOffsets"/>
+   <addaction name="actionUpdateOffsets"/>
    <addaction name="actionVisToggleHighlightCircle"/>
    <addaction name="separator"/>
    <addaction name="actionTimeForwardNext"/>
@@ -210,6 +212,34 @@
    </property>
    <property name="shortcut">
     <string>Alt+Shift+T</string>
+   </property>
+  </action>
+  <action name="actionVisToggleOffsets">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>o</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle Offset Visibility (Alt+o)</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+o</string>
+   </property>
+  </action>
+  <action name="actionUpdateOffsets">
+   <property name="text">
+    <string>O</string>
+   </property>
+   <property name="toolTip">
+    <string>Update offset Spec (Alt+Shift+O)</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+Shift+O</string>
    </property>
   </action>
   <action name="actionVisToggleHighlightCircle">

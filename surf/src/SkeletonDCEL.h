@@ -22,6 +22,7 @@
 #include "tools.h"
 
 #include "CGAL/Arr_dcel_base.h"
+#include <CGAL/Polygon_2.h>
 
 #include <boost/variant.hpp>
 
@@ -129,6 +130,18 @@ class SkeletonDCEL : public CGAL::Arr_dcel_base<SkeletonDCELVertexBase, Skeleton
     }
 
   public:
+    void write_obj(std::ostream& os) const;
+
+  public:
+    using OffsetCurve = CGAL::Polygon_2<Kernel>;
+    using OffsetFamily = std::vector<OffsetCurve>;
+  protected:
+    OffsetCurve make_one_offset_curve(const Plane_3& offset_plane, const Halfedge* const start, std::unordered_set<const Halfedge*>& visited) const;
+  public:
+    OffsetFamily make_offset(const NT& offsetting_distance) const;
+    static std::vector<NT> parse_offset_spec(const std::string& offset_spec);
+
+  public:
     #ifndef NDEBUG
     void assert_sane() const {
       DBG_FUNC_BEGIN(DBG_SKEL);
@@ -161,7 +174,6 @@ class SkeletonDCEL : public CGAL::Arr_dcel_base<SkeletonDCELVertexBase, Skeleton
     #else
     void assert_sane() const {};
     #endif
-    void write_obj(std::ostream& os) const;
 };
 using SkeletonDCELVertex = SkeletonDCEL::Vertex;
 using SkeletonDCELHalfedge = SkeletonDCEL::Halfedge;

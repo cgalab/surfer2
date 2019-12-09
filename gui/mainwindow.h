@@ -21,6 +21,7 @@
 #include "SkeletonStructure.h"
 #include "InputGraphicsItem.h"
 #include "KineticTriangulationGraphicsItem.h"
+#include "OffsetsGraphicsItem.h"
 
 #include <QMainWindow>
 #include <CGAL/Qt/DemosMainWindow.h>
@@ -59,9 +60,11 @@ class MainWindow : public CGAL::Qt::DemosMainWindow
     void on_actionVisToggleWavefront_triggered() { updateVisibilities(); };
     void on_actionVisToggleKineticTriangulation_triggered() { updateVisibilities(); };
     void on_actionVisToggleKineticTriangulationLabels_triggered() { updateVisibilities(); };
+    void on_actionVisToggleOffsets_triggered() { updateVisibilities(); };
     void on_actionVisToggleArcs_triggered() { updateVisibilities(); };
     void on_actionVisToggleHighlightCircle_triggered() { updateVisibilities(); };
     void on_actionResize_triggered();
+    void on_actionUpdateOffsets_triggered();
 
     void on_actionTimeBackward_triggered();
     void on_actionTimeForward_triggered();
@@ -77,6 +80,7 @@ class MainWindow : public CGAL::Qt::DemosMainWindow
 
   private:
     std::string title;
+    std::string skoffset;
     std::unique_ptr<Ui::MainWindow> ui;
     QGraphicsScene scene;
     QLabel* time_label;
@@ -86,7 +90,9 @@ class MainWindow : public CGAL::Qt::DemosMainWindow
 
     std::shared_ptr<InputGraphicsItem> input_gi;
     std::shared_ptr<KineticTriangulationGraphicsItem> kinetic_triangulation_gi;
+    std::shared_ptr<OffsetsGraphicsItem> offsets_gi;
 
+    void update_offsets();
     void updateVisibilities();
     void update_time_label();
     void time_changed();

@@ -31,7 +31,7 @@ static struct option long_options[] = {
   { "skip-all"    , no_argument      , 0, 'S'},
   { "skip-until",   required_argument, 0, 'T'},
   { "component",    required_argument, 0, 'c'},
-  //{ "sk-offset"   , required_argument, 0, 'O'},
+  { "sk-offset"   , required_argument, 0, 'O'},
   //{ "random-seeed", required_argument, 0, 'R'},
   { 0, 0, 0, 0}
 };
@@ -47,13 +47,13 @@ usage(const char *progname, int err) {
   fprintf(f,"           --skip-until=<time>        Skip until <time>.\n");
   fprintf(f,"           --title=<title>            Set window title.\n"); // by QApplication
   fprintf(f,"           --component=0|l|1|r|<n>    Only left (0) or right (1) sided SK (if well defined for input), or component #n in general.\n");
-  ////fprintf(f,"           --sk-offset=<offset-spec>  Draw offsets.\n");
+  fprintf(f,"           --sk-offset=<offset-spec>  Draw offsets.\n");
   //fprintf(f,"           --random-seed=<seed>       Seed for RNG (for debugging).\n");
-  //fprintf(f,"\n");
-  //fprintf(f,"  offset-spec = <one-block> [ ',' <one-block> ]\n");
-  //fprintf(f,"  one-block   = <one-offset> [ '+' one-block ]\n");
-  //fprintf(f,"  one-offset  = [<cnt> '*' ] <time>\n");
-  //fprintf(f,"  example: '0.01 + 3*0.025, 0.15' or '10 * 0.025'\n");
+  fprintf(f,"\n");
+  fprintf(f,"  offset-spec = <one-block> [ ',' <one-block> ]\n");
+  fprintf(f,"  one-block   = <one-offset> [ '+' one-block ]\n");
+  fprintf(f,"  one-offset  = [<cnt> '*' ] <time>\n");
+  fprintf(f,"  example: '0.01 + 3*0.025, 0.15' or '10 * 0.025'\n");
   exit(err);
 }
 
@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
 
   int skip_to = 0;
   bool skip_all = 0;
-  //std::string skoffset;
+  std::string skoffset;
   std::string skip_until_time;
   int restrict_component = -1;
 
@@ -78,11 +78,9 @@ int main(int argc, char *argv[]) {
         usage(argv[0], 0);
         break;
 
-      /*
       case 'O':
         skoffset = std::string(optarg);
         break;
-        */
 
       case 's':
         skip_to = atoi(optarg);
@@ -148,7 +146,7 @@ int main(int argc, char *argv[]) {
   }
   std::istream &in = use_stdin ? std::cin : filestream;
 
-  MainWindow w(title, in, skip_to, skip_all, skip_until_time, "", restrict_component);
+  MainWindow w(title, in, skip_to, skip_all, skip_until_time, skoffset, restrict_component);
   w.show();
 
   return a.exec();

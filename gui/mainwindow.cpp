@@ -22,13 +22,13 @@
 
 #include <QInputDialog>
 
-MainWindow::MainWindow(std::string p_title, std::istream& is, unsigned skip_to, bool skip_all, std::string skip_until_time, std::string skoffset, int restrict_component) :
+MainWindow::MainWindow(std::string p_title, std::istream& is, unsigned skip_to, bool skip_all, std::string skip_until_time, std::string skoffset_, int restrict_component) :
   CGAL::Qt::DemosMainWindow(),
   title(p_title),
+  skoffset(skoffset_),
   ui(new Ui::MainWindow)
 {
   const NT skip_until_t(skip_until_time == "" ? CORE_ZERO : string_to_maybe_NT(skip_until_time));
-  (void) skoffset; // XXX unused;
 
   ui->setupUi(this);
   setWindowTitle(QString::fromStdString(title));
@@ -66,6 +66,9 @@ MainWindow::MainWindow(std::string p_title, std::istream& is, unsigned skip_to, 
   kinetic_triangulation_gi = std::make_shared<KineticTriangulationGraphicsItem>(&s.get_kt(), size_avg/200.);
   scene.addItem(kinetic_triangulation_gi.get());
 
+  offsets_gi = std::make_shared<OffsetsGraphicsItem>();
+  scene.addItem(offsets_gi.get());
+
   time_label = new QLabel("", this);
   update_time_label();
   time_label->setAlignment(::Qt::AlignHCenter);
@@ -98,9 +101,9 @@ MainWindow::updateVisibilities() {
   kinetic_triangulation_gi->setVisibleLabels(ui->actionVisToggleKineticTriangulationLabels->isChecked());
   kinetic_triangulation_gi->setVisibleArcs(ui->actionVisToggleArcs->isChecked());
   kinetic_triangulation_gi->setVisibleHighlightCircle(ui->actionVisToggleHighlightCircle->isChecked());
+  offsets_gi->setVisible(ui->actionVisToggleOffsets->isChecked());
 /*
   skeleton_gi->setVisible(ui->actionVisToggleSkeleton->isChecked());
-  offset_gi->setVisible(ui->actionVisToggleOffset->isChecked());
 */
 }
 
@@ -108,17 +111,36 @@ void
 MainWindow::on_actionResize_triggered() {
   auto br = input_gi->boundingRect();
   br |= kinetic_triangulation_gi->boundingRect();
+  br |= offsets_gi->boundingRect();
 /*
   if (instance_triangulation_gi) {
     br |= instance_triangulation_gi->boundingRect();
   };
   br |= skeleton_gi->boundingRect();
-  br |= offset_gi->boundingRect();
 */
 
   ui->gV->setSceneRect(br);
   ui->gV->fitInView(br, Qt::KeepAspectRatio);
 }
+
+void
+MainWindow::
+on_actionUpdateOffsets_triggered() {
+  QInputDialog inputDialog;
+  bool ok;
+  inputDialog.setOptions(QInputDialog::NoButtons);
+
+  QString qtskoffset = QString::fromStdString(skoffset);
+  QString text = inputDialog.getText(NULL, "Change offsets",
+                                         "OffsetSpec:", QLineEdit::Normal,
+                                         qtskoffset, &ok);
+
+  if (ok) {
+    skoffset = text.toUtf8().constData();
+    update_offsets();
+  }
+}
+
 
 void
 MainWindow::
@@ -228,11 +250,26 @@ MainWindow::on_actionTimeOffsetReset_triggered() {
 }
 
 void
+MainWindow::
+update_offsets() {
+  if (!did_finish) return;
+  const SkeletonDCEL& skeleton = s.get_skeleton();
+  std::vector<SkeletonDCEL::OffsetFamily> offsets;
+
+  for (const NT& offset_distance : skeleton.parse_offset_spec( skoffset )) {
+    offsets.emplace_back(skeleton.make_offset(offset_distance));
+  }
+
+  offsets_gi->set_offsets(std::move(offsets));
+}
+
+void
 MainWindow::simulation_has_finished() {
   if (did_finish) return;
   did_finish = true;
   ui->actionVisToggleWavefront->setChecked(false);
   ui->actionVisToggleKineticTriangulation->setChecked(false);
+  update_offsets();
   updateVisibilities();
 }
 
