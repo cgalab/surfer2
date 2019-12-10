@@ -112,7 +112,7 @@ SkeletonDCEL::make_one_offset_curve(const Plane_3& offset_plane, const SkeletonD
         /* XXX Check if p is a vertex of he. */
 
         offset.push_back( Point_2(p->x(), p->y()) );
-        DBG(DBG_SKEL) << "Adding vertex to offset curve: " << *p;
+        DBG(DBG_SKEL) << "Adding vertex to offset curve: " << CGAL_point(*p);
 
         auto [ _, inserted2 ] = visited.insert(he->opposite());
         assert(inserted2);
