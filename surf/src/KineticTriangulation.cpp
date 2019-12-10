@@ -456,7 +456,6 @@ get_vertex_pos(const BasicInput& input,
      * get its position from the underlying original triangulation and input.
      */
     assert(t->id < triangle_original_vertex_indices.size()/3); // XXX -- check if this holds
-    LOG(WARNING) << __FILE__ << ":" << __LINE__ << " " << "untested code path.";
     const BasicVertex& bv = get_basic_vertex_from_triangle_vertex_indices(input, triangle_original_vertex_indices, t->id, i);
     pos = bv.p;
   }
@@ -796,7 +795,11 @@ create_remaining_skeleton_dcel_one_face(WavefrontVertex* start, SkeletonDCELHalf
   assert(c);
   assert(f);
 
-  DBG(DBG_SKEL) << "starting at : " << start << "; base " << *base;
+  if (base) {
+    DBG(DBG_SKEL) << "starting at : " << start << "; base: " << *base;
+  } else {
+    DBG(DBG_SKEL) << "starting at : " << start << "; base: -";
+  }
   SkeletonDCELHalfedge* prev_he = base;
   WavefrontVertex* cur_v = start;
   WavefrontVertex* prev_v;
@@ -879,7 +882,7 @@ looped_around:
     DBG(DBG_SKEL) << "back at start, so this is the result of beveling";
     /* beveling vertex, this is the start vertex, again, hopefully. */
     assert(cur_v == start);
-    assert(side_of_f == 1);
+    assert(side_of_f == 0);
     assert(cur_v->skeleton_dcel_halfedge(side_of_f));
     cur_v->skeleton_dcel_halfedge(side_of_f)->set_prev(prev_he);
     LOG(WARNING) << __FILE__ << ":" << __LINE__ << " " << "untested code path: DECL setup in beveling.";
@@ -965,12 +968,16 @@ create_remaining_skeleton_dcel() {
       c->set_face(f);
       base = NULL;
     };
+    DBG(DBG_SKEL) << "new_face: " << new_face;
     SkeletonDCELHalfedge* last_he = create_remaining_skeleton_dcel_one_face(v, base, c, f);
     if (new_face) {
       assert(!base);
       f->add_outer_ccb(c, last_he);
     }
     DBG(DBG_SKEL) << "skeleton_face: " << *f;
+    if (!base) {
+      base = *f->outer_ccbs_begin();
+    }
     DBG(DBG_SKEL) << "base         : " << *base;
     for (SkeletonDCELHalfedge *he = base->next(); he != base; he = he->next()) {
       DBG(DBG_SKEL) << " he        : " << *he;
