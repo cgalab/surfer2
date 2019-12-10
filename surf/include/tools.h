@@ -54,6 +54,12 @@ void sort_tuple(T& a, T& b) {
   if (a>b) std::swap(a,b);
 }
 
+template <class T>
+std::pair<T, T> sorted_tuple(T a, T b) {
+  if (a>b) std::swap(a,b);
+  return std::make_pair(a, b);
+}
+
 /** returns a triple of indices i0,i1,i2 such that t[i0] <= t[i1] <= t[i2].
  */
 template <class T>
