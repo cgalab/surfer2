@@ -136,7 +136,9 @@ class SkeletonDCEL : public CGAL::Arr_dcel_base<SkeletonDCELVertexBase, Skeleton
     using OffsetCurve = CGAL::Polygon_2<Kernel>;
     using OffsetFamily = std::vector<OffsetCurve>;
   protected:
-    OffsetCurve make_one_offset_curve(const Plane_3& offset_plane, const Halfedge* const start, std::unordered_set<const Halfedge*>& visited) const;
+    CGAL::Sign arc_intersects_offset(const Vertex* tail, const Vertex* head, const NT& offsetting_distance) const;
+    const Halfedge* acceptable_exit_arc(const Halfedge* he, const NT& offsetting_distance) const;
+    OffsetCurve make_one_offset_curve(const NT& offsetting_distance, const Halfedge* const start, std::unordered_set<const Halfedge*>& visited) const;
   public:
     OffsetFamily make_offset(const NT& offsetting_distance) const;
     static std::vector<NT> parse_offset_spec(const std::string& offset_spec);

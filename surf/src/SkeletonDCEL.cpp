@@ -83,40 +83,152 @@ write_obj(std::ostream& os) const {
   };
 }
 
-SkeletonDCEL::OffsetCurve
-SkeletonDCEL::make_one_offset_curve(const Plane_3& offset_plane, const SkeletonDCELHalfedge* const start, std::unordered_set<const SkeletonDCELHalfedge*>& visited) const {
+/** Check if a halfedge intersects an offset distance.
+ *
+ * returns CGAL::ZERO if no intersection occurs.
+ *
+ * Otherwise, if the halfedge intersects,
+ *   return CGAL::POSITIVE if the halfedge is oriented in the propagation direction,
+ *   return CGAL::NEGATIVE if the halfedge is oriented against the propagation direction,
+ *   return CGAL::POSITIVE also if the halfedge is horizontal in time.
+ * */
+CGAL::Sign
+SkeletonDCEL::
+arc_intersects_offset(const Vertex* tail, const Vertex* head, const NT& offsetting_distance) const {
+  if (tail->has_null_point() || head->has_null_point()) { // ray
+    assert(!tail->has_null_point() || !head->has_null_point());
+
+    bool he_is_outgoing = head->has_null_point();
+    const NT z = he_is_outgoing ? tail->point().z() : head->point().z();
+    if (z <= offsetting_distance) {
+      return he_is_outgoing ? CGAL::POSITIVE : CGAL::NEGATIVE;
+    }
+  } else {
+    const NT zt = tail->point().z();
+    const NT zh = head->point().z();
+
+    auto [z0, z1] = sorted_tuple(zt, zh);
+    if (z0 <= offsetting_distance && offsetting_distance <= z1) {
+      if (z0 == z1) return CGAL::POSITIVE;
+      return CGAL::sign(zh-zt);
+    }
+  }
+  return CGAL::ZERO;
+}
+
+/** The offset intersects he at its head.  Find the face along which the offset
+ * should continue;
+ *
+ * he must not be horizontal in time.
+ */
+const SkeletonDCEL::Halfedge*
+SkeletonDCEL::
+acceptable_exit_arc(const Halfedge* he, const NT& offsetting_distance) const {
   DBG_FUNC_BEGIN(DBG_SKEL);
-  DBG(DBG_SKEL) << "Making offset curve.";
+  DBG(DBG_SKEL) << "  Looking for face to leave vertex.";
+
+  const SkeletonDCELVertex* const v_start = he->vertex();
+  assert(!v_start->has_null_point());
+  assert(he->opposite()->vertex()->has_null_point() || he->opposite()->vertex()->point().z() != v_start->point().z());
+
+  while (1) {
+    /* find face where the offset curve leaves. */
+    const SkeletonDCELVertex* const v = he->vertex();
+    assert(v == v_start);
+
+    const SkeletonDCELVertex* const cw_v = he->next()->vertex();
+    const SkeletonDCELVertex* const ccw_v = he->opposite()->vertex();
+
+    CGAL::Sign sign = arc_intersects_offset(cw_v, ccw_v, offsetting_distance);
+    if (sign != CGAL::POSITIVE) {
+      DBG(DBG_SKEL) << "   not the one between " << *cw_v << " and " << *ccw_v;
+      he = he->next();
+      he = he->opposite();
+      continue;
+    } else {
+      DBG(DBG_SKEL) << "   we like the one between " << *cw_v << " and " << *ccw_v;
+      //he = he->prev();
+      break;
+    }
+  }
+  DBG_FUNC_END(DBG_SKEL);
+  return he;
+}
+
+SkeletonDCEL::OffsetCurve
+SkeletonDCEL::
+make_one_offset_curve(const NT& offsetting_distance, const SkeletonDCELHalfedge* start, std::unordered_set<const SkeletonDCELHalfedge*>& visited) const {
+  DBG_FUNC_BEGIN(DBG_SKEL);
+  DBG(DBG_SKEL) << "Making offset curve starting at " << *start;
   OffsetCurve offset;
   const SkeletonDCELHalfedge* he = start;
+  const Plane_3 offset_plane(CORE_ZERO, CORE_ZERO, CORE_ONE, -offsetting_distance);
   do {
-    auto [ it, inserted ] = visited.insert(he);
-    assert(inserted);
-
-    const Curve& arc = he->curve();
+    DBG(DBG_SKEL) << " Looking at " << *he << "; buddy is " << *he->opposite();
     boost::optional< boost::variant<Point_3, Segment_3, Ray_3> > intersect;
-
-    if (arc.type() == typeid(Segment_3)) {
-      const Segment_3& s = boost::get<Segment_3>(arc);
-      intersect = intersection(s, offset_plane);
-    } else {
-      assert(arc.type() == typeid(Ray_3));
-      const Ray_3& r = boost::get<Ray_3>(arc);
-      intersect = intersection(r, offset_plane);
+    if (visited.insert(he).second /*inserted*/) {
+      /* not yet visited.  If it had been visited, we'd know it does not intersect or has already been handled*/
+      const Curve& arc = he->curve();
+      if (arc.type() == typeid(Segment_3)) {
+        const Segment_3& s = boost::get<Segment_3>(arc);
+        intersect = intersection(s, offset_plane);
+      } else {
+        assert(arc.type() == typeid(Ray_3));
+        const Ray_3& r = boost::get<Ray_3>(arc);
+        intersect = intersection(r, offset_plane);
+      }
+      if (!intersect) {
+        visited.insert(he->opposite());
+      }
     }
 
     if (!intersect) {
+      assert(he != start);
       he = he->prev();
     } else {
       if (const Point_3* p = boost::get<Point_3>(&*intersect)) {
-        /* XXX Check if p is a vertex of he. */
+        const SkeletonDCELVertex* const t = he->opposite()->vertex(); // tail
+        const SkeletonDCELVertex* const h = he->vertex();             // head
 
-        offset.push_back( Point_2(p->x(), p->y()) );
-        DBG(DBG_SKEL) << "Adding vertex to offset curve: " << CGAL_point(*p);
+        bool intersects_tail = (!t->has_null_point() && t->point() == *p);
+        bool intersects_head = (!h->has_null_point() && h->point() == *p);
 
-        auto [ _, inserted2 ] = visited.insert(he->opposite());
-        assert(inserted2);
-        he = he->opposite()->prev();
+        if (intersects_head) {
+          assert(!intersects_tail);
+          assert(offset.size() == 0);
+          assert(he == start);
+          DBG(DBG_SKEL) << "  Intersected at head; we do not want to start an offset here, try the next.";
+
+          start = he->next();
+          DBG(DBG_SKEL) << "  Updated start to " << *start;
+          he = start;
+          bool inserted = visited.insert(he).second;
+          if (!inserted) {
+            DBG(DBG_SKEL) << "  We already had visited this one.  Done.";
+            break;
+          }
+          intersects_tail = true;
+        }
+        if (intersects_tail) {
+          DBG(DBG_SKEL) << "  Intersected at tail";
+
+          he = he->opposite();
+          visited.insert(he);
+
+          const Point_3& phead = he->vertex()->point();
+          offset.push_back( project_plane(phead) );
+          DBG(DBG_SKEL) << "  Adding node intersection as vertex to offset curve: " << CGAL_point(phead);
+
+          he = acceptable_exit_arc(he, offsetting_distance);
+          DBG(DBG_SKEL) << "   he is now " << *he;
+          visited.insert(he);
+        } else {
+          offset.push_back( project_plane(*p) );
+          DBG(DBG_SKEL) << "  Adding vertex to offset curve: " << CGAL_point(*p);
+
+          visited.insert(he->opposite());
+          he = he->opposite()->prev();
+        }
       } else if (const Segment_3* s = boost::get<Segment_3>(&*intersect)) {
         NOTIMPL_MSG << "Offset intersection with arc is a segment.";
         assert(false);
@@ -140,7 +252,6 @@ make_offset(const NT& offsetting_distance) const {
   OffsetFamily offsets;
 
   std::unordered_set<const SkeletonDCELHalfedge*> visited;
-  Plane_3 offset_plane(CORE_ZERO, CORE_ZERO, CORE_ONE, -offsetting_distance);
 
   for (const SkeletonDCELHalfedge& he : halfedges) {
     if (visited.find(&he) != visited.end()) {
@@ -149,45 +260,34 @@ make_offset(const NT& offsetting_distance) const {
     };
     DBG(DBG_SKEL) << "Considering " << he;
 
-    const SkeletonDCELVertex* const t = he.opposite()->vertex(); // tail
-    const SkeletonDCELVertex* const h = he.vertex();             // head
+    const SkeletonDCELVertex* const tail = he.opposite()->vertex();
+    const SkeletonDCELVertex* const head = he.vertex();
 
-    const SkeletonDCELHalfedge* he_start = NULL;
-    if (t->has_null_point() || h->has_null_point()) { // ray
-      assert(!t->has_null_point() || !h->has_null_point());
-
-      bool he_is_outgoing = h->has_null_point();
-      const NT z = he_is_outgoing ? t->point().z() : h->point().z();
-      if (z <= offsetting_distance) {
-        he_start = he_is_outgoing ? &he : he.opposite();
-      }
-    } else {
-      const NT zt = t->point().z();
-      const NT zh = h->point().z();
-
-      auto [z0, z1] = sorted_tuple(zt, zh);
-      if (z0 <= offsetting_distance && offsetting_distance <= z1) {
-        auto sign = (zh-zt).sign();
-        if (sign == CGAL::POSITIVE) { /* he is pointing along the propagation direction */
-          he_start = &he;
-        } else if (sign == CGAL::NEGATIVE) { /* he is pointing against the propagation direction */
-          he_start = he.opposite();
-        } else { /* he is an arc that is horizontal in time. */
-          he_start = &he;
-        }
-      }
-    }
+    CGAL::Sign sign = arc_intersects_offset(tail, head, offsetting_distance);
+    const SkeletonDCELHalfedge* he_start =
+      sign == CGAL::POSITIVE ? &he :
+      sign == CGAL::NEGATIVE ? he.opposite() :
+                               NULL;
 
     if (he_start) {
-      DBG(DBG_SKEL) << "Constructing an offset starting at ray " << he << "; " << *he.prev()->vertex() << "->" << *he.vertex();
-      OffsetCurve offset = make_one_offset_curve(offset_plane, he_start, visited);
-      if (offset.size() >= 2) {
-        offsets.emplace_back( std::move(offset) );
+      if (visited.find(he_start) != visited.end()) {
+        DBG(DBG_SKEL) << "Already had visited this one!";
       } else {
-        DBG(DBG_SKEL) << "Dropping offset curve with only " << offset.size() << " element(s)";
+        DBG(DBG_SKEL) << "Constructing an offset starting at " << *he_start << " (from " << he << "); " << *he.prev()->vertex() << "->" << *he.vertex();
+        OffsetCurve offset = make_one_offset_curve(offsetting_distance, he_start, visited);
+        if (offset.size() >= 2) {
+          DBG(DBG_SKEL) << "Adding offset curve with " << offset.size() << " elements";
+          offsets.emplace_back( std::move(offset) );
+        } else {
+          DBG(DBG_SKEL) << "Dropping offset curve with only " << offset.size() << " element(s)";
+        }
       }
     } else {
       DBG(DBG_SKEL) << "Not using " << he << " as it does not intersect offset plane";
+      bool inserted  = visited.insert(&he).second;
+      bool inserted2 = visited.insert(he.opposite()).second;
+      assert(inserted);
+      assert(inserted2);
     }
   };
 
