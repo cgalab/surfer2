@@ -133,12 +133,11 @@ class SkeletonDCEL : public CGAL::Arr_dcel_base<SkeletonDCELVertexBase, Skeleton
     void write_obj(std::ostream& os) const;
 
   public:
-    using OffsetCurve = CGAL::Polygon_2<Kernel>;
-    using OffsetFamily = std::vector<OffsetCurve>;
+    using OffsetFamily = std::vector<Segment_2>;
   protected:
-    CGAL::Sign arc_intersects_offset(const Vertex* tail, const Vertex* head, const NT& offsetting_distance) const;
-    const Halfedge* acceptable_exit_arc(const Halfedge* he, const NT& offsetting_distance) const;
-    OffsetCurve make_one_offset_curve(const NT& offsetting_distance, const Halfedge* const start, std::unordered_set<const Halfedge*>& visited) const;
+    CGAL::Sign arc_offset_do_intersect(const NT& offsetting_distance, const Halfedge* const he) const;
+    Point_2 arc_offset_get_intersect(const Plane_3& offset_plane, const Halfedge* const he) const;
+    std::pair<bool, Segment_2> make_one_offset_segment(const NT& offsetting_distance, const Halfedge* const start, std::unordered_set<const Halfedge*>& visited) const;
   public:
     OffsetFamily make_offset(const NT& offsetting_distance) const;
     static std::vector<NT> parse_offset_spec(const std::string& offset_spec);

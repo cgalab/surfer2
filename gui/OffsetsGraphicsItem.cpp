@@ -39,10 +39,8 @@ paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * 
 
   painter->setPen(segmentsPen());
   for (const auto& family : offsets) {
-    for (const auto& curve : family) {
-      for (auto edge_it = curve.edges_begin(); edge_it != curve.edges_end(); ++edge_it) {
-         painterostream << *edge_it;
-      }
+    for (const auto& segment : family) {
+      painterostream << segment;
     }
   }
 }
@@ -57,12 +55,14 @@ updateBoundingBox() {
     return;
   }
 
-  assert(offsets[0].size() > 0);
+  if (offsets[0].size() == 0) {
+    return;
+  }
 
   auto bb = offsets[0][0].bbox();
   for (const auto& family : offsets) {
-    for (const auto& curve : family) {
-      bb += curve.bbox();
+    for (const auto& segments : family) {
+      bb += segments.bbox();
     }
   }
 

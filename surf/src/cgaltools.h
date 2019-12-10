@@ -139,6 +139,16 @@ CGAL_line(const Line_2& l) {
 }
 
 inline
+std::string
+CGAL_segment(const Segment_2& s) {
+  std::ostringstream oss;
+  oss << "(" << CGAL_point(s.source()) <<
+         " " << CGAL_point(s.target()) <<
+         ")";
+  return oss.str();
+}
+
+inline
 Point_2
 project_plane(const Point_3& p) {
   return Point_2(p.x(), p.y());
