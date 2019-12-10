@@ -13,6 +13,7 @@ add_executable(surfgui
                        mainwindow.cpp
                        InputGraphicsItem.cpp
                        KineticTriangulationGraphicsItem.cpp
+                       SkeletonGraphicsItem.cpp
                        OffsetsGraphicsItem.cpp
                        )
 target_link_libraries(surfgui ${QT_LIBRARIES})

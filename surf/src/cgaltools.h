@@ -82,11 +82,14 @@
 using Point_2 = typename Kernel::Point_2;
 using Line_2 = typename Kernel::Line_2;
 using Segment_2 = typename Kernel::Segment_2;
+using Direction_2 = typename Kernel::Direction_2;
 using Vector_2 = typename Kernel::Vector_2;
+using Ray_2 = typename Kernel::Ray_2;
 
 using Point_3 = typename Kernel::Point_3;
 using Segment_3 = typename Kernel::Segment_3;
 using Ray_3 = typename Kernel::Ray_3;
+using Direction_3 = typename Kernel::Direction_3;
 using Vector_3 = typename Kernel::Vector_3;
 using Plane_3 = typename Kernel::Plane_3;
 
@@ -133,6 +136,25 @@ CGAL_line(const Line_2& l) {
              << CGAL::to_double(l.c()) << " == 0" <<
          ")";
   return oss.str();
+}
+
+inline
+Point_2
+project_plane(const Point_3& p) {
+  return Point_2(p.x(), p.y());
+}
+
+inline
+Segment_2
+project_plane(const Segment_3& s) {
+  return Segment_2(project_plane(s.source()), project_plane(s.target()));
+}
+
+inline
+Ray_2
+project_plane(const Ray_3& r) {
+  const Direction_3 d = r.direction();
+  return Ray_2(project_plane(r.source()), Direction_2(d.dx(), d.dy()));
 }
 
 #ifndef NT_USE_DOUBLE

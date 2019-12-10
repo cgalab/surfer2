@@ -72,6 +72,8 @@
    <addaction name="actionVisToggleArcs"/>
    <addaction name="actionVisToggleKineticTriangulation"/>
    <addaction name="actionVisToggleKineticTriangulationLabels"/>
+   <addaction name="actionVisToggleSkeleton"/>
+   <addaction name="actionVisToggleSkeletonLabels"/>
    <addaction name="actionVisToggleOffsets"/>
    <addaction name="actionUpdateOffsets"/>
    <addaction name="actionVisToggleHighlightCircle"/>
@@ -174,13 +176,13 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>s</string>
+    <string>a</string>
    </property>
    <property name="toolTip">
-    <string>Toggle Straight-Skeleton Arcs Visibility (Alt+S)</string>
+    <string>Toggle Straight-Skeleton Arcs (traces of wavefront vertices) Visibility (Alt+A)</string>
    </property>
    <property name="shortcut">
-    <string>Alt+S</string>
+    <string>Alt+A</string>
    </property>
   </action>
   <action name="actionVisToggleKineticTriangulation">
@@ -212,6 +214,37 @@
    </property>
    <property name="shortcut">
     <string>Alt+Shift+T</string>
+   </property>
+  </action>
+  <action name="actionVisToggleSkeleton">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>s</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle Straight Skeleton (Alt+S)</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+S</string>
+   </property>
+  </action>
+  <action name="actionVisToggleSkeletonLabels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>S</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle Straight Skeleton Labels Visibility (Alt+Shift+L)</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+Shift+S</string>
    </property>
   </action>
   <action name="actionVisToggleOffsets">

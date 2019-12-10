@@ -22,6 +22,7 @@
 #include "InputGraphicsItem.h"
 #include "KineticTriangulationGraphicsItem.h"
 #include "OffsetsGraphicsItem.h"
+#include "SkeletonGraphicsItem.h"
 
 #include <QMainWindow>
 #include <CGAL/Qt/DemosMainWindow.h>
@@ -63,6 +64,8 @@ class MainWindow : public CGAL::Qt::DemosMainWindow
     void on_actionVisToggleOffsets_triggered() { updateVisibilities(); };
     void on_actionVisToggleArcs_triggered() { updateVisibilities(); };
     void on_actionVisToggleHighlightCircle_triggered() { updateVisibilities(); };
+    void on_actionVisToggleSkeleton_triggered() { updateVisibilities(); };
+    void on_actionVisToggleSkeletonLabels_triggered() { updateVisibilities(); };
     void on_actionResize_triggered();
     void on_actionUpdateOffsets_triggered();
 
@@ -91,6 +94,7 @@ class MainWindow : public CGAL::Qt::DemosMainWindow
     std::shared_ptr<InputGraphicsItem> input_gi;
     std::shared_ptr<KineticTriangulationGraphicsItem> kinetic_triangulation_gi;
     std::shared_ptr<OffsetsGraphicsItem> offsets_gi;
+    std::shared_ptr<SkeletonGraphicsItem> skeleton_gi;
 
     void update_offsets();
     void updateVisibilities();

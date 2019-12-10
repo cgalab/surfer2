@@ -90,9 +90,6 @@ void
 MainWindow::updateVisibilities() {
   input_gi->setVisibleLabels(ui->actionVisToggleInputLabels->isChecked());
   input_gi->setVisible(ui->actionVisToggleInput->isChecked());
-/*
-  triangulation_gi->setVisible(ui->actionVisToggleTriangulation->isChecked());
-*/
   kinetic_triangulation_gi->setVisible(ui->actionVisToggleKineticTriangulation->isChecked() ||
                                        ui->actionVisToggleWavefront->isChecked() ||
                                        ui->actionVisToggleArcs->isChecked());
@@ -102,9 +99,8 @@ MainWindow::updateVisibilities() {
   kinetic_triangulation_gi->setVisibleArcs(ui->actionVisToggleArcs->isChecked());
   kinetic_triangulation_gi->setVisibleHighlightCircle(ui->actionVisToggleHighlightCircle->isChecked());
   offsets_gi->setVisible(ui->actionVisToggleOffsets->isChecked());
-/*
   skeleton_gi->setVisible(ui->actionVisToggleSkeleton->isChecked());
-*/
+  skeleton_gi->setVisibleLabels(ui->actionVisToggleSkeletonLabels->isChecked());
 }
 
 void
@@ -112,13 +108,9 @@ MainWindow::on_actionResize_triggered() {
   auto br = input_gi->boundingRect();
   br |= kinetic_triangulation_gi->boundingRect();
   br |= offsets_gi->boundingRect();
-/*
-  if (instance_triangulation_gi) {
-    br |= instance_triangulation_gi->boundingRect();
-  };
-  br |= skeleton_gi->boundingRect();
-*/
-
+  if (skeleton_gi) {
+    br |= skeleton_gi->boundingRect();
+  }
   ui->gV->setSceneRect(br);
   ui->gV->fitInView(br, Qt::KeepAspectRatio);
 }
@@ -266,9 +258,16 @@ update_offsets() {
 void
 MainWindow::simulation_has_finished() {
   if (did_finish) return;
+
   did_finish = true;
+
+  skeleton_gi = std::make_shared<SkeletonGraphicsItem>(&s.get_skeleton());
+  scene.addItem(skeleton_gi.get());
+
   ui->actionVisToggleWavefront->setChecked(false);
   ui->actionVisToggleKineticTriangulation->setChecked(false);
+  ui->actionVisToggleArcs->setChecked(false);
+
   update_offsets();
   updateVisibilities();
 }
