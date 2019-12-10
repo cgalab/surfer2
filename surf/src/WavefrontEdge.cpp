@@ -46,6 +46,7 @@ EdgeCollapseSpec
 WavefrontEdge::
 compute_collapse(const NT& time_now) const {
   DBG_FUNC_BEGIN(DBG_KT);
+  DBG(DBG_KT) << "Computing edge collapse time for " << *this;
 
   EdgeCollapseSpec res;
   WavefrontVertex* wfv0 = vertices[0];
@@ -55,6 +56,8 @@ compute_collapse(const NT& time_now) const {
   const Vector_2& v0 = wfv0->velocity;
   const Vector_2& v1 = wfv1->velocity;
 
+  DBG(DBG_KT) << "v0" << CGAL_vector(v0);
+  DBG(DBG_KT) << "v1" << CGAL_vector(v1);
   CGAL::Orientation o(CGAL::orientation(v0,v1));
 
   if (o != CGAL::LEFT_TURN) {
@@ -62,22 +65,41 @@ compute_collapse(const NT& time_now) const {
      * or in parallel, this edge will never collapse.
      */
     if (o == CGAL::RIGHT_TURN) {
+      DBG(DBG_KT) << "Orientation is right turn";
       // let's consider two points that are identical right now but moving away from another as not collapsing.
       res = EdgeCollapseSpec(EdgeCollapseType::PAST);
     } else {
+      DBG(DBG_KT) << "Orientation is collinear";
       assert(o == CGAL::COLLINEAR);
 
-      const Point_2 p0(wfv0->p_at(time_now));
-      const Point_2 p1(wfv1->p_at(time_now));
-      const NT sqdist = CGAL::squared_distance(p0, p1);
+      /* Previously we computed the distance at time_now.  I wonder why.
+       * If we then claim that the edge is always collapsing, then it should
+       * suffice to compute the distance at t=0. */
+      const NT sqdist = CGAL::squared_distance(wfv0->pos_zero, wfv1->pos_zero);
+      DBG(DBG_KT) << "sqdist zero: " << CGAL::to_double(sqdist);
+
+      {
+        const Point_2 p0(wfv0->p_at(time_now));
+        const Point_2 p1(wfv1->p_at(time_now));
+        const NT sqdistnow = CGAL::to_double(CGAL::squared_distance(p0, p1));
+        DBG(DBG_KT) << "sqdist now : " << sqdistnow;
+        if (sqdist == CORE_ZERO) {
+          assert_expensive_eq(sqdist, sqdistnow);
+        } else {
+          assert(sqdistnow > CORE_ZERO);
+        }
+      }
 
       if (sqdist == CORE_ZERO) {
-        res = EdgeCollapseSpec(EdgeCollapseType::ALWAYS);
+        DBG(DBG_KT) << "Distance is zero now.";
+        res = EdgeCollapseSpec(EdgeCollapseType::ALWAYS, time_now);
       } else {
+        DBG(DBG_KT) << "Distance is not zero.";
         res = EdgeCollapseSpec(EdgeCollapseType::NEVER);
       }
     }
   } else {
+    DBG(DBG_KT) << "Orientation is left turn";
   /* Note that, by construction, if you start on the wavefront edge, go out v0,
    * and go back v1, you end up on the wavefrong edge again.  Or, in other words,
    * v0-v1 is collinear with the direction of the wavefront edge e.
@@ -125,6 +147,7 @@ compute_collapse(const NT& time_now) const {
     assert_ge(time, time_now);
     res = EdgeCollapseSpec(EdgeCollapseType::FUTURE, time);
   }
+  DBG(DBG_KT) << "returning " << res;
   DBG_FUNC_END(DBG_KT);
   return res;
 }

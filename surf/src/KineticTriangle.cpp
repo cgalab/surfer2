@@ -708,10 +708,19 @@ compute_collapse_bounded_constrained_2(const NT& time_now) const { // {{{
   assert(wavefronts[c1_idx]);
   assert(wavefronts[c2_idx]);
 
+  DBG(DBG_TRIANGLE) << "v0: " << vertices[0]->details();
+  DBG(DBG_TRIANGLE) << "v1: " << vertices[1]->details();
+  DBG(DBG_TRIANGLE) << "v2: " << vertices[2]->details();
+  DBG(DBG_TRIANGLE) << "wavefront idx 1: " << c1_idx;
+  DBG(DBG_TRIANGLE) << "wavefront idx 2: " << c2_idx;
+  DBG(DBG_TRIANGLE) << "wavefront 1: " << *wavefronts[c1_idx];
+  DBG(DBG_TRIANGLE) << "wavefront 2: " << *wavefronts[c2_idx];
   CollapseSpec c1(wavefronts[c1_idx]->get_collapse(component, time_now, c1_idx));
   CollapseSpec c2(wavefronts[c2_idx]->get_collapse(component, time_now, c2_idx));
   assert(c1.type() == CollapseType::CONSTRAINT_COLLAPSE || c1.type() == CollapseType::NEVER);
   assert(c2.type() == CollapseType::CONSTRAINT_COLLAPSE || c2.type() == CollapseType::NEVER);
+  DBG(DBG_TRIANGLE) << "constraint collapse 1: " << c1;
+  DBG(DBG_TRIANGLE) << "constraint collapse 2: " << c2;
   if (c1.type() == CollapseType::NEVER) {
     result = c2;
   } else if (c1.type() == CollapseType::NEVER) {

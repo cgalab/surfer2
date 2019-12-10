@@ -43,7 +43,6 @@ class EdgeCollapseSpec {
       : type_(type)
     {
       assert(type_ == EdgeCollapseType::PAST ||
-             type_ == EdgeCollapseType::ALWAYS ||
              type_ == EdgeCollapseType::NEVER );
     };
     EdgeCollapseSpec(const EdgeCollapseType& type,
@@ -51,7 +50,8 @@ class EdgeCollapseSpec {
       : type_(type)
       , time_(time)
     {
-      assert(type_ == EdgeCollapseType::FUTURE);
+      assert(type_ == EdgeCollapseType::FUTURE ||
+             type_ == EdgeCollapseType::ALWAYS);
     };
 
     EdgeCollapseType type() const { return type_; }
