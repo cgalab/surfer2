@@ -80,6 +80,38 @@ from the [format-converter repository][format-converter].
 [format-converter]: https://github.com/cgalab/format-converter
 [graph-attributes]: https://github.com/cgalab/format-converter/blob/master/GRAPH-ATTRIBUTES.md
 
+## GUI
+
+The gui has a set of buttons near the top.  They all have mouse-over tool tips.
+The block starting with `i` controls layer visibility:
+
+ * `i` toggles visibility of the input PSLG,
+ * `I` toggles visibility of the input PSLG labels,
+ * `w` toggles visibility of the wavefront,
+ * `t` toggles visibility of the triangulation,
+ * `T` toggles visibility of the triangulation labels,
+ * `s` toggles visibility of the straight skeleton (once finalized),
+ * `S` toggles visibility of the straight skeleton labels (once finalized, and only in the debug build).
+
+All of those options can be controlled with the keyboard using Alt+&lt;letter&gt;.  Use Alt+Shift for capitals.
+
+The next two blocks deal with time and even handling.  The functionality behind
+these buttons can also be accessed by simply pressing the corresponding keyboard key.
+
+ * `,` moves the time forward to the time of the next event,
+ * &lt;backspace&gt; moves the time back to the time of the last event,
+ * `b` moves the drawing backwards in time.  Elements are not necessarily consistent in the past.
+ * `N` moves the time forwards, including event processing.
+ * `M` moves the time forwards, not including event processing.  As such, the future is not necessarily shown correctly.
+ * `n` **Moves to the next event time and processes it**.
+ * &lt;enter&gt; **Processes all remaining events**.
+
+Lastly, there are a few options that modify the drawing only.  These sometimes help in debugging or investigating how things looked just prior to an event.
+
+ * `-` decrease drawing offset (draw things at a time earlier than now),
+ * `+` increase drawing offset (draw things at a time later than now),
+ * `=` reset drawing offset.
+
 # License
 
 Surfer is free software.  You may redistribute it and/or modify
