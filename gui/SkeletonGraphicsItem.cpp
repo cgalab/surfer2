@@ -42,7 +42,7 @@ paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * 
   CGAL::Qt::Converter<Kernel> convert;
 
   painterostream = CGAL::Qt::PainterOstream<Kernel> (painter);
-  NT ray_length = 10;
+  int ray_length = 10;
 
   for (auto hit = skeleton->halfedges_begin(); hit != skeleton->halfedges_end(); ++hit) {
     if (hit > hit->opposite()) continue;
@@ -57,7 +57,7 @@ paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * 
       const Ray_3& r = boost::get<Ray_3>(arc);
       const Ray_2 r2 = project_plane(r);
       painter->setPen(raysPen());
-      painterostream << Segment_2(r2.source(), r2.point(CORE_ONE*ray_length));
+      painterostream << Segment_2(r2.source(), r2.point(ray_length));
     }
   }
 
@@ -100,7 +100,7 @@ paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * 
         assert(arc.type() == typeid(Ray_3));
         const Ray_3& r = boost::get<Ray_3>(arc);
         const Ray_2 r2 = project_plane(r);
-        pos = CGAL::midpoint(r2.source(), r2.point(CORE_ONE*ray_length));
+        pos = CGAL::midpoint(r2.source(), r2.point(ray_length));
       }
       const QPointF p(transform.map(convert( pos )));
       painter->drawText(p.x()+4, p.y(), QString::fromStdString(t));
