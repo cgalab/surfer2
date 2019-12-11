@@ -58,6 +58,13 @@ class WavefrontVertex;
 
 #define STMT_NIL do {} while (0)
 
+#ifndef NDEBUG
+  #define DEBUG_STMT(x) x
+#else
+  #define DEBUG_STMT(x) STMT_NIL
+#endif
+
+
 #define DBG_GENERIC                       ( 1u << 0 )
 #define DBG_INPUT                         ( 1u << 1 )
 #define DBG_EVENTQ                        ( 1u << 2 )

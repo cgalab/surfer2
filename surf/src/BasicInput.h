@@ -86,7 +86,7 @@ class BasicInput {
 
       auto wsinsert_res = weight_set.insert(weight);
       edges_.emplace_back(Edge(u,v, *wsinsert_res.first));
-      auto res = edge_map.emplace(std::pair<VertexIdxPair,unsigned>(VertexIdxPair(u,v), edges().size()-1));
+      [[maybe_unused]] auto res = edge_map.emplace(std::pair<VertexIdxPair,unsigned>(VertexIdxPair(u,v), edges().size()-1));
       assert(res.second);
     }
 

@@ -1018,7 +1018,7 @@ create_remaining_skeleton_dcel() {
   }
   skeleton.set_number_of_points_and_curves();
 
-  bool did_infinite_vertex = false;
+  DEBUG_STMT(bool did_infinite_vertex = false);
   for (const auto& v : vertices) {
     if (v.is_infinite || v.is_degenerate()) {
       continue;
@@ -1040,7 +1040,7 @@ create_remaining_skeleton_dcel() {
         set_dcel_vertex(he, &v.pos_stop(), v.time_stop());
       } else {
         assert(!did_infinite_vertex);
-        did_infinite_vertex = true;
+        DEBUG_STMT(did_infinite_vertex = true);
         set_dcel_vertex(he, NULL, CORE_ZERO);
       }
     }
@@ -1741,19 +1741,19 @@ do_constraint_collapse_part2(KineticTriangle& t, unsigned edge_idx, const NT& ti
     DBG(DBG_KT_EVENT) << "updating vertex in affected triangles";
     auto end = incident_faces_end();
     auto i = incident_faces_iterator(&t, ccw(edge_idx));
-    bool first = true;
+    DEBUG_STMT(bool first = true);
     DBG(DBG_KT_EVENT) << " ccw:";
     for (--i; i != end; --i) {
-      assert(!first || na == &*i); first = false;
+      assert(!first || na == &*i); DEBUG_STMT(first = false);
       (*i).set_vertex(i.v_in_t_idx(), v);
       modified(&*i);
     };
 
     i = incident_faces_iterator(&t, cw(edge_idx));
-    first = true;
+    DEBUG_STMT(first = true);
     DBG(DBG_KT_EVENT) << " cw:";
     for (++i; i != end; ++i) {
-      assert(!first || nb == &*i); first = false;
+      assert(!first || nb == &*i); DEBUG_STMT(first = false);
       (*i).set_vertex(i.v_in_t_idx(), v);
       modified(&*i);
     }

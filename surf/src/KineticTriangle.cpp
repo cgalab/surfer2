@@ -805,6 +805,9 @@ accept_collapse_bounded_constrained_1(const NT& collapse_time, const Polynomial_
         DBG(DBG_TRIANGLE) << "Derivative is positive.  This is the second time the triangle collapses.  This triangle MUST change before the first time it collapses.";
         result = false;
         break;
+      default:
+        CANNOTHAPPEN_MSG << "Fell through switch which should cover all cases.";
+        abort();
     }
   }
 

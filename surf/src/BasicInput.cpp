@@ -25,7 +25,7 @@ BasicInput::add_graph(const BGLGraph& graph) {
   typedef BGLGraph::vertex_descriptor VertexType;
   typedef BGLGraph::edge_descriptor EdgeType;
 
-  auto index_map = boost::get(boost::vertex_index, graph);
+  DEBUG_STMT(auto index_map = boost::get(boost::vertex_index, graph));
 
   for (auto vp = boost::vertices(graph); vp.first != vp.second; ++vp.first) {
     const VertexType v = *vp.first;

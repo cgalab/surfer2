@@ -30,7 +30,8 @@ BasicTriangulation::tag_components(const Vertex_handle& v0, const Vertex_handle&
   auto first_face = incident_faces(v0);
   auto current_face = first_face;
   Face_handle face = NULL;
-  int v0_in_face, v1_in_face;
+  int v0_in_face;
+  int v1_in_face;
   do {
     assert(current_face->has_vertex(v0));
     v0_in_face = current_face->index(v0);
@@ -42,7 +43,7 @@ BasicTriangulation::tag_components(const Vertex_handle& v0, const Vertex_handle&
   } while (current_face != first_face);
 
   assert(face != NULL);
-  v1_in_face = ccw(v0_in_face);
+  DEBUG_STMT(v1_in_face = ccw(v0_in_face));
 
   assert(face->vertex(v0_in_face) == v0);
   assert(face->vertex(v1_in_face) == v1);
