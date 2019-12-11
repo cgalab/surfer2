@@ -16,6 +16,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "BasicTriangulation.h"
+#include "surfconfig.h"
 
 #include <queue>
 
@@ -170,12 +171,18 @@ initialize(const BasicInput& input) {
    * coordinates.
    */
   for (const auto e : input.edges()) {
+    #ifdef HAVE_INTERSECTION_OF_CONSTRAINTS_EXCEPTION
     try {
+    #endif
       insert_constraint(ct_vertex_handles[e.u], ct_vertex_handles[e.v]);
+    #ifdef HAVE_INTERSECTION_OF_CONSTRAINTS_EXCEPTION
     } catch (Intersection_of_constraints_exception& err) {
       LOG(ERROR) << "Invalid input: Inserting edge (" << e.u << ", " << e.v << ") causes an intersection of constraints.";
       exit(EXIT_INVALID_INPUT);
     }
+    #else
+      #warning "Old CGAL version without Intersection_of_constraints_exception.  We will not detect some classes of invalid input."
+    #endif
   }
 
   tag_components( ct_vertex_handles[input.edges()[0].u], ct_vertex_handles[input.edges()[0].v] );

@@ -1,0 +1,3 @@
+#pragma once
+
+#cmakedefine HAVE_INTERSECTION_OF_CONSTRAINTS_EXCEPTION
