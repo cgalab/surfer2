@@ -25,6 +25,7 @@
 #include <CGAL/Polygon_2.h>
 
 #include <boost/variant.hpp>
+#include <unordered_set>
 
 class SkeletonDCELVertexBase : public CGAL::Arr_vertex_base<const Point_3> {
   private:

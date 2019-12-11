@@ -25,8 +25,6 @@ unsigned SkeletonDCELHalfedgeBase::ctr = 0;
 unsigned SkeletonDCELFaceBase::ctr = 0;
 #endif
 
-#include <unordered_set>
-
 SkeletonDCELFace*
 SkeletonDCEL::
 setup_new_input_edge(const WavefrontEdge * const buddy_wavefront) {
