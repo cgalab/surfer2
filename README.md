@@ -18,6 +18,9 @@ or, if you already have a checkout without the submodule, go to the working copy
 
 If all works well, you should see files both at the top level of your working copy as well as in `surf/easyloggingpp`.
 
+If you did not clone the source with git, you may have to get easyloggingpp yourself.  You can find it at
+https://github.com/cgalab/easyloggingpp
+
 # Build requirements
 
 To build surfer2, you need a c++ toolchain, cmake, and several libraries including CGAL.
