@@ -99,8 +99,10 @@ MainWindow::updateVisibilities() {
   kinetic_triangulation_gi->setVisibleArcs(ui->actionVisToggleArcs->isChecked());
   kinetic_triangulation_gi->setVisibleHighlightCircle(ui->actionVisToggleHighlightCircle->isChecked());
   offsets_gi->setVisible(ui->actionVisToggleOffsets->isChecked());
-  skeleton_gi->setVisible(ui->actionVisToggleSkeleton->isChecked());
-  skeleton_gi->setVisibleLabels(ui->actionVisToggleSkeletonLabels->isChecked());
+  if (skeleton_gi) {
+    skeleton_gi->setVisible(ui->actionVisToggleSkeleton->isChecked());
+    skeleton_gi->setVisibleLabels(ui->actionVisToggleSkeletonLabels->isChecked());
+  }
 }
 
 void
