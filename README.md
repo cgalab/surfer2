@@ -35,7 +35,7 @@ On Debian 10 (buster), installing the following packages is sufficient to build 
   * qtbase5-dev
   * clang
 
-If you have an older libgtest-dev (<= 1.7), you may need to explicitly install googletest also.
+If you have an older libgtest-dev (<= 1.7), such as on Ubuntu 18.04, you may need to explicitly install googletest also.
 
 # Building
 
