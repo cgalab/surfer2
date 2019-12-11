@@ -34,6 +34,7 @@ class SkeletonGraphicsItem :
     const SkeletonDCEL * const skeleton;
     CGAL::Qt::PainterOstream<Kernel> painterostream;
     QPen vertices_pen;
+    QPen input_segments_pen;
     QPen segments_pen;
     QPen rays_pen;
     QPen labels_pen;
@@ -52,10 +53,12 @@ class SkeletonGraphicsItem :
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
     void setVerticesPen(const QPen& pen) { vertices_pen = pen; };
+    void setInputSegmentsPen(const QPen& pen) { input_segments_pen = pen; };
     void setSegmentsPen(const QPen& pen) { segments_pen = pen; };
     void setRaysPen(const QPen& pen) { rays_pen = pen; };
     void setLabelsPen(const QPen& pen) { labels_pen = pen; };
     const QPen& verticesPen() const { return vertices_pen; }
+    const QPen& inputSegmentsPen() const { return input_segments_pen; }
     const QPen& segmentsPen() const { return segments_pen; }
     const QPen& raysPen() const { return rays_pen; }
     const QPen& labelsPen() const { return labels_pen; }

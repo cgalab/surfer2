@@ -266,6 +266,7 @@ MainWindow::simulation_has_finished() {
   skeleton_gi = std::make_shared<SkeletonGraphicsItem>(&s.get_skeleton());
   scene.addItem(skeleton_gi.get());
 
+  ui->actionVisToggleInput->setChecked(false);
   ui->actionVisToggleWavefront->setChecked(false);
   ui->actionVisToggleKineticTriangulation->setChecked(false);
   ui->actionVisToggleArcs->setChecked(false);

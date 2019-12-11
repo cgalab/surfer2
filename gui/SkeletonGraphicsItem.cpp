@@ -28,6 +28,7 @@ SkeletonGraphicsItem(const SkeletonDCEL * const skeleton_)
   , skeleton(skeleton_)
   , painterostream(0)
   , vertices_pen(QPen(::Qt::blue, 3))
+  , input_segments_pen(QPen(::Qt::black, 0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin))
   , segments_pen(QPen(::Qt::blue, 0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin))
   , rays_pen(QPen(QColor("#5599ff"), 0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin))
   , labels_pen(QPen(Qt::black, 0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin))
@@ -50,7 +51,10 @@ paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * 
     const auto& arc = hit->curve();
     if (arc.type() == typeid(Segment_3)) {
       const Segment_3& s = boost::get<Segment_3>(arc);
-      painter->setPen(segmentsPen());
+      painter->setPen(
+        hit->is_input() || hit->opposite()->is_input() ? /* We need to check both, since is_input is not set on the ignored side when we limit processing to components */
+          inputSegmentsPen() :
+          segmentsPen() );
       painterostream << project_plane(s);
     } else {
       assert(arc.type() == typeid(Ray_3));
