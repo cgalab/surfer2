@@ -18,7 +18,10 @@
 #pragma once
 
 #include "config.h"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wshadow"
 #include "../easyloggingpp/src/easylogging++.h"
+#pragma GCC diagnostic pop
 
 #include <assert.h>
 
