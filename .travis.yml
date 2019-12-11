@@ -31,9 +31,9 @@ compiler:
   - gcc
 
 matrix:
-  env:
-    - BUILD_TYPE="Release"
-    - BUILD_TYPE="Debug"
+  include:
+    - env: BUILD_TYPE="Release"
+    - env: BUILD_TYPE="Debug"
 
 script:
  - cmake -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" .
