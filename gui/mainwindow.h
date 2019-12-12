@@ -98,6 +98,7 @@ class MainWindow : public CGAL::Qt::DemosMainWindow
 
     void update_offsets();
     void updateVisibilities();
+    void updateEnabled();
     void update_time_label();
     void time_changed();
     void simulation_has_finished();

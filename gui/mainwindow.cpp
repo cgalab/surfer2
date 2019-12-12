@@ -78,6 +78,7 @@ MainWindow::MainWindow(std::string p_title, std::istream& is, unsigned skip_to, 
   ui->statusBar->addWidget(time_label, 0);
   ui->statusBar->addWidget(xycoord, 0);
 
+  updateEnabled();
   s.wp.do_initial_skips(skip_all, skip_to, skip_until_t);
   time_changed();
 }
@@ -103,6 +104,14 @@ MainWindow::updateVisibilities() {
     skeleton_gi->setVisible(ui->actionVisToggleSkeleton->isChecked());
     skeleton_gi->setVisibleLabels(ui->actionVisToggleSkeletonLabels->isChecked());
   }
+}
+
+void
+MainWindow::
+updateEnabled() {
+  ui->actionVisToggleSkeletonLabels->setEnabled( skeleton_gi != NULL );
+  ui->actionVisToggleSkeleton->setEnabled( skeleton_gi != NULL );
+  ui->actionVisToggleOffsets->setEnabled( skeleton_gi != NULL );
 }
 
 void
@@ -272,6 +281,7 @@ MainWindow::simulation_has_finished() {
   ui->actionVisToggleArcs->setChecked(false);
 
   update_offsets();
+  updateEnabled();
   updateVisibilities();
 }
 
