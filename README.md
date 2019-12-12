@@ -50,7 +50,8 @@ To build surfer, run cmake and make:
     make
 
 This will create a release build, without expensive assertions.  To build the debug build,
-pass `-DCMAKE_BUILD_TYPE=Debug` to cmake, or nothing at all.
+pass `-DCMAKE_BUILD_TYPE=Debug` to cmake, or nothing at all.  If you prefer gcc to clang, don't set
+the CXX environment variable when calling cmake.
 
 # Running the command line client or gui
 
