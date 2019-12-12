@@ -5,6 +5,9 @@ if(POLICY CMP0077)
     cmake_policy(SET CMP0077 NEW)
 endif()
 
+if ( NOT EXISTS "${PROJECT_SOURCE_DIR}/surf/easyloggingpp/src/easylogging++.h")
+  message( FATAL_ERROR "We are missing easylogging in surf/easyloggingpp/.  See the README.md file for details." )
+endif()
 
 execute_process(COMMAND git describe --abbrev=8 --dirty --always --tags
                 OUTPUT_VARIABLE GIT_REV
