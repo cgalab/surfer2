@@ -131,7 +131,11 @@ class SkeletonDCEL : public CGAL::Arr_dcel_base<SkeletonDCELVertexBase, Skeleton
       return p;
     }
 
+  private:
+    enum class SegmentType { INPUT, ARC, OFFSET };
+    static void write_ipe_segment(std::ostream& os, const Segment_2& s, SegmentType t);
   public:
+    void write_ipe(std::ostream& os, const std::string& offset_spec) const;
     void write_obj(std::ostream& os) const;
 
   public:

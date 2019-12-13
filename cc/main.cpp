@@ -35,7 +35,8 @@ static struct option long_options[] = {
   { "verbose"            , optional_argument, 0, 'v'},
   { "stats-fd"           , required_argument, 0, 'S'},
   { "disable-debug-log"  , no_argument      , 0, 'D'},
-  //{ "sk-offset"          , required_argument, 0, 'O'},
+  { "sk-offset"          , required_argument, 0, 'O'},
+  { "ipe"                , no_argument      , 0, 'I'},
   //{ "random-seeed"       , required_argument, 0, 'R'},
   { 0, 0, 0, 0}
 };
@@ -48,23 +49,24 @@ usage(const char *progname, int err) {
   fprintf(f,"Usage: %s [options] <INPUT> <OUTPUT>\n", progname);
   fprintf(f,"  Options: --component=0|l|1|r|<n>    Only left (0) or right (1) sided SK (if well defined for input), or component #n in general.\n");
   fprintf(f,"           --stats-fd=<FD>            Enable and print statistics to FD.\n");
+  fprintf(f,"           --ipe                      Write ipe output.\n");
 #ifdef DEBUG_OUTPUT
   fprintf(f,"           --disable-debug-log        Disable debug level logging (relevant only.\n");
 #endif
-  /*
   fprintf(f,"  Options: --sk-offset=<offset-spec>  Draw offsets.\n");
+  /*
   fprintf(f,"           --random-seed=<seed>       Seed for RNG (for debugging).\n");
+  */
   fprintf(f,"\n");
   fprintf(f,"  offset-spec = <one-block> [ ',' <one-block> ]\n");
-  fprintf(f,"  one-block   = <one-offset> [ '+' one-block ]\n");
+  fprintf(f,"  one-block   = <one-offset> [ '+' one-offset ]\n");
   fprintf(f,"  one-offset  = [<cnt> '*' ] <time>\n");
   fprintf(f,"  example: '0.01 + 3*0.025, 0.15' or '10 * 0.025'\n");
-  */
   exit(err);
 }
 
 static void
-do_surf(std::istream& is, std::ostream& os, int restrict_component, int stats_fd = -1) {
+do_surf(std::istream& is, std::ostream& os, int restrict_component, const std::string& skoffset, int stats_fd = -1, bool write_ipe = false) {
   clock_t stage_00 = clock();
 
   BGLGraph graph = BGLGraph::create_from_graphml(is);
@@ -79,7 +81,11 @@ do_surf(std::istream& is, std::ostream& os, int restrict_component, int stats_fd
   clock_t stage_04 = clock();
   clock_t stage_99 = clock();
 
-  s.get_skeleton().write_obj(os);
+  if (write_ipe) {
+    s.get_skeleton().write_ipe(os, skoffset);
+  } else {
+    s.get_skeleton().write_obj(os);
+  }
 
   if (stats_fd >= 0) {
     boost::iostreams::file_descriptor_sink snk{stats_fd, boost::iostreams::never_close_handle};
@@ -127,11 +133,12 @@ do_surf(std::istream& is, std::ostream& os, int restrict_component, int stats_fd
 }
 
 int main(int argc, char *argv[]) {
-  //std::string skoffset;
+  std::string skoffset;
   int restrict_component = -1;
   unsigned verbose = 0;
   int stats_fd = -1;
   bool debug_logs = true;
+  bool write_ipe = false;
 
   while (1) {
     int option_index = 0;
@@ -185,11 +192,16 @@ int main(int argc, char *argv[]) {
       case 'D':
         debug_logs = false;
         break;
-      /*
+
+      case 'I':
+        write_ipe = true;
+        break;
+
       case 'O':
         skoffset = std::string(optarg);
         break;
 
+      /*
       case 'R':
         my_srand(atoi(optarg));
         break;
@@ -228,7 +240,7 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  do_surf(*in, *out, restrict_component, stats_fd);
+  do_surf(*in, *out, restrict_component, skoffset, stats_fd, write_ipe);
   VLOG(1) << "Did " << CollapseSpec::COUNTER_NT_cmp << " NT comparisons in class CollapseSpec";
   return 0;
 }
