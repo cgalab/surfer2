@@ -46,7 +46,7 @@ paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * 
   int ray_length = 10;
 
   for (auto hit = skeleton->halfedges_begin(); hit != skeleton->halfedges_end(); ++hit) {
-    if (hit > hit->opposite()) continue;
+    if (hit > hit->opposite()) continue; /* Only paint one of every halfedge pair */
 
     const auto& arc = hit->curve();
     if (arc.type() == typeid(Segment_3)) {
