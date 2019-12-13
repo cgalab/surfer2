@@ -324,7 +324,7 @@ write_ipe_segment(std::ostream& os, const Segment_2& s, SegmentType t) {
     switch (t) {
       case SegmentType::INPUT : os << "stroke=\"black\" pen=\"heavier\""; break;
       case SegmentType::ARC   : os << "stroke=\"blue\""; break;
-      case SegmentType::OFFSET: os << "stroke=\"darkgray\" pen=\"thin\" dash=\"dotted-narrower\""; break;
+      case SegmentType::OFFSET: os << "stroke=\"black\" pen=\"thin\" dash=\"dotted-narrower\""; break;
     }
     os << ">\n";
     os << "    " << CGAL::to_double(s.source().x()) << " " << CGAL::to_double(s.source().y()) << " m\n";
@@ -349,7 +349,6 @@ write_ipe(std::ostream& os, const std::string& offset_spec) const {
         "<ipestyle name=\"basic\">\n"
         "  <pen name=\"heavier\" value=\"0.8\"/>\n"
         "  <color name=\"blue\" value=\"0 0 1\"/>\n"
-        "  <color name=\"darkgray\" value=\"0.663\"/>\n"
         "</ipestyle>\n"
         "<ipestyle name=\"dashstyles\">\n"
         "  <dashstyle name=\"dotted-narrower\" value=\"[0.5 0.5] 0\"/>\n"
