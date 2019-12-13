@@ -41,10 +41,17 @@ class SkeletonDCELVertexBase : public CGAL::Arr_vertex_base<const Point_3> {
 class SkeletonDCELHalfedgeBase : public CGAL::Arr_halfedge_base<boost::variant<Segment_3,Ray_3>> {
   friend class SkeletonDCEL;
   private:
-    bool is_input_ = false;
-    // std::shared_ptr<const WavefrontSupportingLine> supporting_line; /* for input edges only. */
+    bool is_emanating_input_ = false;
   public:
-    bool is_input() const { return is_input_; };
+    /** Is this an input edge that is emmanating a wavefront.
+     *
+     * True for input edges on the side where we do a wavefront propagation.
+     */
+    bool is_emanating_input() const { return is_emanating_input_; };
+    /** Is this an input edge for which we do a wavefront propagation on at least one side.
+     *
+     * May only be called when class is specialized by Arr_halfedge */
+    bool is_input() const;
 
   #ifndef NDEBUG
     public:
@@ -175,6 +182,16 @@ using SkeletonDCELVertex = SkeletonDCEL::Vertex;
 using SkeletonDCELHalfedge = SkeletonDCEL::Halfedge;
 using SkeletonDCELCbb = SkeletonDCEL::Outer_ccb;
 using SkeletonDCELFace = SkeletonDCEL::Face;
+
+inline bool
+SkeletonDCELHalfedgeBase::
+is_input() const {
+  static_assert(std::is_base_of<SkeletonDCELHalfedgeBase, SkeletonDCELHalfedge>::value);
+  const SkeletonDCELHalfedge * const he = static_cast<const SkeletonDCELHalfedge*>(this);
+  assert(he);
+  assert(he->opposite());
+  return he->is_emanating_input() || he->opposite()->is_emanating_input();
+}
 
 #ifndef NDEBUG
 inline std::ostream& operator<<(std::ostream& os, const SkeletonDCELVertex& i) {

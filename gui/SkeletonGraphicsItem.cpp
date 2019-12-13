@@ -52,7 +52,7 @@ paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * 
     if (arc.type() == typeid(Segment_3)) {
       const Segment_3& s = boost::get<Segment_3>(arc);
       painter->setPen(
-        hit->is_input() || hit->opposite()->is_input() ? /* We need to check both, since is_input is not set on the ignored side when we limit processing to components */
+        hit->is_input() ?
           inputSegmentsPen() :
           segmentsPen() );
       painterostream << project_plane(s);

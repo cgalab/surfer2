@@ -41,7 +41,7 @@ setup_new_input_edge(const WavefrontEdge * const buddy_wavefront) {
   } else {
     halfedge = new_edge();
   }
-  halfedge->is_input_ = true;
+  halfedge->is_emanating_input_ = true;
   halfedge->set_outer_ccb(ccb);
 
   face->add_outer_ccb(ccb, halfedge);

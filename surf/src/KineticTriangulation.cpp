@@ -752,7 +752,7 @@ link_dcel_halfedges_on_ignored_side() {
   DBG_FUNC_BEGIN(DBG_SKEL);
 
   for (auto he = skeleton.halfedges_begin(); he != skeleton.halfedges_end(); ++he) {
-    if (! he->is_input() && he->opposite()->is_input()) {
+    if (! he->is_emanating_input() && he->opposite()->is_emanating_input()) {
       /* This is the "ignored" side of an input edge. */
       if (he->next() != NULL) { // already processed
         continue;
@@ -1076,7 +1076,7 @@ create_remaining_skeleton_dcel() {
   }
   /* and input segments */
   for (auto he = skeleton.halfedges_begin(); he != skeleton.halfedges_end(); ++he) {
-    if (he->is_input()) {
+    if (he->is_emanating_input()) {
       if (he->has_null_curve()) {
         SkeletonDCELHalfedge::X_monotone_curve * p = skeleton.new_segment( Segment_3(he->vertex()->point(), he->opposite()->vertex()->point()) );
         he->set_curve(p);
