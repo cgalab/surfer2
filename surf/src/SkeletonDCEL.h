@@ -28,12 +28,6 @@
 #include <unordered_set>
 
 class SkeletonDCELVertexBase : public CGAL::Arr_vertex_base<const Point_3> {
-  private:
-    bool is_input_ = false;
-  public:
-    void set_is_input(bool is_input) { is_input_ = is_input; };
-    bool is_input() const { return is_input_; };
-
   #ifndef NDEBUG
     public:
       SkeletonDCELVertexBase() : id(ctr++) {};
