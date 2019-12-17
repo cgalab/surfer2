@@ -94,7 +94,7 @@ initialize_tds(
   DBG(DBG_KT_SETUP) << "#faces: " << num_t;
   for (auto fit = ct.all_faces_begin(); fit != ct.all_faces_end(); ++fit) {
     if (! fit->info().matches_component(restrict_component_)) continue;
-    triangles.emplace_back(restrict_component_ == -2 ? 0 : KineticTriangle(fit->info().component));
+    triangles.emplace_back( KineticTriangle(triangles.size(), restrict_component_ == -2 ? 0 : fit->info().component));
     for (unsigned i=0; i<3; ++i) {
       triangle_original_vertex_indices.push_back(fit->vertex(i)->info().original_vertex_idx);
       if (fit->vertex(i) == infinite_vertex_ct) {
@@ -370,7 +370,7 @@ split_vertex(
   assert(t);
 
   /* Split the triangle */
-  triangles.emplace_back(KineticTriangle(t->component));
+  triangles.emplace_back(KineticTriangle(triangles.size(), t->component));
   KineticTriangle& new_t = triangles.back();
   DBG(DBG_KT_SETUP) << " New triangle " << &new_t;
 

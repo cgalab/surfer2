@@ -47,8 +47,10 @@
 class KineticTriangle {
   friend class KineticTriangulation;
 
-  private:
-    static unsigned ktctr;
+  DEBUG_DECL(
+    private:
+      static unsigned ktctr;
+  )
 
   public:
     const unsigned id;
@@ -73,8 +75,8 @@ class KineticTriangle {
     static inline int ccw(int i) { return TriangulationUtils::ccw(i); }
 
   public:
-    KineticTriangle(int p_component)
-      : id(ktctr++)
+    KineticTriangle(unsigned pd_id, int p_component)
+      : id(pd_id)
       , component(p_component)
       , vertices()
       , wavefronts { NULL, NULL, NULL }
@@ -84,6 +86,7 @@ class KineticTriangle {
       , collapse_spec_computed_with_vertices { NULL, NULL, NULL }
       #endif
       {
+      assert(pd_id == ktctr++);
     }
     KineticTriangle(const KineticTriangle&) = delete;
     KineticTriangle& operator =(const KineticTriangle&) = delete;
