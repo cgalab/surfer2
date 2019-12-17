@@ -26,9 +26,11 @@
 using WavefrontEdgeList = FixedVector<WavefrontEdge>;
 class WavefrontEdge {
   private:
-    static unsigned wavefront_edge_ctr;
+    DEBUG_DECL(
+      static unsigned wavefront_edge_ctr;
+      const unsigned id;
+    )
 
-    const unsigned id;
     bool is_dead_ = false;        /** stopped propagating */
     WavefrontVertex* vertices[2]; /** The left and right wavefront vertex right
                                    *  now.  This changes over the course of the
@@ -75,8 +77,11 @@ class WavefrontEdge {
   public:
     /* Used when setting up initial wavefront edges for all constraints */
     WavefrontEdge(const Point_2 &u, const Point_2 &v, const NT &weight, KineticTriangle* incident_triangle, SkeletonDCELFace * p_skeleton_face)
-      : id(wavefront_edge_ctr++)
-      , vertices { NULL, NULL }
+      :
+      #ifndef NDEBUG
+        id(wavefront_edge_ctr++),
+      #endif
+        vertices { NULL, NULL }
       , supporting_line( std::make_shared<const WavefrontSupportingLine>(u, v, weight) )
       , incident_triangle_(incident_triangle)
       , is_initial(true)
@@ -92,8 +97,11 @@ class WavefrontEdge {
 
     /* Used when setting up bevels */
     WavefrontEdge(std::shared_ptr<const WavefrontSupportingLine> p_supporting_line, SkeletonDCELFace * p_skeleton_face)
-      : id(wavefront_edge_ctr++)
-      , vertices { NULL, NULL }
+      :
+      #ifndef NDEBUG
+        id(wavefront_edge_ctr++),
+      #endif
+        vertices { NULL, NULL }
       , supporting_line(p_supporting_line)
       , incident_triangle_(NULL)
       , is_initial(true)
@@ -114,8 +122,11 @@ class WavefrontEdge {
                   std::shared_ptr<const WavefrontSupportingLine> p_supporting_line,
                   KineticTriangle *incident_triangle,
                   SkeletonDCELFace * p_skeleton_face)
-      : id(wavefront_edge_ctr++)
-      , vertices {va, vb}
+      :
+      #ifndef NDEBUG
+        id(wavefront_edge_ctr++),
+      #endif
+        vertices {va, vb}
       , supporting_line(p_supporting_line)
       , incident_triangle_(incident_triangle)
       , is_initial(false)

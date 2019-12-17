@@ -19,13 +19,15 @@
 #include "WavefrontVertex.h"
 #include "KineticTriangle.h"
 
+DEBUG_DECL(
 unsigned WavefrontEdge::wavefront_edge_ctr = 0;
+)
 
 std::ostream&
 operator<<(std::ostream& os, const WavefrontEdge& e) {
-  os << "wfe#"
-    << e.id
-    << "("
+  os << "wfe";
+  DEBUG_STMT( os << "#" << e.id );
+  os << "("
     << e.vertices[0] << ","
     << e.vertices[1] << ")";
   return os;
