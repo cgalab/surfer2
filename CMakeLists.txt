@@ -106,6 +106,8 @@ option(DEBUG_OUTPUT_WITH_FILES    "Include filenames and line numbersin debug ou
 option(NT_USE_DOUBLE              "Use double as the number type" OFF)
 option(HEAP_STATS                 "Gather stats on heap properties" OFF)
 
+option(BUILD_SHARED_LIBS          "Build surflib as a shared library" OFF)
+
 configure_file (
   "${PROJECT_SOURCE_DIR}/config.h.in"
   "${PROJECT_BINARY_DIR}/config.h"
