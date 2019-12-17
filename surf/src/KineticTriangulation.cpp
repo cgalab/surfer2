@@ -551,7 +551,6 @@ create_bevels_at_vertex(
   for (++current_edge; current_edge != edges.end(); previous_edge = current_edge++) {
     WavefrontVertex* v = vertices.make_initial_vertex(bv.p, *previous_edge, *current_edge, true);
     if (prev_vertex) {
-      LOG(WARNING) << __FILE__ << ":" << __LINE__ << " " << "untested code path: DECL linking.";
       v->link_tail_to_tail(prev_vertex);
     }
     prev_vertex = v;
@@ -606,7 +605,6 @@ create_bevels_at_vertex(
         split_this = (CGAL::orientation(bv.p, pos_plus_normal, pos_t_ccw) == CGAL::RIGHT_TURN);
       } else {
         DBG(DBG_KT_SETUP) << "  Unbounded triangle: ccw vertex is the infinite vertex";
-        LOG(WARNING) << __FILE__ << ":" << __LINE__ << " " << "untested code path.";
         //WavefrontVertex const * const cw_v = t_it.t()->vertex(cw(t_it.v_in_t_idx()));
         //DBG(DBG_KT_SETUP) << "   cw_vertex point              " << cw_v;
 
@@ -887,7 +885,6 @@ looped_around:
     assert(side_of_f == 0);
     assert(cur_v->skeleton_dcel_halfedge(side_of_f));
     cur_v->skeleton_dcel_halfedge(side_of_f)->set_prev(prev_he);
-    LOG(WARNING) << __FILE__ << ":" << __LINE__ << " " << "untested code path: DECL setup in beveling.";
   } else {
     assert(base->prev() == NULL);
     base->set_prev(prev_he);
