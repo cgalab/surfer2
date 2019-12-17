@@ -981,21 +981,22 @@ compute_collapse_unbounded(const NT& time_now) const { // {{{
     /* one of this and n is constraint.
      */
     CollapseSpec vertex_leaves_ch(component);
-    const WavefrontSupportingLine *e;
+    const WavefrontEdge *wfe;
     const WavefrontVertex *v;
     if (is_constrained(idx)) {
-      e = wavefront(idx)->l().get();
+      wfe = wavefront(idx);
       v = n->vertex(ccw(nidx));
     } else {
-      e = n->wavefront(nidx)->l().get();
+      wfe = n->wavefront(nidx);
       v = vertex(cw(idx));
     };
+    const WavefrontSupportingLine* e = wfe->l().get();
     assert(v);
     assert(e);
 
     CGAL::Sign edge_is_faster = edge_is_faster_than_vertex(*v, *e);
     if (edge_is_faster == CGAL::ZERO) {
-      DBG(DBG_TRIANGLE_TIMING) << "   Edge " << e << " is just as fast as the vertex " << v;
+      DBG(DBG_TRIANGLE_TIMING) << "   Edge " << *wfe << " is just as fast as the vertex " << v;
 
       NT collapse_time;
       VertexOnSupportingLineType vertex_on_line_type;
@@ -1009,10 +1010,10 @@ compute_collapse_unbounded(const NT& time_now) const { // {{{
       }
       vertex_leaves_ch = CollapseSpec(component, CollapseType::NEVER);
     } else if (edge_is_faster == CGAL::POSITIVE) {
-      DBG(DBG_TRIANGLE_TIMING) << "   Edge " << e << " is faster than vertex " << v << " - CCW of t will never leave the CH.";
+      DBG(DBG_TRIANGLE_TIMING) << "   Edge " << *wfe << " is faster than vertex " << v << " - CCW of t will never leave the CH.";
       vertex_leaves_ch = CollapseSpec(component, CollapseType::NEVER);
     } else {
-      DBG(DBG_TRIANGLE_TIMING) << "   Edge " << e << " is slow than vertex " << v << " - CCW of t will leave the CH.";
+      DBG(DBG_TRIANGLE_TIMING) << "   Edge " << *wfe << " is slower than vertex " << v << " - CCW of t will leave the CH.";
 
       NT collapse_time;
       VertexOnSupportingLineType vertex_on_line_type;
