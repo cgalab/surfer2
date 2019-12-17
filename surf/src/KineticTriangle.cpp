@@ -18,10 +18,6 @@
 #include "KineticTriangle.h"
 #include "WavefrontVertex.h"
 
-DEBUG_DECL(
-unsigned KineticTriangle::ktctr = 0;
-)
-
 #ifndef NDEBUG
 void
 KineticTriangle::

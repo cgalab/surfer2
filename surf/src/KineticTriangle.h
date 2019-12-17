@@ -47,11 +47,6 @@
 class KineticTriangle {
   friend class KineticTriangulation;
 
-  DEBUG_DECL(
-    private:
-      static unsigned ktctr;
-  )
-
   public:
     const unsigned id;
     const int component;
@@ -86,8 +81,8 @@ class KineticTriangle {
       , collapse_spec_computed_with_vertices { NULL, NULL, NULL }
       #endif
       {
-      assert(pd_id == ktctr++);
     }
+
     KineticTriangle(const KineticTriangle&) = delete;
     KineticTriangle& operator =(const KineticTriangle&) = delete;
     KineticTriangle(KineticTriangle&&) = default;
