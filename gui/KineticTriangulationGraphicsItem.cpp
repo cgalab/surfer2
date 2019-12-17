@@ -227,7 +227,7 @@ paint_edges(QPainter *painter, PainterOstream painterostream) const {
         painter->setPen(constraintsPen());
       } else if (t->is_constrained(i) && visible_edges) {
         painter->setPen(edgesPen());
-      } else if (visible_edges && !t->is_constrained(i) && u->id < v->id) {
+      } else if (visible_edges && !t->is_constrained(i) && u < v) {
         painter->setPen(edgesPen());
       } else {
         continue;
@@ -273,6 +273,7 @@ paint_labels(QPainter *painter, PainterOstream painterostream) const {
 
   font.setPointSize(8);
   painter->setFont(font);
+  #ifndef NDEBUG
   for (auto i = kt->vertices_begin(); i != kt->vertices_end(); ++i) {
     if (i->is_infinite) continue;
     if (! filter_component(*i) ) continue;
@@ -282,6 +283,7 @@ paint_labels(QPainter *painter, PainterOstream painterostream) const {
     std::string t = "kv#"+std::to_string(i->id);
     painter->drawText(qp.x()+4, qp.y(), QString::fromStdString(t));
   }
+  #endif
 
   for (auto t = kt->triangles_begin(); t != kt->triangles_end(); ++t) {
     if (t->is_dead()) continue;

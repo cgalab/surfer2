@@ -35,8 +35,10 @@ class WavefrontVertex {
     static constexpr CGAL::Sign REFLEX = CGAL::RIGHT_TURN;
 
   private:
+    DEBUG_DECL(
     static unsigned kvctr;
     const unsigned id;
+    )
   public:
     const Point_2 pos_zero;
     const Point_2 pos_start;
@@ -219,9 +221,9 @@ class WavefrontVertex {
   public:
     friend inline std::ostream& operator<<(std::ostream& os, const WavefrontVertex * const kv) {
       if (kv) {
-        os << "kv"
-           << kv->id
-           << (kv->angle == CONVEX ? "c" :
+        os << "kv";
+        DEBUG_STMT(os << kv->id);
+        os << (kv->angle == CONVEX ? "c" :
                kv->angle == REFLEX ? "r" :
                kv->angle == STRAIGHT ? "=" :
                                        "XXX-INVALID-ANGLE")

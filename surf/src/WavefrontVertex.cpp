@@ -18,7 +18,9 @@
 #include "WavefrontVertex.h"
 #include "KineticTriangle.h"
 
+DEBUG_DECL(
 unsigned WavefrontVertex::kvctr = 0;
+)
 
 WavefrontVertex::
 WavefrontVertex(
@@ -30,8 +32,11 @@ WavefrontVertex(
   bool p_is_initial,
   bool p_is_beveling,
   bool p_is_infinite)
-  : id(kvctr++)
-  , pos_zero(p_pos_zero)
+  :
+  #ifndef NDEBUG
+    id(kvctr++),
+  #endif
+    pos_zero(p_pos_zero)
   , pos_start(p_pos_start)
   , time_start(p_time_start)
   , incident_wavefront_edges {a, b}
@@ -178,7 +183,7 @@ std::string
 WavefrontVertex::
 details() const {
   std::ostringstream oss;
-  oss << "kv" << id;
+  DEBUG_STMT(oss << "kv" << id);
   oss << "(";
   if (is_infinite) {
     oss << "inf";
