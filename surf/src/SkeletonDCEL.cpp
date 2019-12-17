@@ -19,11 +19,11 @@
 #include "WavefrontEdge.h"
 
 
-#ifndef NDEBUG
+DEBUG_DECL(
 unsigned SkeletonDCELVertexBase::ctr = 0;
 unsigned SkeletonDCELHalfedgeBase::ctr = 0;
 unsigned SkeletonDCELFaceBase::ctr = 0;
-#endif
+)
 
 SkeletonDCELFace*
 SkeletonDCEL::

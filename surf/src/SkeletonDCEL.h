@@ -28,14 +28,14 @@
 #include <unordered_set>
 
 class SkeletonDCELVertexBase : public CGAL::Arr_vertex_base<const Point_3> {
-  #ifndef NDEBUG
+  DEBUG_DECL(
     public:
       SkeletonDCELVertexBase() : id(ctr++) {};
     private:
       static unsigned ctr;
     public:
       const unsigned id;
-  #endif
+  )
 };
 /** A halfedge.  The Segment_3/Ray_3 is undirected. */
 class SkeletonDCELHalfedgeBase : public CGAL::Arr_halfedge_base<boost::variant<Segment_3,Ray_3>> {
@@ -53,14 +53,14 @@ class SkeletonDCELHalfedgeBase : public CGAL::Arr_halfedge_base<boost::variant<S
      * May only be called when class is specialized by Arr_halfedge */
     bool is_input() const;
 
-  #ifndef NDEBUG
+  DEBUG_DECL(
     public:
       SkeletonDCELHalfedgeBase() : id(ctr++) {};
     private:
       static unsigned ctr;
     public:
       const unsigned id;
-  #endif
+  )
 };
 class SkeletonDCELFaceBase : public CGAL::Arr_face_base {
   private:
@@ -69,14 +69,14 @@ class SkeletonDCELFaceBase : public CGAL::Arr_face_base {
     void set_is_beveling_face(bool is_beveling_face) { is_beveling_face_ = is_beveling_face; };
     bool is_beveling_face() const { return is_beveling_face_; };
 
-  #ifndef NDEBUG
+  DEBUG_DECL(
     public:
       SkeletonDCELFaceBase() : id(ctr++) {};
     private:
       static unsigned ctr;
     public:
       const unsigned id;
-  #endif
+  )
 };
 
 class SkeletonDCEL : public CGAL::Arr_dcel_base<SkeletonDCELVertexBase, SkeletonDCELHalfedgeBase, SkeletonDCELFaceBase> {
