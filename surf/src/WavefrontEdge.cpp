@@ -196,9 +196,9 @@ split(WavefrontEdgeList& wavefront_edges) {
   assert(vertices[1]->incident_wavefront_edge(0) == this);
   set_dead();
 
-  wavefront_edges.emplace_back( WavefrontEdge(vertices[0], NULL, supporting_line, incident_triangle_, skeleton_face) );
+  wavefront_edges.emplace_back( WavefrontEdge(vertices[0], NULL, supporting_line, incident_triangle_, skeleton_face, is_beveling) );
   auto pea = &wavefront_edges.back();
-  wavefront_edges.emplace_back( WavefrontEdge(NULL, vertices[1], supporting_line, incident_triangle_, skeleton_face) );
+  wavefront_edges.emplace_back( WavefrontEdge(NULL, vertices[1], supporting_line, incident_triangle_, skeleton_face, is_beveling) );
   auto peb = &wavefront_edges.back();
 
   return EdgePtrPair(pea, peb);

@@ -521,7 +521,7 @@ create_bevels_at_vertex(
       }
 
       wavefront_edges->emplace_back(
-        WavefrontEdge( std::make_shared<const WavefrontSupportingLine>(l->l()->l.opposite().perpendicular(bv.p), l->l()->weight), NULL )
+        WavefrontEdge( std::make_shared<const WavefrontSupportingLine>(l->l()->l.opposite().perpendicular(bv.p), l->l()->weight) )
       );
       WavefrontEdge *w = &wavefront_edges->back();
       edges.push_back(w);

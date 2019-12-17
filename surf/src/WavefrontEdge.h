@@ -96,7 +96,7 @@ class WavefrontEdge {
     }
 
     /* Used when setting up bevels */
-    WavefrontEdge(std::shared_ptr<const WavefrontSupportingLine> p_supporting_line, SkeletonDCELFace * p_skeleton_face)
+    WavefrontEdge(std::shared_ptr<const WavefrontSupportingLine> p_supporting_line)
       :
       #ifndef NDEBUG
         id(wavefront_edge_ctr++),
@@ -107,7 +107,7 @@ class WavefrontEdge {
       , is_initial(true)
       , is_beveling(true)
       , initial_vertices { NULL, NULL }
-      , skeleton_face(p_skeleton_face)
+      , skeleton_face(NULL)
       #ifndef NDEBUG
       , collapse_spec_computed_with_vertices { NULL, NULL }
       #endif
@@ -121,7 +121,8 @@ class WavefrontEdge {
                   WavefrontVertex* vb,
                   std::shared_ptr<const WavefrontSupportingLine> p_supporting_line,
                   KineticTriangle *incident_triangle,
-                  SkeletonDCELFace * p_skeleton_face)
+                  SkeletonDCELFace * p_skeleton_face,
+                  bool p_is_beveling)
       :
       #ifndef NDEBUG
         id(wavefront_edge_ctr++),
@@ -130,7 +131,7 @@ class WavefrontEdge {
       , supporting_line(p_supporting_line)
       , incident_triangle_(incident_triangle)
       , is_initial(false)
-      , is_beveling(false)
+      , is_beveling(p_is_beveling)
       , initial_vertices { NULL, NULL }
       , skeleton_face(p_skeleton_face)
       #ifndef NDEBUG
