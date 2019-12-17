@@ -590,19 +590,21 @@ create_bevels_at_vertex(
       DBG(DBG_KT_SETUP) << "  At last triangle, we need to split here.";
       split_this = true;
     } else {
-      DBG(DBG_KT_SETUP) << " Checking if we need to split";
+      DBG(DBG_KT_SETUP) << " Checking if we need to split in " << t_it.t();
       Point_2 pos_t_ccw;
       bool infinite_ccw_vertex;
       std::tie(pos_t_ccw, infinite_ccw_vertex) = get_vertex_pos(input, triangle_original_vertex_indices, t_it.t(), ccw(t_it.v_in_t_idx()));
 
       if (! infinite_ccw_vertex) {
         DBG(DBG_KT_SETUP) << "  All nice and finite";
-        Point_2 pos_plus_normal(bv.p + (*current_edge)->l()->normal_direction);
+        Point_2 pos_plus_normal(bv.p + (*current_edge)->l()->normal_direction.perpendicular(CGAL::RIGHT_TURN));
 
         DBG(DBG_KT_SETUP) << "   p     " << bv.p;
         DBG(DBG_KT_SETUP) << "   p+    " << pos_plus_normal;
         DBG(DBG_KT_SETUP) << "   ptccw " << pos_t_ccw;
-        split_this = (CGAL::orientation(bv.p, pos_plus_normal, pos_t_ccw) == CGAL::RIGHT_TURN);
+        auto orientation = CGAL::orientation(bv.p, pos_plus_normal, pos_t_ccw);
+        DBG(DBG_KT_SETUP) << "   orientation " << orientation;
+        split_this = (orientation == CGAL::LEFT_TURN);
       } else {
         DBG(DBG_KT_SETUP) << "  Unbounded triangle: ccw vertex is the infinite vertex";
         //WavefrontVertex const * const cw_v = t_it.t()->vertex(cw(t_it.v_in_t_idx()));
