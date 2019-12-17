@@ -790,9 +790,12 @@ accept_collapse_bounded_constrained_1(const NT& collapse_time, const Polynomial_
     switch (CGAL::sign(derivative_at_collapse)) {
       case CGAL::ZERO:
         DBG(DBG_TRIANGLE) << "Derivative is zero.  If an edge collapses right now, then either the triangle collapses entirely, or the 3rd vertex moves over our supporting line right now.  Of course it could also just be that the vertices are collinear exactly once.";
-        // DBG(DBG_TRIANGLE) << "At any rate, since the sign of the determinant is positive, the triangle has positive area after this event and we do not need to do anything here.";
-        DBG(DBG_TRIANGLE) << "At any rate, this is the only event the triangle will ever see.  Handle it.";
-        result = true;
+        if (collapse_time_is_edge_collapse) {
+          DBG(DBG_TRIANGLE) << "At any rate, this is an edge collapse and the only event the triangle will ever see.  Handle it.";
+        } else {
+          DBG(DBG_TRIANGLE) << "At any rate, since the sign of the determinant is positive, the triangle has positive area after this event, and this is not an edge collapse: we do not need to do anything here.";
+        }
+        result = collapse_time_is_edge_collapse;
         break;
       case CGAL::NEGATIVE:
         DBG(DBG_TRIANGLE) << "Derivative is negative.  This is the first time the triangle collapses.  We want it.";
@@ -852,7 +855,7 @@ compute_collapse_bounded_constrained_1(const NT& time_now) const { // {{{
     assert(candidate.type() == CollapseType::CONSTRAINT_COLLAPSE || candidate.type() == CollapseType::NEVER);
 
     if (determinant.degree() == 2) { // The edge could collapse, or we could flip/split
-      bool have_collapse = candidate.type() == CollapseType::CONSTRAINT_COLLAPSE && accept_collapse_bounded_constrained_1(candidate.time(), determinant, true);
+      bool have_collapse = (candidate.type() == CollapseType::CONSTRAINT_COLLAPSE) && accept_collapse_bounded_constrained_1(candidate.time(), determinant, true);
 
       if (have_collapse) {
         DBG(DBG_TRIANGLE) << "We like the edge collapse.";
