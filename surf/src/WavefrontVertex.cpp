@@ -18,6 +18,8 @@
 #include "WavefrontVertex.h"
 #include "KineticTriangle.h"
 
+unsigned WavefrontVertex::kvctr = 0;
+
 WavefrontVertex::
 WavefrontVertex(
   const Point_2& p_pos_zero,
