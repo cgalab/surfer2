@@ -63,8 +63,10 @@ class WavefrontVertex;
 
 #ifndef NDEBUG
   #define DEBUG_STMT(x) x
+  #define DEBUG_DECL(x) x
 #else
   #define DEBUG_STMT(x) STMT_NIL
+  #define DEBUG_DECL(x)
 #endif
 
 
