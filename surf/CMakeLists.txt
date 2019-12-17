@@ -67,7 +67,7 @@ target_include_directories(surflib PRIVATE src)
 
 try_compile(HAVE_INTERSECTION_OF_CONSTRAINTS_EXCEPTION
   "${CMAKE_BINARY_DIR}/temp"
-  SOURCES "${CMAKE_SOURCE_DIR}/cmake/tests/test_CGAL__Intersection_of_constraints_exception.cpp"
+  SOURCES "${PROJECT_SOURCE_DIR}/../cmake/tests/test_CGAL__Intersection_of_constraints_exception.cpp"
   CMAKE_FLAGS "-DCMAKE_CXX_LINK_EXECUTABLE='echo not linking now...'" )
 
 configure_file (
