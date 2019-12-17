@@ -17,14 +17,10 @@
  */
 #include "BasicInput.h"
 
-void
-BasicInput::add_graph(const BGLGraph& graph) {
-  assert(vertices_.size() == 0);
-  assert(edges_.size() == 0);
-
+BasicInputFromBGL::
+BasicInputFromBGL(const BGLGraph& graph) {
   typedef BGLGraph::vertex_descriptor VertexType;
   typedef BGLGraph::edge_descriptor EdgeType;
-
   DEBUG_STMT(auto index_map = boost::get(boost::vertex_index, graph));
 
   for (auto vp = boost::vertices(graph); vp.first != vp.second; ++vp.first) {
@@ -33,9 +29,8 @@ BasicInput::add_graph(const BGLGraph& graph) {
     Point_2 p(string_to_maybe_NT(graph[v].x), string_to_maybe_NT(graph[v].y));
     DBG(DBG_INPUT) << std::setprecision(16) << "x: " << CGAL::to_double(p.x()) << "; y: " << CGAL::to_double(p.y());
     unsigned degree = boost::degree(v, graph);
-    add_vertex(Vertex(p, degree, vertices_.size()));
-    assert(index_map[v] == vertices_.size()-1);
-    if (degree == 1) num_of_deg1_vertices++;
+    add_vertex(Vertex(p, degree, num_vertices_()));
+    assert(index_map[v] == num_vertices_()-1);
   }
   for (auto ep = boost::edges(graph); ep.first != ep.second; ++ep.first) {
     const EdgeType e = *ep.first;
@@ -43,13 +38,13 @@ BasicInput::add_graph(const BGLGraph& graph) {
     unsigned s = source(e, graph);
     unsigned t = target(e, graph);
     if (s == t) {
-      LOG(ERROR) << "Invalid input: source and target of edge " << edges_.size() << " are the same vertex (v" << t << ").";
+      LOG(ERROR) << "Invalid input: source and target of edge " << num_edges_() << " are the same vertex (v" << t << ").";
       exit(EXIT_INVALID_INPUT);
     }
     add_edge(s, t, weight);
   }
 
-  assert_valid();
+  finalize();
 }
 
 #ifndef NDEBUG

@@ -71,8 +71,7 @@ do_surf(std::istream& is, std::ostream& os, int restrict_component, const std::s
 
   BGLGraph graph = BGLGraph::create_from_graphml(is);
   clock_t stage_01 = clock();
-  SkeletonStructure s;
-  s.add_graph(graph);
+  SkeletonStructure s = SkeletonStructure(BasicInputFromBGL(graph));
   clock_t stage_02 = clock();
   s.initialize(restrict_component);
   clock_t stage_03 = clock();

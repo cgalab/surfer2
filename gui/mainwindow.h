@@ -89,7 +89,7 @@ class MainWindow : public CGAL::Qt::DemosMainWindow
     QLabel* time_label;
     NT drawing_time_offset_increment;
 
-    SkeletonStructure s;
+    std::unique_ptr<SkeletonStructure> s;
 
     std::shared_ptr<InputGraphicsItem> input_gi;
     std::shared_ptr<KineticTriangulationGraphicsItem> kinetic_triangulation_gi;

@@ -52,18 +52,18 @@ MainWindow::MainWindow(std::string p_title, std::istream& is, unsigned skip_to, 
 
   BGLGraph graph;
   graph = BGLGraph::create_from_graphml(is);
-  s.add_graph(graph);
-  s.initialize(restrict_component);
+  s = std::make_unique<SkeletonStructure>(BasicInputFromBGL(graph));
+  s->initialize(restrict_component);
 
-  input_gi = std::make_shared<InputGraphicsItem>(&s.get_input());
+  input_gi = std::make_shared<InputGraphicsItem>(&s->get_input());
   scene.addItem(input_gi.get());
 
   auto input_size = input_gi->boundingRect().size();
   auto size_avg = (input_size.width() + input_size.height() ) /2.0;
-  s.wp.set_increment(size_avg/5000.);
+  s->wp.set_increment(size_avg/5000.);
   drawing_time_offset_increment = size_avg/5000.;
 
-  kinetic_triangulation_gi = std::make_shared<KineticTriangulationGraphicsItem>(&s.get_kt(), size_avg/200.);
+  kinetic_triangulation_gi = std::make_shared<KineticTriangulationGraphicsItem>(&s->get_kt(), size_avg/200.);
   scene.addItem(kinetic_triangulation_gi.get());
 
   offsets_gi = std::make_shared<OffsetsGraphicsItem>();
@@ -79,7 +79,7 @@ MainWindow::MainWindow(std::string p_title, std::istream& is, unsigned skip_to, 
   ui->statusBar->addWidget(xycoord, 0);
 
   updateEnabled();
-  s.wp.do_initial_skips(skip_all, skip_to, skip_until_t);
+  s->wp.do_initial_skips(skip_all, skip_to, skip_until_t);
   time_changed();
 }
 
@@ -158,15 +158,15 @@ void MainWindow::mousePressEvent(QMouseEvent *event) {
   (void) event;
 
   // Kernel::Point_2 p( ui->gV->getMousePoint().x(),  ui->gV->getMousePoint().y() );
-  // XXX s.kinetic_triangulation->showInfoAt(p);
+  // XXX s->kinetic_triangulation->showInfoAt(p);
 }
 
 void
 MainWindow::
 update_time_label() {
-  auto t = CGAL::to_double( s.wp.get_time() );
+  auto t = CGAL::to_double( s->wp.get_time() );
   time_label->setText(QString("e#%1; t: %2 (%3 %4); ").
-    arg(s.wp.event_ctr()).
+    arg(s->wp.event_ctr()).
     arg(t , 9, 'f', 5).
     arg((kinetic_triangulation_gi->drawing_time_offset() < 0) ? "-" : "+" ).
     arg(abs(CGAL::to_double(kinetic_triangulation_gi->drawing_time_offset())), 9, 'f', 5)
@@ -176,62 +176,62 @@ update_time_label() {
 void
 MainWindow::
 time_changed() {
-  if (s.wp.propagation_complete()) {
+  if (s->wp.propagation_complete()) {
     simulation_has_finished();
   }
   update_time_label();
-  kinetic_triangulation_gi->setTime(s.wp.get_time());
-  kinetic_triangulation_gi->setComponent(s.wp.get_current_component());
+  kinetic_triangulation_gi->setTime(s->wp.get_time());
+  kinetic_triangulation_gi->setComponent(s->wp.get_current_component());
   kinetic_triangulation_gi->highlighted_clear();
-  if (!s.wp.propagation_complete()) {
-    const std::shared_ptr<const EventQueueItem> next = s.wp.peak();
+  if (!s->wp.propagation_complete()) {
+    const std::shared_ptr<const EventQueueItem> next = s->wp.peak();
     kinetic_triangulation_gi->highlighted_add(next->get_priority().t);
   }
 }
 
 void
 MainWindow::on_actionTimeBackward_triggered() {
-  s.wp.reverse_time(); // b - move back in time
+  s->wp.reverse_time(); // b - move back in time
   time_changed();
 }
 
 void
 MainWindow::on_actionTimeForwardThrough_triggered() {
-  s.wp.advance_time_ignore_event(); // M - Move forward in time, but ignore any event that may have happened
+  s->wp.advance_time_ignore_event(); // M - Move forward in time, but ignore any event that may have happened
   time_changed();
 }
 
 void
 MainWindow::on_actionTimeForward_triggered() {
-  s.wp.advance_time(); // N - Move forward in time by the increment, or until the next event and handle it
+  s->wp.advance_time(); // N - Move forward in time by the increment, or until the next event and handle it
   time_changed();
 }
 
 void
 MainWindow::on_actionTimeForwardNext_triggered() {
-  s.wp.advance_time_next(); // , - Move forward in time to the next event but do not handle it yet
+  s->wp.advance_time_next(); // , - Move forward in time to the next event but do not handle it yet
   time_changed();
 }
 
 void
 MainWindow::on_actionTimeReset_triggered() {
-  s.wp.reset_time_to_last_event(); // backspace -- reset to last event time
+  s->wp.reset_time_to_last_event(); // backspace -- reset to last event time
   time_changed();
 }
 
 void
 MainWindow::on_actionEventStep_triggered() {
-  s.wp.advance_step(); // n - Move forward in time to the next event and handle it
+  s->wp.advance_step(); // n - Move forward in time to the next event and handle it
   time_changed();
 }
 
 void
 MainWindow::on_actionEventStepEnd_triggered() {
-  s.wp.advance_to_end();
+  s->wp.advance_to_end();
 
   auto size = kinetic_triangulation_gi->boundingRect().size();
   auto size_avg = (size.width() + size.height() ) /2.0;
-  s.wp.advance_time_ignore_event(s.wp.get_time() + size_avg/5.);
+  s->wp.advance_time_ignore_event(s->wp.get_time() + size_avg/5.);
 
   time_changed();
 }
@@ -256,7 +256,7 @@ void
 MainWindow::
 update_offsets() {
   if (!did_finish) return;
-  const SkeletonDCEL& skeleton = s.get_skeleton();
+  const SkeletonDCEL& skeleton = s->get_skeleton();
   std::vector<SkeletonDCEL::OffsetFamily> offsets;
 
   for (const NT& offset_distance : skeleton.parse_offset_spec( skoffset )) {
@@ -272,7 +272,7 @@ MainWindow::simulation_has_finished() {
 
   did_finish = true;
 
-  skeleton_gi = std::make_shared<SkeletonGraphicsItem>(&s.get_skeleton());
+  skeleton_gi = std::make_shared<SkeletonGraphicsItem>(&s->get_skeleton());
   scene.addItem(skeleton_gi.get());
 
   ui->actionVisToggleInput->setChecked(false);

@@ -102,21 +102,19 @@ class SkeletonStructure {
   friend class WavefrontPropagator;
 
   private:
-    BasicInput input;
+    const BasicInput input;
     WavefrontEdgeList wavefront_edges;
     KineticTriangulation kt;
 
   public:
     WavefrontPropagator wp;
 
-    SkeletonStructure()
-      : wp(this)
+    SkeletonStructure(BasicInput&& input_)
+      : input(std::forward<BasicInput>(input_))
+      , wp(this)
     { };
 
     /** copy vertices and edges from a Boost Graph. */
-    void add_graph(const BGLGraph& graph) {
-      input.add_graph(graph);
-    };
     void initialize(int restrict_component = -1);
 
     const BasicInput& get_input() const {
