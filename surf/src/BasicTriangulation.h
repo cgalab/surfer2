@@ -63,6 +63,8 @@ class BasicTriangulation : public
      * If there are only two components, and every edge has a different
      * component on each of its sides, we set consistent_sidedness to true.
      * Else we set it to false.
+     *
+     * Currently nothing cares about consistent_sidedness, however.
      */
     void tag_components(const Vertex_handle& v0, const Vertex_handle& v1);
   public:

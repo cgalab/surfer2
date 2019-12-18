@@ -28,34 +28,32 @@ BasicTriangulation::tag_components(const Vertex_handle& v0, const Vertex_handle&
   DBG(DBG_INPUT) << "establishing components";
   assert(is_edge(v0, v1));
 
-  auto first_face = incident_faces(v0);
-  auto current_face = first_face;
   Face_handle face = NULL;
-  int v0_in_face;
-  int v1_in_face;
-  do {
-    assert(current_face->has_vertex(v0));
-    v0_in_face = current_face->index(v0);
-    if (current_face->vertex(ccw(v0_in_face)) == v1) {
-      face = current_face;
-      break;
-    }
-    ++current_face;
-  } while (current_face != first_face);
+  /* Find the face incident to edge (v0,v1) */
+  {
+    auto first_face = incident_faces(v0);  /* This breaks CGAL when there are only infinte faces. */
+    assert(!is_infinite(first_face));
+    auto current_face = first_face;
+    int v0_in_face;
+    int v1_in_face;
+    do {
+      assert(current_face->has_vertex(v0));
+      v0_in_face = current_face->index(v0);
+      if (current_face->vertex(ccw(v0_in_face)) == v1) {
+        face = current_face;
+        break;
+      }
+      ++current_face;
+    } while (current_face != first_face);
 
-  assert(face != NULL);
-  DEBUG_STMT(v1_in_face = ccw(v0_in_face));
+    assert(face != NULL);
+    DEBUG_STMT(v1_in_face = ccw(v0_in_face));
 
-  assert(face->vertex(v0_in_face) == v0);
-  assert(face->vertex(v1_in_face) == v1);
-  DBG(DBG_EVENTQ) << "found face.";
+    assert(face->vertex(v0_in_face) == v0);
+    assert(face->vertex(v1_in_face) == v1);
+    DBG(DBG_EVENTQ) << "found face.";
+  };
 
-  /*
-  std::queue<Face_handle> queue;
-  face->info().queued = true;
-  face->info().component = component_ctr;
-  queue.push(face);
-  */
   std::queue<Face_handle> potential_components;
   face->info().queued_potential_components = true;
   potential_components.push(face);
@@ -195,6 +193,13 @@ initialize(const BasicInput& input) {
     #endif
   }
 
+  DBG(DBG_INPUT) << "Input has dimension " << dimension();
+  DBG(DBG_INPUT) << "Have " << number_of_faces() << " finite faces";
+  if (dimension() <= 1) {
+    LOG(ERROR) << "Cannot handle input of dimension less than 2.";
+    exit(EXIT_INVALID_INPUT);
+  }
+  assert(number_of_faces() > 0);
   tag_components( ct_vertex_handles[input.edges()[0].u], ct_vertex_handles[input.edges()[0].v] );
 
   DBG_FUNC_END(DBG_INPUT);
