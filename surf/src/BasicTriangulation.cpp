@@ -150,8 +150,11 @@ initialize(const BasicInput& input) {
    * We use this as a location hint, on the assumption that vertex insert order
    * is somewhat spacially ordered.  This is only a hint to the CDT inserter.
    */
+  if (input.vertices().size() == 0) {
+    LOG(ERROR) << "Invalid input: no vertices.";
+    exit(EXIT_INVALID_INPUT);
+  }
   Face_handle prev_fh = NULL;
-  //for (const auto p : input.vertices()) {
   for (size_t i=0; i<input.vertices().size(); ++i) {
     const auto p = input.vertices()[i];
     auto vh = insert(p.p, prev_fh);
@@ -159,7 +162,10 @@ initialize(const BasicInput& input) {
     prev_fh = incident_faces(vh);
     ct_vertex_handles.push_back(vh);
   }
-
+  if (number_of_vertices() != input.vertices().size()) {
+    LOG(ERROR) << "Inserted only " << number_of_vertices() << " out of " << input.vertices().size() << " vertices.  Are the incident vertices?";
+    exit(EXIT_INVALID_INPUT);
+  }
   if (input.edges().size() == 0) {
     LOG(ERROR) << "Invalid input: no edges.";
     exit(EXIT_INVALID_INPUT);
@@ -171,6 +177,10 @@ initialize(const BasicInput& input) {
    * coordinates.
    */
   for (const auto e : input.edges()) {
+    if (ct_vertex_handles[e.u] == ct_vertex_handles[e.v]) {
+      LOG(ERROR) << "Invalid input: Edge (" << e.u << ", " << e.v << ") is a loop.";
+      exit(EXIT_INVALID_INPUT);
+    }
     #ifdef HAVE_INTERSECTION_OF_CONSTRAINTS_EXCEPTION
     try {
     #endif
