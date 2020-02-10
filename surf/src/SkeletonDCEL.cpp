@@ -302,7 +302,7 @@ parse_offset_spec(const std::string& offset_spec) {
       }
       if (*e) *e = '\0';
 
-      step = NT(one_offset);
+      step = string_to_maybe_NT(one_offset);
       DBG(DBG_SKEL) << "    adding " << cnt << " times " << one_offset << "("<<CGAL::to_double(step)<<")";
       for (i=0; i<cnt; i++) {
         time +=  step;
