@@ -39,8 +39,8 @@
     static const NT CORE_ZERO = 0.0;
     #define string_to_maybe_NT(x) std::stod(x)
   #else
-    #include <CGAL/Cartesian.h>
-    using Kernel  = CGAL::Cartesian<double>;
+    #include <CGAL/Simple_cartesian.h>
+    using Kernel  = CGAL::Simple_cartesian<double>;
     using NT = Kernel::FT;
 
     static const NT CORE_ONE =  1.0;
