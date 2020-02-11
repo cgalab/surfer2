@@ -128,8 +128,14 @@ MainWindow::on_actionResize_triggered() {
   if (skeleton_gi) {
     br |= skeleton_gi->boundingRect();
   }
-  ui->gV->setSceneRect(br);
-  ui->gV->fitInView(br, Qt::KeepAspectRatio);
+  qreal w = br.width();
+  qreal h = br.height();
+
+  double margins_factor = 0.025;
+  auto with_margins = br.marginsAdded(QMarginsF(w*margins_factor, h*margins_factor, w*margins_factor, h*margins_factor));
+
+  ui->gV->setSceneRect(with_margins);
+  ui->gV->fitInView(with_margins, Qt::KeepAspectRatio);
 }
 
 void
