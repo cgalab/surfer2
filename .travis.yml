@@ -36,8 +36,12 @@ matrix:
       env: BUILD_TYPE="Release"
     - compiler: gcc
       env: BUILD_TYPE="Debug"
+    - compiler: gcc
+      env: BUILD_TYPE="Release" NT_USE_DOUBLE=yes
+    - compiler: gcc
+      env: BUILD_TYPE="Debug" NT_USE_DOUBLE=yes
 
 script:
- - cmake -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" .
+ - cmake -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" -DNT_USE_DOUBLE=${NT_USE_DOUBLE:-no} .
  - make
  - make test
