@@ -215,7 +215,7 @@ MainWindow::on_actionTimeForwardThrough_triggered() {
 
 void
 MainWindow::on_actionTimeForward_triggered() {
-  s->wp.advance_time(); // N - Move forward in time by the increment, or until the next event and handle it
+  s->wp.advance_time(); // N - Move forward in time by the increment, processing all events until then
   time_changed();
 }
 

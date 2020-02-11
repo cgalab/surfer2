@@ -34,10 +34,11 @@ advance_time() {
     if (no_more_events()) {
       advance_step();
     } else {
-      const std::shared_ptr<EventQueueItem> next = eq->peak();
-      if (time > next->get_priority().time()) {
+      NT want_time = time;
+      while (!propagation_complete() && want_time > eq->peak()->get_priority().time()) {
         advance_step();
       }
+      time = want_time;
     }
   }
 }
