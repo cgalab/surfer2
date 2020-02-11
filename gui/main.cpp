@@ -32,6 +32,7 @@ static struct option long_options[] = {
   { "skip-until",   required_argument, 0, 'T'},
   { "component",    required_argument, 0, 'c'},
   { "sk-offset"   , required_argument, 0, 'O'},
+  { "step-increment", required_argument, 0, 'I'},
   //{ "random-seeed", required_argument, 0, 'R'},
   { 0, 0, 0, 0}
 };
@@ -48,6 +49,7 @@ usage(const char *progname, int err) {
   fprintf(f,"           --title=<title>            Set window title.\n"); // by QApplication
   fprintf(f,"           --component=0|l|1|r|<n>    Only left (0) or right (1) sided SK (if well defined for input), or component #n in general.\n");
   fprintf(f,"           --sk-offset=<offset-spec>  Draw offsets.\n");
+  fprintf(f,"           --step-increment=<time>    Step-size when moving forward in the propagation.\n");
   //fprintf(f,"           --random-seed=<seed>       Seed for RNG (for debugging).\n");
   fprintf(f,"\n");
   fprintf(f,"  offset-spec = <one-block> [ ',' <one-block> ]\n");
@@ -66,11 +68,11 @@ int main(int argc, char *argv[]) {
   std::string skoffset;
   std::string skip_until_time;
   int restrict_component = -1;
+  NT step_increment = CORE_ZERO;
 
   while (1) {
     int option_index = 0;
-    //int r = getopt_long(argc, argv, "hs:SO:R:T:", long_options, &option_index);
-    int r = getopt_long(argc, argv, "hs:ST:c:", long_options, &option_index);
+    int r = getopt_long(argc, argv, "hs:ST:c:I:", long_options, &option_index);
 
     if (r == -1) break;
     switch (r) {
@@ -92,6 +94,10 @@ int main(int argc, char *argv[]) {
 
       case 'T':
         skip_until_time = std::string(optarg);
+        break;
+
+      case 'I':
+        step_increment = string_to_maybe_NT(optarg);
         break;
 
       /*
@@ -146,7 +152,7 @@ int main(int argc, char *argv[]) {
   }
   std::istream &in = use_stdin ? std::cin : filestream;
 
-  MainWindow w(title, in, skip_to, skip_all, skip_until_time, skoffset, restrict_component);
+  MainWindow w(title, in, skip_to, skip_all, skip_until_time, skoffset, restrict_component, step_increment);
   w.show();
 
   return a.exec();

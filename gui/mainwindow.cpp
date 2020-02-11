@@ -22,7 +22,7 @@
 
 #include <QInputDialog>
 
-MainWindow::MainWindow(std::string p_title, std::istream& is, unsigned skip_to, bool skip_all, std::string skip_until_time, std::string skoffset_, int restrict_component) :
+MainWindow::MainWindow(std::string p_title, std::istream& is, unsigned skip_to, bool skip_all, std::string skip_until_time, std::string skoffset_, int restrict_component, NT step_increment_) :
   CGAL::Qt::DemosMainWindow(),
   title(p_title),
   skoffset(skoffset_),
@@ -60,8 +60,14 @@ MainWindow::MainWindow(std::string p_title, std::istream& is, unsigned skip_to, 
 
   auto input_size = input_gi->boundingRect().size();
   auto size_avg = (input_size.width() + input_size.height() ) /2.0;
-  s->wp.set_increment(size_avg/5000.);
-  drawing_time_offset_increment = size_avg/5000.;
+
+  if (step_increment_ <= CORE_ZERO) {
+    s->wp.set_increment(size_avg/5000.);
+    drawing_time_offset_increment = size_avg/5000.;
+  } else {
+    s->wp.set_increment(step_increment_);
+    drawing_time_offset_increment = step_increment_;
+  }
 
   kinetic_triangulation_gi = std::make_shared<KineticTriangulationGraphicsItem>(&s->get_kt(), size_avg/200.);
   scene.addItem(kinetic_triangulation_gi.get());

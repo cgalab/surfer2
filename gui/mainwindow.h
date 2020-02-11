@@ -45,7 +45,8 @@ class MainWindow : public CGAL::Qt::DemosMainWindow
       bool skip_all=false,
       std::string skip_until_time="",
       std::string skoffset="",
-      int restrict_component = -1);
+      int restrict_component = -1,
+      NT step_increment = CORE_ZERO);
     ~MainWindow();
 
   private:
