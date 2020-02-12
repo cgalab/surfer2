@@ -128,10 +128,10 @@
   </action>
   <action name="actionResize">
    <property name="text">
-    <string>resize (Alt+Shift+R)</string>
+    <string>resize</string>
    </property>
    <property name="toolTip">
-    <string>reset Zoom</string>
+    <string>reset Zoom (Alt+Shift+R)</string>
    </property>
    <property name="shortcut">
     <string>Alt+Shift+R</string>
