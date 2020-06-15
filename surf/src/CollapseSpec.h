@@ -137,9 +137,18 @@ class CollapseSpec {
 
 
   public:
-    //CollapseSpec(const CollapseSpec&) = delete;
-    //CollapseSpec(CollapseSpec&&) = default;
-    //CollapseSpec& operator = (CollapseSpec&&) = default;
+    CollapseSpec(const CollapseSpec&) = default;
+    CollapseSpec(CollapseSpec&&) = default;
+    CollapseSpec& operator = (CollapseSpec&& o) {
+      assert(component == o.component);
+
+      type_ = std::move(o.type_);
+      time_ = std::move(o.time_);
+      relevant_edge_ = std::move(o.relevant_edge_);
+      secondary_key_ = std::move(o.secondary_key_);
+      return *this;
+    }
+
     CollapseSpec& operator =(const CollapseSpec& o) {
       assert(component == o.component);
       type_ = o.type_;
