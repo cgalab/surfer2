@@ -79,46 +79,24 @@ configure_file (
 include(GNUInstallDirs)
 
 #### TESTING ##
-#include_directories("${PROJECT_SOURCE_DIR}")
+if(TEST_SUITE)
+  set( TEST_BINARY_NAME runtests )
+  include(GoogleTest)
+  add_executable( ${TEST_BINARY_NAME}
+    test/TestBGLGraph.cpp
+    test/TestHeap.cpp
+    src/BGLGraph.cpp
+    src/surf.cpp
+    easyloggingpp/src/easylogging++.cc
+    )
+  gtest_add_tests(TARGET ${TEST_BINARY_NAME})
+  set_target_properties(${TEST_BINARY_NAME} PROPERTIES PRIVATE "-Wnofloat-equal")
+  target_include_directories(${TEST_BINARY_NAME} PRIVATE include)
+  target_include_directories(${TEST_BINARY_NAME} PRIVATE src)
+  target_include_directories(${TEST_BINARY_NAME} PRIVATE test)
+  target_link_libraries(${TEST_BINARY_NAME} gtest gtest_main pthread )
+  target_link_libraries(${TEST_BINARY_NAME} ${Boost_LIBRARIES} )
+  target_link_libraries(${TEST_BINARY_NAME} ${CGAL_LIBRARIES} ${CGAL_3RD_PARTY_LIBRARIES})
 
-include(ExternalProject)
-ExternalProject_Add(
-    googletest
-    DOWNLOAD_COMMAND ""
-    SOURCE_DIR "/usr/src/googletest/googletest"
-    PREFIX "googletest"
-    INSTALL_COMMAND ""
-    LOG_CONFIGURE ON
-    LOG_BUILD ON
-)
-ExternalProject_Get_Property(googletest binary_dir)
-add_library(gtest UNKNOWN IMPORTED)
-add_library(gtest_main UNKNOWN IMPORTED)
-set_target_properties(gtest PROPERTIES
-    IMPORTED_LOCATION ${binary_dir}/libgtest.a
-)
-set_target_properties(gtest_main PROPERTIES
-    IMPORTED_LOCATION ${binary_dir}/libgtest_main.a
-)
-add_dependencies(gtest googletest)
-add_dependencies(gtest_main googletest)
-
-set( TEST_BINARY_NAME runtests )
-include(GoogleTest)
-add_executable( ${TEST_BINARY_NAME}
-  test/TestBGLGraph.cpp
-  test/TestHeap.cpp
-  src/BGLGraph.cpp
-  src/surf.cpp
-  easyloggingpp/src/easylogging++.cc
-  )
-gtest_add_tests(TARGET ${TEST_BINARY_NAME})
-set_target_properties(${TEST_BINARY_NAME} PROPERTIES PRIVATE "-Wnofloat-equal")
-target_include_directories(${TEST_BINARY_NAME} PRIVATE include)
-target_include_directories(${TEST_BINARY_NAME} PRIVATE src)
-target_include_directories(${TEST_BINARY_NAME} PRIVATE test)
-target_link_libraries(${TEST_BINARY_NAME} gtest gtest_main pthread )
-target_link_libraries(${TEST_BINARY_NAME} ${Boost_LIBRARIES} )
-target_link_libraries(${TEST_BINARY_NAME} ${CGAL_LIBRARIES} ${CGAL_3RD_PARTY_LIBRARIES})
-
-target_compile_options(${TEST_BINARY_NAME} PRIVATE "-Wno-unused-function")
+  target_compile_options(${TEST_BINARY_NAME} PRIVATE "-Wno-unused-function")
+ENDIF()

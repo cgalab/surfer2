@@ -53,6 +53,9 @@ This will create a release build, without expensive assertions.  To build the de
 pass `-DCMAKE_BUILD_TYPE=Debug` to cmake, or nothing at all.  If you prefer gcc to clang, don't set
 the CXX environment variable when calling cmake.
 
+Other build options are `TEST_SUITE`, which defaults to off (to enable, pass `-DTEST_SUITE=on` to cmake),
+and `BUILD_SHARED_LIBS` and `LIB_ONLY` (also off by default).
+
 # Running the command line client or gui
 
 Both the command line client, `surfer`, as well as the gui, `surfgui` take

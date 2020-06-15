@@ -98,6 +98,8 @@ else()
   set (DEBUG_EXPENSIVE_PREDICATES OFF)
 endif()
 
+option(TEST_SUITE                 "Build test suite" OFF)
+
 option(DEBUG_COLLAPSE_TIMES       "Double check collapse times and add extra safeties" ${DEBUG_COLLAPSE_TIMES})
 
 option(DEBUG_OUTPUT               "Include logging at debug level" ${DEBUG_OUTPUT})
