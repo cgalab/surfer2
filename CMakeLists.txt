@@ -107,7 +107,7 @@ option(NT_USE_DOUBLE              "Use double as the number type" OFF)
 option(HEAP_STATS                 "Gather stats on heap properties" OFF)
 
 option(BUILD_SHARED_LIBS          "Build surflib as a shared library" OFF)
-option(LIBS_ONLY                  "Build surflib only, no gui or cli" OFF)
+option(LIB_ONLY                   "Build surflib only, no gui or cli" OFF)
 
 configure_file (
   "${PROJECT_SOURCE_DIR}/config.h.in"
@@ -117,9 +117,9 @@ configure_file (
 include_directories("${PROJECT_BINARY_DIR}")
 
 if(LIB_ONLY)
-	subdirs (surf)
+  subdirs (surf)
 else()
-	subdirs (surf gui cc)
+  subdirs (surf gui cc)
 endif()
 
 enable_testing()
