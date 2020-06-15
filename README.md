@@ -32,13 +32,15 @@ On Debian 10 (buster), installing the following packages is sufficient to build 
   * libboost-iostreams-dev
   * libcgal-dev
   * libcgal-qt5-dev
-  * libgtest-dev
   * libqt5opengl5-dev
   * libqt5svg5-dev
   * qtbase5-dev
   * clang
 
-If you have an older libgtest-dev (<= 1.7), such as on Ubuntu 18.04, you may need to explicitly install googletest also.
+
+To also build the test suite, you will additionally need `libgtest-dev`.  If
+you have an older libgtest-dev (<= 1.7), such as on Ubuntu 18.04, you may need
+to explicitly install googletest also.
 
 # Building
 
