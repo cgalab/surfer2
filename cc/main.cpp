@@ -131,7 +131,11 @@ do_surf(std::istream& is, std::ostream& os, int restrict_component, const std::s
   }
 }
 
+#ifdef SURF_TEST_SUITE
+int run_surfer(int argc, char *argv[]) {
+#else
 int main(int argc, char *argv[]) {
+#endif
   std::string skoffset;
   int restrict_component = -1;
   unsigned verbose = 0;
