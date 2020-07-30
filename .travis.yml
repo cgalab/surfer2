@@ -42,6 +42,6 @@ matrix:
       env: BUILD_TYPE="Debug" NT_USE_DOUBLE=yes
 
 script:
- - cmake -DTEST_SUITE=yes -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" -DNT_USE_DOUBLE=${NT_USE_DOUBLE:-no} .
+ - cmake -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" -DNT_USE_DOUBLE=${NT_USE_DOUBLE:-no} .
  - make
  - make test
