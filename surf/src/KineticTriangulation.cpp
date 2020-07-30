@@ -2168,7 +2168,6 @@ handle_face_with_infintely_fast_weighted_vertex(const Event& event) {
 
   // update prev/next for the DCEL that is the wavefront vertices
   v_fast->set_next_vertex(1-winning_edge_idx_in_v, o, false);
-  LOG(WARNING) << __FILE__ << ":" << __LINE__ << " " << "untested code path: DECL linking.";
 
   do_constraint_collapse_part2(*most_cw_triangle, most_cw_triangle->index(losing_edge), time);
 
