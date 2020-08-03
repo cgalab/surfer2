@@ -2501,7 +2501,7 @@ handle_ccw_vertex_leaves_ch_event(const Event& event) {
 void
 KineticTriangulation::
 update_event_timing_stats(const NT& now) {
-  if (now > last_event_time) {
+  if (now != last_event_time) {
     max_events_per_time = std::max(max_events_per_time, events_per_current_event_time);
     avg_events_per_time_sum += events_per_current_event_time;
     ++avg_events_per_time_ctr;
