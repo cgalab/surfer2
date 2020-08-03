@@ -128,6 +128,17 @@ do_surf(std::istream& is, std::ostream& os, int restrict_component, const std::s
     #ifdef HEAP_STATS
       stats_os << "[SURF] HEAP_EQUALITIES                            "  << heap_eq_ctr << std::endl;
     #endif
+
+    stats_os << "[SURF] TRIANGLES_PER_EDGE_EVENT_MAX                        "  << s.get_kt().max_triangles_per_edge_event << std::endl;
+    stats_os << "[SURF] TRIANGLES_PER_EDGE_EVENT_SUM                        "  << s.get_kt().avg_triangles_per_edge_event_sum << std::endl;
+    stats_os << "[SURF] TRIANGLES_PER_EDGE_EVENT_CTR                        "  << s.get_kt().avg_triangles_per_edge_event_ctr << std::endl;
+    stats_os << "[SURF] TRIANGLES_PER_SPLIT_EVENT_MAX                       "  << s.get_kt().max_triangles_per_split_event << std::endl;
+    stats_os << "[SURF] TRIANGLES_PER_SPLIT_EVENT_SUM                       "  << s.get_kt().avg_triangles_per_split_event_sum << std::endl;
+    stats_os << "[SURF] TRIANGLES_PER_SPLIT_EVENT_CTR                       "  << s.get_kt().avg_triangles_per_split_event_ctr << std::endl;
+
+    stats_os << "[SURF] EVENTS_PER_TIME_MAX                                 "  << s.get_kt().max_events_per_time << std::endl;
+    stats_os << "[SURF] EVENTS_PER_TIME_SUM                                 "  << s.get_kt().avg_events_per_time_sum << std::endl;
+    stats_os << "[SURF] EVENTS_PER_TIME_CTR                                 "  << s.get_kt().avg_events_per_time_ctr << std::endl;
   }
 }
 

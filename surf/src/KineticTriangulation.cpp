@@ -1739,6 +1739,8 @@ do_constraint_collapse_part2(KineticTriangle& t, unsigned edge_idx, const NT& ti
   vb->set_next_vertex(1, v);
 
   {
+    unsigned affected_triangles = 0;
+
     DBG(DBG_KT_EVENT) << "updating vertex in affected triangles";
     auto end = incident_faces_end();
     auto i = incident_faces_iterator(&t, ccw(edge_idx));
@@ -1748,6 +1750,7 @@ do_constraint_collapse_part2(KineticTriangle& t, unsigned edge_idx, const NT& ti
       assert(!first || na == &*i); DEBUG_STMT(first = false);
       (*i).set_vertex(i.v_in_t_idx(), v);
       modified(&*i);
+      ++ affected_triangles;
     };
 
     i = incident_faces_iterator(&t, cw(edge_idx));
@@ -1757,7 +1760,12 @@ do_constraint_collapse_part2(KineticTriangle& t, unsigned edge_idx, const NT& ti
       assert(!first || nb == &*i); DEBUG_STMT(first = false);
       (*i).set_vertex(i.v_in_t_idx(), v);
       modified(&*i);
+      ++ affected_triangles;
     }
+
+    max_triangles_per_edge_event = std::max(max_triangles_per_edge_event, affected_triangles);
+    avg_triangles_per_edge_event_sum += affected_triangles;
+    ++ avg_triangles_per_edge_event_ctr;
   };
 
   DBG(DBG_KT_EVENT) << " cw:";
@@ -2256,6 +2264,8 @@ handle_split_event(const Event& event) {
 
   t.set_dying();
   {
+    unsigned affected_triangles = 0;
+
     auto end = incident_faces_end();
     auto i = incident_faces_iterator(&t, edge_idx);
     KineticTriangle *lasta = NULL;
@@ -2265,6 +2275,7 @@ handle_split_event(const Event& event) {
       (*i).set_vertex(i.v_in_t_idx(), nva);
       modified(&*i);
       lasta = &*i;
+      ++affected_triangles;
     };
     assert(lasta);
     assert(lasta->wavefront(cw(lasta->index(nva))));
@@ -2278,7 +2289,13 @@ handle_split_event(const Event& event) {
       (*i).set_vertex(i.v_in_t_idx(), nvb);
       modified(&*i);
       lastb = &*i;
+      ++affected_triangles;
     }
+
+    max_triangles_per_split_event = std::max(max_triangles_per_split_event, affected_triangles);
+    avg_triangles_per_split_event_sum += affected_triangles;
+    ++ avg_triangles_per_split_event_ctr;
+
     assert(lastb);
     assert(lastb->wavefront(ccw(lastb->index(nvb))));
     assert(lastb->wavefront(ccw(lastb->index(nvb)))->vertex(1) == nvb);
@@ -2483,6 +2500,21 @@ handle_ccw_vertex_leaves_ch_event(const Event& event) {
 
 void
 KineticTriangulation::
+update_event_timing_stats(const NT& now) {
+  if (now > last_event_time) {
+    max_events_per_time = std::max(max_events_per_time, events_per_current_event_time);
+    avg_events_per_time_sum += events_per_current_event_time;
+    ++avg_events_per_time_ctr;
+
+    last_event_time = now;
+    events_per_current_event_time = 1;
+  } else {
+    ++events_per_current_event_time;
+  }
+}
+
+void
+KineticTriangulation::
 handle_event(const Event& event) {
   DBG_FUNC_BEGIN(DBG_KT | DBG_KT_EVENT);
   DBG(DBG_KT_EVENT);
@@ -2515,6 +2547,7 @@ handle_event(const Event& event) {
 
   ++ event_type_counter[int(CollapseType::UNDEFINED)];
   ++ event_type_counter[int(event.type())];
+  update_event_timing_stats(time);
 
   switch (event.type()) {
     case CollapseType::TRIANGLE_COLLAPSE:

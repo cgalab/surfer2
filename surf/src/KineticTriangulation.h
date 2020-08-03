@@ -233,7 +233,24 @@ class KineticTriangulation {
     const TriangleList::const_iterator triangles_end() const { return triangles.end(); }
     unsigned triangles_size() const { return triangles.size(); }
 
+
+    /* profiling/statistics counters */
     unsigned event_type_counter[int(CollapseType::NEVER)] = {0};
+
+    unsigned max_triangles_per_edge_event = 0;
+    unsigned avg_triangles_per_edge_event_sum = 0;
+    unsigned avg_triangles_per_edge_event_ctr = 0;
+
+    unsigned max_triangles_per_split_event = 0;
+    unsigned avg_triangles_per_split_event_sum = 0;
+    unsigned avg_triangles_per_split_event_ctr = 0;
+
+    NT last_event_time = 0;
+    unsigned events_per_current_event_time = 0;
+    unsigned max_events_per_time = 0;
+    unsigned avg_events_per_time_sum = 0;
+    unsigned avg_events_per_time_ctr = 0;
+    void update_event_timing_stats(const NT& now);
 
   private:
     void do_raw_flip(KineticTriangle* t, unsigned edge_idx, const NT& time, bool allow_collinear);

@@ -138,6 +138,8 @@ finalize() {
     finalized = true;
     current_component = -1;
     DBG(DBG_PROP) << "Finalized.";
+
+    sk->kt.update_event_timing_stats(-1);
   }
   DBG_FUNC_END(DBG_PROP);
 }
