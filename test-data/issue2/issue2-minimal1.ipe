@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<!DOCTYPE ipe SYSTEM "ipe.dtd">
+<ipe version="70206" creator="Ipe 7.2.9">
+<info created="D:20200805083751" modified="D:20200805084247"/>
+<ipestyle name="basic">
+<symbol name="mark/disk(sx)" transformations="translations">
+<path fill="sym-stroke">
+0.6 0 0 0.6 0 0 e
+</path>
+</symbol>
+</ipestyle>
+<ipestyle name="surf">
+<color name="black" value="0"/>
+<color name="gray" value="0.2"/>
+<color name="blue" value="0 0 1"/>
+<color name="royalblue" value="0 0.5 1"/>
+<color name="magenta" value="1 0 1"/>
+<color name="red" value="1 0 0"/>
+<color name="darkgreen" value="0 0.5 0"/>
+<color name="orange" value="1 0.66 0.34"/>
+</ipestyle>
+<page>
+<layer name="edges"/>
+<view layers="edges" active="edges"/>
+<path layer="edges" matrix="1 0 0 1 -1056 256" stroke="0">
+1268 202 m
+1268 199 l
+</path>
+<path matrix="1 0 0 1 -1056 256" stroke="0">
+1268 199 m
+1269 198 l
+</path>
+<path stroke="0">
+213 454 m
+213 448 l
+</path>
+<path stroke="0">
+213 448 m
+223 448 l
+</path>
+<path matrix="1 0 0 1 -1056 256" stroke="0">
+1279 192 m
+1280 193 l
+</path>
+<path stroke="0">
+224 449 m
+233 449 l
+</path>
+<path stroke="0">
+233 449 m
+233 469 l
+</path>
+<path stroke="0">
+233 469 m
+213 469 l
+</path>
+<path stroke="0">
+213 469 m
+213 463 l
+</path>
+<path stroke="0">
+213 463 m
+198 463 l
+</path>
+<path stroke="0">
+198 463 m
+198 458 l
+</path>
+<path stroke="0">
+198 458 m
+212 458 l
+</path>
+</page>
+</ipe>
