@@ -843,8 +843,10 @@ compute_collapse_bounded_constrained_1(const NT& time_now) const { // {{{
   if (wf->parallel_endpoints(time_now)) {
     const EdgeCollapseSpec& edge_collapse = wf->get_edge_collapse(time_now);
     DBG(DBG_TRIANGLE) << "Edge endpoints are parrallel;  collapse is " << edge_collapse << "; det degree is " << determinant.degree();
-    assert(edge_collapse.type() != EdgeCollapseType::ALWAYS);
-    if (determinant.degree() == 1) {
+    if (edge_collapse.type() == EdgeCollapseType::ALWAYS) {
+      /* Edge collapses right now */
+      result = CollapseSpec(component, edge_collapse, c_idx);
+    } else if (determinant.degree() == 1) {
       result = compute_split_or_flip_event_bounded_constrained_1(time_now, c_idx, determinant);
     } else {
       result = CollapseSpec(component, CollapseType::NEVER);
