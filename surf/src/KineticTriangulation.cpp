@@ -913,6 +913,15 @@ set_dcel_vertex(SkeletonDCELHalfedge* start, const Point_2* p, const NT& time) {
     he->set_vertex(new_v);
     DBG(DBG_SKEL) << "  Setting vertex for " << *he;
     assert(he->next());
+    if (!he->next()) {
+      /* If we miss events, then we can end up in an inconsistent state.
+       * See for instance https://github.com/cgalab/surfer2/issues/2
+       * This guards against the segfault and causes an abort instead.  Not
+       * convinced that's the way to go, but still.
+       */
+      LOG(ERROR) << "We were asked to create a DCEL vertex but the half-edge has a NULL next pointer.  This should not happen.";
+      abort();
+    }
     he = he->next()->opposite();
     degree++;
   } while (he != start);
