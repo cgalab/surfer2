@@ -238,7 +238,7 @@ inline std::ostream& operator<<(std::ostream& o, const Polynomial_1& p) {
 inline NT
 evaluate(const Polynomial_1& p, const NT& at) {
   return p.evaluate(at);
-};
+}
 #endif /* ifdef NT_USE_DOUBLE */
 
 
