@@ -18,12 +18,17 @@
 #pragma once
 
 #include "config.h"
+#ifndef _MSC_VER
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wshadow"
-#include "../easyloggingpp/src/easylogging++.h"
 #pragma GCC diagnostic pop
+#endif
+
+#include "../easyloggingpp/src/easylogging++.h"
 
 #include <assert.h>
+#include <string>
+#include <sstream>
 
 #define SRF_precondition(X) assert(X)
 
