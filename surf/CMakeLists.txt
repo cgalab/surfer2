@@ -34,7 +34,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 # COMPILER SETTINGS
 
 if ( NOT MSVC )
-  set( CMAKE_CXX_FLAGS_DEBUG  "${CMAKE_CXX_FLAGS_DEBUG} -Werror" )
+  # set( CMAKE_CXX_FLAGS_DEBUG  "${CMAKE_CXX_FLAGS_DEBUG} -Werror" )
 endif()
 
 # BINARIES AND SOURCES

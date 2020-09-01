@@ -38,8 +38,8 @@ if ( NOT MSVC )
   set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -pedantic" )
 
   set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Werror=switch-enum" )
-  set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Werror=shadow" )
-  set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Werror=float-equal" )
+  # set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Werror=shadow" )
+  # set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Werror=float-equal" )
 
 ### XXX REMOVE EVENTUALLY
   set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-unused-parameter" )
