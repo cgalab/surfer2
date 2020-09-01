@@ -725,7 +725,7 @@ compute_collapse_bounded_constrained_2(const NT& time_now) const { // {{{
   } else if (c1 == c2) { /* both constraints collapse at this time. */
     result = CollapseSpec(component, CollapseType::TRIANGLE_COLLAPSE, c1.time());
   } else {
-    result = std::min(c1, c2);
+    result = (std::min)(c1, c2);
   }
 
   DBG(DBG_TRIANGLE) << "returning " << result;
@@ -1033,7 +1033,7 @@ compute_collapse_unbounded(const NT& time_now) const { // {{{
 
     DBG(DBG_TRIANGLE_TIMING) << "  edge_collapse   : " << edge_collapse;
     DBG(DBG_TRIANGLE_TIMING) << "  vertex_leaves_ch: " << vertex_leaves_ch;
-    result = std::min(vertex_leaves_ch, edge_collapse);
+    result = (std::min)(vertex_leaves_ch, edge_collapse);
   } else {
     DBG(DBG_TRIANGLE_TIMING) << "Neither this nor n are constraint -- a vertex leaving the CH is the only thing that can happen.";
     assert(edge_collapse.type() == CollapseType::NEVER);
