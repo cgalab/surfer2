@@ -118,7 +118,7 @@ make_vertex(
     case LineIntersectionType::ONE:
       break;
     case LineIntersectionType::NONE:
-      DBG(DBG_KT) << "No intersection at time 0 between supporting lines of wavefrontedges.  Parallel wavefronts crashing.";
+      DBG(DBG_KT) << "No intersection at time 0 between supporting lines of wavefrontedges.  Parallel wavefronts crashing (or wavefronts of different speeds becoming collinear).";
       pos_zero = pos;
       break;
     default:
