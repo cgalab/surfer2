@@ -1772,7 +1772,7 @@ do_constraint_collapse_part2(KineticTriangle& t, unsigned edge_idx, const NT& ti
       ++ affected_triangles;
     }
 
-    max_triangles_per_edge_event = std::max(max_triangles_per_edge_event, affected_triangles);
+    max_triangles_per_edge_event = (std::max)(max_triangles_per_edge_event, affected_triangles);
     avg_triangles_per_edge_event_sum += affected_triangles;
     ++ avg_triangles_per_edge_event_ctr;
   };
@@ -2301,7 +2301,7 @@ handle_split_event(const Event& event) {
       ++affected_triangles;
     }
 
-    max_triangles_per_split_event = std::max(max_triangles_per_split_event, affected_triangles);
+    max_triangles_per_split_event = (std::max)(max_triangles_per_split_event, affected_triangles);
     avg_triangles_per_split_event_sum += affected_triangles;
     ++ avg_triangles_per_split_event_ctr;
 
@@ -2511,7 +2511,7 @@ void
 KineticTriangulation::
 update_event_timing_stats(const NT& now) {
   if (now != last_event_time) {
-    max_events_per_time = std::max(max_events_per_time, events_per_current_event_time);
+    max_events_per_time = (std::max)(max_events_per_time, events_per_current_event_time);
     avg_events_per_time_sum += events_per_current_event_time;
     ++avg_events_per_time_ctr;
 

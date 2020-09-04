@@ -1,6 +1,8 @@
 project (surf VERSION "${SURFVERSION}" DESCRIPTION "surflib")
 
-set_source_files_properties(easyloggingpp/src/easylogging++.cc PROPERTIES COMPILE_FLAGS "-Wno-float-equal -Wno-missing-noreturn")
+if ( NOT MSVC )
+  set_source_files_properties(easyloggingpp/src/easylogging++.cc PROPERTIES COMPILE_FLAGS "-Wno-float-equal -Wno-missing-noreturn")
+endif()
 
 find_package( CGAL COMPONENTS Core )
 if ( NOT CGAL_FOUND )
@@ -12,7 +14,7 @@ message("CMAKE_BUILD_TYPE is ${CMAKE_BUILD_TYPE}." )
 set ( CGAL_BUILD_TYPE_INIT ${CMAKE_BUILD_TYPE} )
 include( ${CGAL_USE_FILE} )
 
-find_package( Boost REQUIRED graph)
+find_package( Boost REQUIRED graph iostreams)
 if ( NOT Boost_FOUND )
   message(STATUS "Boost not found.")
   return()
@@ -31,7 +33,10 @@ include_directories(${Boost_INCLUDE_DIRS})
 
 # COMPILER SETTINGS
 
-#set( CMAKE_CXX_FLAGS_DEBUG  "${CMAKE_CXX_FLAGS_DEBUG} -Werror" )
+if ( NOT MSVC )
+  # set( CMAKE_CXX_FLAGS_DEBUG  "${CMAKE_CXX_FLAGS_DEBUG} -Werror" )
+endif()
+
 # BINARIES AND SOURCES
 
 # cause easylogging to pretty please don't print to stdout.
@@ -90,7 +95,10 @@ if(TEST_SUITE)
     easyloggingpp/src/easylogging++.cc
     )
   gtest_add_tests(TARGET ${TEST_BINARY_NAME})
-  set_target_properties(${TEST_BINARY_NAME} PROPERTIES PRIVATE "-Wnofloat-equal")
+
+  if ( NOT MSVC )
+    set_target_properties(${TEST_BINARY_NAME} PROPERTIES PRIVATE "-Wnofloat-equal")
+  endif()
   target_include_directories(${TEST_BINARY_NAME} PRIVATE include)
   target_include_directories(${TEST_BINARY_NAME} PRIVATE src)
   target_include_directories(${TEST_BINARY_NAME} PRIVATE test)
@@ -98,5 +106,7 @@ if(TEST_SUITE)
   target_link_libraries(${TEST_BINARY_NAME} ${Boost_LIBRARIES} )
   target_link_libraries(${TEST_BINARY_NAME} ${CGAL_LIBRARIES} ${CGAL_3RD_PARTY_LIBRARIES})
 
-  target_compile_options(${TEST_BINARY_NAME} PRIVATE "-Wno-unused-function")
+  if ( NOT MSVC )
+    target_compile_options(${TEST_BINARY_NAME} PRIVATE "-Wno-unused-function")
+  endif()
 ENDIF()
