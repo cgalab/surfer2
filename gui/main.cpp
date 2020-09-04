@@ -52,8 +52,8 @@ usage(const char *progname, int err) {
   fprintf(f,"           --step-increment=<time>    Step-size when moving forward in the propagation.\n");
   //fprintf(f,"           --random-seed=<seed>       Seed for RNG (for debugging).\n");
   fprintf(f,"\n");
-  fprintf(f,"  offset-spec = <one-block> [ ',' <one-block> ]\n");
-  fprintf(f,"  one-block   = <one-offset> [ '+' one-offset ]\n");
+  fprintf(f,"  offset-spec = <one-block> [ ',' <one-block> [ ',' ... ] ]\n");
+  fprintf(f,"  one-block   = <one-offset> [ '+' <one-offset> [ '+' ... ] ]\n");
   fprintf(f,"  one-offset  = [<cnt> '*' ] <time>\n");
   fprintf(f,"  example: '0.01 + 3*0.025, 0.15' or '10 * 0.025'\n");
   exit(err);
