@@ -1052,7 +1052,7 @@ compute_collapse_unbounded(const NT& time_now) const { // {{{
       if (u->pos_zero == v->pos_zero || v->pos_zero == w->pos_zero) {
         DBG(DBG_TRIANGLE_TIMING) << "   * at least two vertices are incident. ";
         NOTIMPL_MSG << "Incident vertices case";
-        assert(false); //untested branch is_constrained_both
+        assert(false);
         abort();
       } else {
         DBG(DBG_TRIANGLE_TIMING) << "   * Three parallel vertices on the ch";
