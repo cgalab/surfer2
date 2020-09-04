@@ -2415,15 +2415,7 @@ handle_split_or_flip_refine_event(const Event& event) {
       /* If we come from behind, we don't really care about the first of these things in the discunjtion,
        * if we face it head on, we don't care about the second.  hmm. */
       assert(o1 != CGAL::RIGHT_TURN || (v->is_reflex_or_straight() && o0 != CGAL::RIGHT_TURN));
-      //if (o1 == CGAL::COLLINEAR || o0 == CGAL::COLLINEAR) {
-      #if 0
-      if (o1 == CGAL::COLLINEAR) {
-        NOTIMPL_MSG << "cannot handle collinear flip event yet";
-        abort();
-      }
-      #endif
 
-      // do_flip_event(event.time(), t, cw(edge_idx));
       flip_edge = cw(edge_idx);
     } else /* (pos, posa) < (pos, posb) */ {
       DBG(DBG_KT_EVENT) << "(v, vb) is the longest spoke, so va moves over that.";
@@ -2437,15 +2429,7 @@ handle_split_or_flip_refine_event(const Event& event) {
       /* If we come from behind, we don't really care about the first of these things in the discunjtion,
        * if we face it head on, we don't care about the second.  hmm. */
       assert(o0 != CGAL::LEFT_TURN || (v->is_reflex_or_straight() && o1 != CGAL::LEFT_TURN));
-      //if (o0 == CGAL::COLLINEAR || o1 == CGAL::COLLINEAR) {
-      #if 0
-      if (o0 == CGAL::COLLINEAR) {
-        NOTIMPL_MSG << "cannot handle collinear flip event yet";
-        abort();
-      }
-      #endif
 
-      // do_flip_event(event.time(), t, ccw(edge_idx));
       flip_edge = ccw(edge_idx);
     };
     const CollapseSpec& c = t.refine_collapse_spec( CollapseSpec(t.component, CollapseType::VERTEX_MOVES_OVER_SPOKE, time, flip_edge, *longest_spoke) );
