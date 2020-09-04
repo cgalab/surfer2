@@ -2235,14 +2235,6 @@ handle_split_event(const Event& event) {
 
     assert(o0 != CGAL::LEFT_TURN);
     assert(o1 != CGAL::RIGHT_TURN);
-
-    #if 0
-    if (o0 == CGAL::COLLINEAR ||
-        o1 == CGAL::COLLINEAR) {
-      NOTIMPL_MSG << "cannot handle collinear split event check yet";
-      abort();
-    }
-    #endif
   }
 
 
