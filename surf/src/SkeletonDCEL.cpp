@@ -19,6 +19,77 @@
 #include "WavefrontEdge.h"
 
 
+class ParseOffsetSpec
+{
+  NT time;
+  NT step;
+  int cnt;
+
+  std::vector<NT> list;
+
+  void
+  parse_offset(const std::string&  offset)
+  {
+    int times = offset.find_first_of('*');
+    int b,e;
+    if(times != std::string::npos){
+      cnt = std::stoi(offset.substr(0,times));
+    }else{
+      cnt = 1;
+      times = -1;
+    }
+    // we have to trim the string as Core doesn't
+    b = offset.find_first_not_of(' ', times+1);
+    e = offset.find_last_not_of(' ') + 1;
+    step = string_to_maybe_NT(offset.substr(b,e-b));
+
+    for(int i=0; i < cnt; ++i){
+      time += step;
+      list.emplace_back(time);
+    }
+
+  }
+
+  void
+  parse_block(const std::string & block, const NT& t = NT(0))
+  {
+    time = t;
+    std::string first, second;
+    int plus = block.find_first_of('+');
+
+    if(plus != std::string::npos){
+      parse_offset(block.substr(0,plus));
+      parse_block(block.substr(plus+1), time);
+    }else{
+      parse_offset(block);
+    }
+  }
+
+public:
+  const std::vector<NT>&
+  operator()(const std::string & input)
+  {
+    std::string first, second;
+    int comma = input.find_first_of(',');
+
+    if(comma != std::string::npos){
+      parse_block(input.substr(0,comma));
+     (*this)(input.substr(comma+1));
+    }else{
+      parse_block(input);
+    }
+
+
+    for(NT nt : list){
+      std::cout << CGAL::to_double(nt) << " ";
+    }
+  std::cout << std::endl;
+
+    return list;
+  }
+
+};
+
 DEBUG_DECL(
 unsigned SkeletonDCELVertexBase::ctr = 0;
 unsigned SkeletonDCELHalfedgeBase::ctr = 0;
@@ -268,13 +339,18 @@ std::vector<NT>
 SkeletonDCEL::
 parse_offset_spec(const std::string& offset_spec) {
   DBG_FUNC_BEGIN(DBG_SKEL);
-  char *spc = strdup(offset_spec.c_str());
-  char *saveptr_block = NULL;
-  char *saveptr_offset = NULL;
-  char *one_block, *one_offset;
   NT time;
   NT step;
   std::vector<NT> list;
+
+#ifdef _MSC_VER
+ ParseOffsetSpec parse;
+ list = parse(offset_spec);
+#else
+ char *spc = strdup(offset_spec.c_str());
+  char *saveptr_block = NULL;
+  char *saveptr_offset = NULL;
+  char *one_block, *one_offset;
 
   for (one_block = strtok_r(spc, ",", &saveptr_block);
        one_block != NULL;
@@ -313,6 +389,7 @@ parse_offset_spec(const std::string& offset_spec) {
   }
 
   free(spc);
+#endif
   DBG_FUNC_END(DBG_SKEL);
   return list;
 }
