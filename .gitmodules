@@ -1,3 +1,6 @@
 [submodule "surf/easyloggingpp"]
 	path = surf/easyloggingpp
 	url = https://github.com/cgalab/easyloggingpp
+[submodule "surf/getopt-for-windows"]
+	path = surf/getopt-for-windows
+	url = https://github.com/Chunde/getopt-for-windows
