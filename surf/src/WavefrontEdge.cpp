@@ -154,7 +154,7 @@ compute_collapse(const NT& time_now) const {
   return res;
 }
 
-#ifndef NDEBUG
+#ifndef SURF_NDEBUG
 void
 WavefrontEdge::
 assert_edge_sane(int collapsing_edge) const {

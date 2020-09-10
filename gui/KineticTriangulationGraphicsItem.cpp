@@ -273,7 +273,7 @@ paint_labels(QPainter *painter, PainterOstream painterostream) const {
 
   font.setPointSize(8);
   painter->setFont(font);
-  #ifndef NDEBUG
+  #ifndef SURF_NDEBUG
   for (auto i = kt->vertices_begin(); i != kt->vertices_end(); ++i) {
     if (i->is_infinite) continue;
     if (! filter_component(*i) ) continue;

@@ -68,9 +68,11 @@ add_definitions(-DELPP_NO_DEFAULT_LOG_FILE)
 if(UPPERCASE_CMAKE_BUILD_TYPE MATCHES DEBUG)
   SET (DEBUG_OUTPUT_DEFAULT ON)
   SET (DEBUG_COLLAPSE_TIMES ON)
+  SET (SURF_NDEBUG OFF)
 else()
   SET (DEBUG_OUTPUT_DEFAULT OFF)
   SET (DEBUG_COLLAPSE_TIMES OFF)
+  SET (SURF_NDEBUG ON)
 endif()
 
 ## Set default option values unless values given on the command line.

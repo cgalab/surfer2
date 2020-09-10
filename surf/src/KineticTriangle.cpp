@@ -18,7 +18,7 @@
 #include "KineticTriangle.h"
 #include "WavefrontVertex.h"
 
-#ifndef NDEBUG
+#ifndef SURF_NDEBUG
 void
 KineticTriangle::
 assert_valid() const { //{{{

@@ -36,6 +36,10 @@
  */
 #cmakedefine CMAKE_BUILD_TYPE "@UPPERCASE_CMAKE_BUILD_TYPE@"
 
+/** Our copy of -DNDEBUG, if we have it.  Set via the cmake build type.
+ */
+#cmakedefine SURF_NDEBUG
+
 /** the version as supplied by CMake
  */
 #cmakedefine VERSIONGIT "@VERSIONGIT@"

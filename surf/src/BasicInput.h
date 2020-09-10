@@ -38,7 +38,7 @@ class BasicVertex {
 
     BasicVertex(const Point_2& p_p, unsigned p_degree, unsigned p_id)
       :
-      #ifndef NDEBUG
+      #ifndef SURF_NDEBUG
         id(p_id),
       #endif
         p(p_p)
@@ -116,7 +116,7 @@ class BasicInput {
 
     bool is_finalized() const { return finalized; };
 
-    #ifndef NDEBUG
+    #ifndef SURF_NDEBUG
     void assert_valid() const;
     #else
     void assert_valid() const {};

@@ -66,7 +66,7 @@ class WavefrontEdge {
  private:
     mutable EdgeCollapseSpec collapse_spec;
     mutable bool collapse_spec_valid = false;
-    #ifndef NDEBUG
+    #ifndef SURF_NDEBUG
     mutable WavefrontVertex* collapse_spec_computed_with_vertices[2];
     #endif
 
@@ -78,7 +78,7 @@ class WavefrontEdge {
     /* Used when setting up initial wavefront edges for all constraints */
     WavefrontEdge(const Point_2 &u, const Point_2 &v, const NT &weight, KineticTriangle* incident_triangle, SkeletonDCELFace * p_skeleton_face)
       :
-      #ifndef NDEBUG
+      #ifndef SURF_NDEBUG
         id(wavefront_edge_ctr++),
       #endif
         vertices { NULL, NULL }
@@ -88,7 +88,7 @@ class WavefrontEdge {
       , is_beveling(false)
       , initial_vertices { NULL, NULL }
       , skeleton_face(p_skeleton_face)
-      #ifndef NDEBUG
+      #ifndef SURF_NDEBUG
       , collapse_spec_computed_with_vertices { NULL, NULL }
       #endif
       {
@@ -98,7 +98,7 @@ class WavefrontEdge {
     /* Used when setting up bevels */
     WavefrontEdge(std::shared_ptr<const WavefrontSupportingLine> p_supporting_line)
       :
-      #ifndef NDEBUG
+      #ifndef SURF_NDEBUG
         id(wavefront_edge_ctr++),
       #endif
         vertices { NULL, NULL }
@@ -108,7 +108,7 @@ class WavefrontEdge {
       , is_beveling(true)
       , initial_vertices { NULL, NULL }
       , skeleton_face(NULL)
-      #ifndef NDEBUG
+      #ifndef SURF_NDEBUG
       , collapse_spec_computed_with_vertices { NULL, NULL }
       #endif
       {
@@ -124,7 +124,7 @@ class WavefrontEdge {
                   SkeletonDCELFace * p_skeleton_face,
                   bool p_is_beveling)
       :
-      #ifndef NDEBUG
+      #ifndef SURF_NDEBUG
         id(wavefront_edge_ctr++),
       #endif
         vertices {va, vb}
@@ -134,7 +134,7 @@ class WavefrontEdge {
       , is_beveling(p_is_beveling)
       , initial_vertices { NULL, NULL }
       , skeleton_face(p_skeleton_face)
-      #ifndef NDEBUG
+      #ifndef SURF_NDEBUG
       , collapse_spec_computed_with_vertices { NULL, NULL }
       #endif
       {
@@ -191,7 +191,7 @@ class WavefrontEdge {
       if (!collapse_spec_valid) {
         collapse_spec = compute_collapse(time_now);
         collapse_spec_valid = true;
-        #ifndef NDEBUG
+        #ifndef SURF_NDEBUG
         set_to_cur_wf_vertices(collapse_spec_computed_with_vertices);
         #endif
       };
@@ -218,7 +218,7 @@ class WavefrontEdge {
     }
 
   private:
-    #ifndef NDEBUG
+    #ifndef SURF_NDEBUG
     void assert_edge_sane(int collapsing_edge) const;
     #else
     void assert_edge_sane(int collapsing_edge) const {};
@@ -226,7 +226,7 @@ class WavefrontEdge {
 
     const EdgeCollapseSpec& get_cached_edge_collapse() const {
       assert(collapse_spec_valid);
-      #ifndef NDEBUG
+      #ifndef SURF_NDEBUG
       assert_cur_wf_vertices(collapse_spec_computed_with_vertices);
       #endif
       return collapse_spec;
@@ -234,12 +234,12 @@ class WavefrontEdge {
 
     void invalidate_collapse_spec() {
       collapse_spec_valid = false;
-      #ifndef NDEBUG
+      #ifndef SURF_NDEBUG
       invalidte_cur_wf_vertices(collapse_spec_computed_with_vertices);
       #endif
     }
 
-    #ifndef NDEBUG
+    #ifndef SURF_NDEBUG
     void set_to_cur_wf_vertices(WavefrontVertex* arr[2]) const {
       for (unsigned i=0; i<2; ++i) {
         arr[i] = vertices[i];

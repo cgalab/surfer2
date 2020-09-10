@@ -33,7 +33,7 @@ WavefrontVertex(
   bool p_is_beveling,
   bool p_is_infinite)
   :
-  #ifndef NDEBUG
+  #ifndef SURF_NDEBUG
     id(kvctr++),
   #endif
     pos_zero(p_pos_zero)

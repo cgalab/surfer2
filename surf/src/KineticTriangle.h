@@ -61,7 +61,7 @@ class KineticTriangle {
   private:
     mutable CollapseSpec collapse_spec;
     mutable bool collapse_spec_valid = false;
-    #ifndef NDEBUG
+    #ifndef SURF_NDEBUG
     mutable WavefrontVertex* collapse_spec_computed_with_vertices[3];
     #endif
 
@@ -77,7 +77,7 @@ class KineticTriangle {
       , wavefronts { NULL, NULL, NULL }
       , neighbors()
       , collapse_spec(p_component)
-      #ifndef NDEBUG
+      #ifndef SURF_NDEBUG
       , collapse_spec_computed_with_vertices { NULL, NULL, NULL }
       #endif
       {
@@ -109,7 +109,7 @@ class KineticTriangle {
     inline WavefrontEdge* wavefront(unsigned i) const;
     const WavefrontVertex * vertex(unsigned i) const { assert(i<3); return vertices[i]; };
 
-    #ifndef NDEBUG
+    #ifndef SURF_NDEBUG
     void assert_valid() const;
     #else
     void assert_valid() const {};
@@ -129,7 +129,7 @@ class KineticTriangle {
       if (!collapse_spec_valid) {
         collapse_spec = compute_collapse(time_now);
         collapse_spec_valid = true;
-        #ifndef NDEBUG
+        #ifndef SURF_NDEBUG
         set_to_cur_wf_vertices(collapse_spec_computed_with_vertices);
         #endif
       };
@@ -139,7 +139,7 @@ class KineticTriangle {
   private:
     const CollapseSpec& refine_collapse_spec(CollapseSpec&& c) {
       assert(collapse_spec_valid);
-      #ifndef NDEBUG
+      #ifndef SURF_NDEBUG
       assert_cur_wf_vertices(collapse_spec_computed_with_vertices);
       #endif
 
@@ -152,7 +152,7 @@ class KineticTriangle {
     const CollapseSpec& get_cached_collapse() const {
       assert(!is_dying_);
       assert(collapse_spec_valid);
-      #ifndef NDEBUG
+      #ifndef SURF_NDEBUG
       assert_cur_wf_vertices(collapse_spec_computed_with_vertices);
       #endif
       return collapse_spec;
@@ -161,7 +161,7 @@ class KineticTriangle {
     void invalidate_collapse_spec() {
       assert(!is_dead_);
       collapse_spec_valid = false;
-      #ifndef NDEBUG
+      #ifndef SURF_NDEBUG
       invalidate_cur_wf_vertices(collapse_spec_computed_with_vertices);
       #endif
       /*
@@ -171,7 +171,7 @@ class KineticTriangle {
       */
     }
 
-    #ifndef NDEBUG
+    #ifndef SURF_NDEBUG
     inline void set_to_cur_wf_vertices(WavefrontVertex* arr[3]) const;
     inline void invalidate_cur_wf_vertices(WavefrontVertex* arr[3]) const;
     inline void assert_cur_wf_vertices(WavefrontVertex* const arr[3]) const;
@@ -345,7 +345,7 @@ wavefront(unsigned i) const {
   return wavefronts[i];
 }
 
-#ifndef NDEBUG
+#ifndef SURF_NDEBUG
 void
 KineticTriangle::
 set_to_cur_wf_vertices(WavefrontVertex* arr[3]) const {

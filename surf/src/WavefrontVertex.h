@@ -247,7 +247,7 @@ class WavefrontVertex {
       return py_;
     };
 
-    #ifndef NDEBUG
+    #ifndef SURF_NDEBUG
     void assert_valid() const {
       assert(is_initial || !is_beveling); // !initial => !beveling   <=>  !!initial v !beveling
       for (int i=0; i<2; ++i) {

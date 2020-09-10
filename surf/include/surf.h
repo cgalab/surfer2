@@ -66,7 +66,7 @@ class WavefrontVertex;
 
 #define STMT_NIL do {} while (0)
 
-#ifndef NDEBUG
+#ifndef SURF_NDEBUG
   #define DEBUG_STMT(x) x
   #define DEBUG_DECL(x) x
 #else

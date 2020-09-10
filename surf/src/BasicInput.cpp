@@ -47,7 +47,7 @@ BasicInputFromBGL(const BGLGraph& graph) {
   finalize();
 }
 
-#ifndef NDEBUG
+#ifndef SURF_NDEBUG
 void
 BasicInput::assert_valid() const {
   unsigned* d = new unsigned[vertices_.size()]();

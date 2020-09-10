@@ -74,7 +74,7 @@ paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * 
     painter->drawPoint(point);
   }
 
-  #ifndef NDEBUG
+  #ifndef SURF_NDEBUG
   if (visible_labels) {
     painter->setPen(labelsPen());
     QFont font(painter->font());

@@ -149,7 +149,7 @@ class SkeletonDCEL : public CGAL::Arr_dcel_base<SkeletonDCELVertexBase, Skeleton
     static std::vector<NT> parse_offset_spec(const std::string& offset_spec);
 
   public:
-    #ifndef NDEBUG
+    #ifndef SURF_NDEBUG
     void assert_sane() const {
       DBG_FUNC_BEGIN(DBG_SKEL);
       unsigned num_he = size_of_halfedges();
@@ -197,7 +197,7 @@ is_input() const {
   return he->is_emanating_input() || he->opposite()->is_emanating_input();
 }
 
-#ifndef NDEBUG
+#ifndef SURF_NDEBUG
 inline std::ostream& operator<<(std::ostream& os, const SkeletonDCELVertex& i) {
   os << "dV" << i.id;
   if (i.has_null_point()) {

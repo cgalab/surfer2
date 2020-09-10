@@ -75,7 +75,7 @@ paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * 
     painter->setFont(font);
     for (const auto& v : input->vertices()) {
       const QPointF p(transform.map(convert(v.p)));
-      #ifndef NDEBUG
+      #ifndef SURF_NDEBUG
       std::string t = "v#"+std::to_string(v.id);
       #else
       std::string t = "v";
