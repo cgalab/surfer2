@@ -25,8 +25,8 @@
   using Kernel  = CGAL::Exact_predicates_exact_constructions_kernel_with_sqrt;
   using NT = Kernel::FT;
 
-  static const NT CORE_ONE =  NT::getOne();
-  static const NT CORE_ZERO = NT::getZero();
+  static const NT& CORE_ONE =  NT::getOne();
+  static const NT& CORE_ZERO = NT::getZero();
 
   #define string_to_maybe_NT(x) x
 #else
