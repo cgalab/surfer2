@@ -107,7 +107,7 @@ class BasicInput {
       assert(res.second);
     }
 
-    /* Call one all input has been loaded */
+    /* Call once all input has been loaded */
     void finalize() {
       assert(!finalized);
       finalized = true;
