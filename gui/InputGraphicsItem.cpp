@@ -37,7 +37,7 @@ InputGraphicsItem(const BasicInput * const p_input)
 void
 InputGraphicsItem::
 paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/) {
-  CGAL::Qt::Converter<Kernel> convert;
+  Converter convert;
 
   PainterOstream painterostream(painter);
 
@@ -88,7 +88,7 @@ paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * 
 void
 InputGraphicsItem::
 updateBoundingBox() {
-  CGAL::Qt::Converter<Kernel> convert;
+  Converter convert;
   prepareGeometryChange();
 
   if (input->vertices().size() == 0) {

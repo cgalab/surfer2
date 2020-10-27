@@ -124,7 +124,7 @@ paint_highlighted(QPainter *painter, PainterOstream painterostream) const {
     return;
   };
 
-  CGAL::Qt::Converter<Kernel> convert;
+  Converter convert;
   auto transform = painter->worldTransform();
   painter->resetTransform();
 
@@ -178,7 +178,7 @@ paint_vertices(QPainter *painter, PainterOstream painterostream) const {
     return;
   }
 
-  CGAL::Qt::Converter<Kernel> convert;
+  Converter convert;
   auto transform = painter->worldTransform();
   painter->resetTransform();
 
@@ -264,7 +264,7 @@ paint_labels(QPainter *painter, PainterOstream painterostream) const {
     return;
   }
 
-  CGAL::Qt::Converter<Kernel> convert;
+  Converter convert;
   auto transform = painter->worldTransform();
   painter->resetTransform();
 
@@ -303,7 +303,7 @@ paint_labels(QPainter *painter, PainterOstream painterostream) const {
 void
 KineticTriangulationGraphicsItem::
 paint(QPainter *painter, const QStyleOptionGraphicsItem * option, QWidget * widget) {
-  CGAL::Qt::Converter<Kernel> convert;
+  Converter convert;
   PainterOstream painterostream(painter);
 
   paint_arcs(painter, painterostream);
@@ -316,7 +316,7 @@ paint(QPainter *painter, const QStyleOptionGraphicsItem * option, QWidget * widg
 void
 KineticTriangulationGraphicsItem::
 updateBoundingBox() {
-  CGAL::Qt::Converter<Kernel> convert;
+  Converter convert;
   prepareGeometryChange();
 
   bool first = true;

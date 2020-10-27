@@ -47,7 +47,7 @@ paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * 
 void
 OffsetsGraphicsItem::
 updateBoundingBox() {
-  CGAL::Qt::Converter<Kernel> convert;
+  Converter convert;
   prepareGeometryChange();
 
   if (offsets.size() == 0) {

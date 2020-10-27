@@ -39,7 +39,7 @@ SkeletonGraphicsItem(const SkeletonDCEL * const skeleton_)
 void
 SkeletonGraphicsItem::
 paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/) {
-  CGAL::Qt::Converter<Kernel> convert;
+  Converter convert;
 
   PainterOstream painterostream(painter);
   int ray_length = 10;
@@ -116,7 +116,7 @@ paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * 
 void
 SkeletonGraphicsItem::
 updateBoundingBox() {
-  CGAL::Qt::Converter<Kernel> convert;
+  Converter convert;
   prepareGeometryChange();
 
   auto vit = skeleton->vertices_begin();

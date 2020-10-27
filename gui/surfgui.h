@@ -59,3 +59,6 @@ class PainterOstream : public CGAL::Qt::PainterOstream<GuiKernel> {
       return *this;
     }
 };
+
+
+using Converter = CGAL::Qt::Converter<Kernel>;
