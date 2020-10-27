@@ -41,7 +41,7 @@ SkeletonGraphicsItem::
 paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/) {
   CGAL::Qt::Converter<Kernel> convert;
 
-  CGAL::Qt::PainterOstream<Kernel> painterostream(painter);
+  PainterOstream painterostream(painter);
   int ray_length = 10;
 
   for (auto hit = skeleton->halfedges_begin(); hit != skeleton->halfedges_end(); ++hit) {

@@ -34,7 +34,7 @@ OffsetsGraphicsItem()
 void
 OffsetsGraphicsItem::
 paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/) {
-  CGAL::Qt::PainterOstream<Kernel> painterostream(painter);
+  PainterOstream painterostream(painter);
 
   painter->setPen(segmentsPen());
   for (const auto& family : offsets) {

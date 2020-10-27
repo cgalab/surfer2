@@ -17,11 +17,7 @@
  */
 #pragma once
 
-#include <CGAL/Qt/GraphicsItem.h>
-#include <CGAL/Qt/PainterOstream.h>
-
-#include <QPen>
-
+#include "surfgui.h"
 #include "BasicInput.h"
 
 class InputGraphicsItem :

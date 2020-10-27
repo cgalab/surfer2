@@ -20,10 +20,8 @@
 #include "KineticTriangulation.h"
 #include "TriangulationUtils.h"
 
-#include <CGAL/Qt/GraphicsItem.h>
-#include <CGAL/Qt/PainterOstream.h>
+#include "surfgui.h"
 
-#include <QBrush>
 #include <unordered_set>
 #include <tuple>
 
@@ -32,7 +30,6 @@ class KineticTriangulationGraphicsItem :
 {
   private:
     using Base = CGAL::Qt::GraphicsItem;
-    using PainterOstream = CGAL::Qt::PainterOstream<Kernel>;
 
   private:
     static inline int cw (int i) { return TriangulationUtils::cw (i); }

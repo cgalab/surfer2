@@ -39,7 +39,7 @@ InputGraphicsItem::
 paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/) {
   CGAL::Qt::Converter<Kernel> convert;
 
-  CGAL::Qt::PainterOstream<Kernel> painterostream(painter);
+  PainterOstream painterostream(painter);
 
   painter->setPen(segmentsPen());
   for (const auto& e : input->edges()) {
