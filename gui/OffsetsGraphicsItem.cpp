@@ -58,10 +58,10 @@ updateBoundingBox() {
     return;
   }
 
-  auto bb = offsets[0][0].bbox();
+  auto bb = GuiSegment(offsets[0][0]).bbox();
   for (const auto& family : offsets) {
     for (const auto& segments : family) {
-      bb += segments.bbox();
+      bb += GuiSegment(segments).bbox();
     }
   }
 

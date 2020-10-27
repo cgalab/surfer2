@@ -25,23 +25,24 @@
 #include <QPen>
 
 #include "cgaltools.h"
+using SurfKernel = Kernel;
 
 #include <CGAL/Simple_cartesian.h>
 using GuiKernel  = CGAL::Simple_cartesian<double>;
 
 /* We might want to look into guarding this with
- *   Kernel != GuiKernel, so we only overload this
+ *   SurfKernel != GuiKernel, so we only overload this
  *   when/if the Kernel is actually a Core::Expr kernel or something like that.
  *
  * If the kernel already is a double cartesian, then we could simply do
- *    using PainterOstream = CGAL::Qt::PainterOstream<Kernel>;
+ *    using PainterOstream = CGAL::Qt::PainterOstream<SurfKernel>;
  * here.
  */
 class GuiPoint : public GuiKernel::Point_2 {
   private:
     using Base = GuiKernel::Point_2;
   public:
-    GuiPoint(const Kernel::Point_2& p)
+    GuiPoint(const SurfKernel::Point_2& p)
       : Base(
           CGAL::to_double(p.x()),
           CGAL::to_double(p.y())
@@ -49,17 +50,23 @@ class GuiPoint : public GuiKernel::Point_2 {
     {};
 };
 
+class GuiSegment : public GuiKernel::Segment_2 {
+  private:
+    using Base = GuiKernel::Segment_2;
+  public:
+    GuiSegment(const SurfKernel::Segment_2& s)
+      : Base( GuiPoint(s.source()), GuiPoint(s.target()))
+    {};
+};
+
 class PainterOstream : public CGAL::Qt::PainterOstream<GuiKernel> {
   private:
     using Base = CGAL::Qt::PainterOstream<GuiKernel>;
-    using GuiSegment = typename GuiKernel::Segment_2;
   public:
     PainterOstream(QPainter* p) : Base(p) {};
 
-    inline PainterOstream& operator<<(const Kernel::Segment_2& s) {
-      GuiPoint a(s.source());
-      GuiPoint b(s.target());
-      GuiSegment g(a,b);
+    inline PainterOstream& operator<<(const SurfKernel::Segment_2& s) {
+      GuiSegment g(s);
       Base::operator<<(g);
       return *this;
     }
@@ -67,3 +74,4 @@ class PainterOstream : public CGAL::Qt::PainterOstream<GuiKernel> {
 
 
 using Converter = CGAL::Qt::Converter<Kernel>;
+using GConverter = CGAL::Qt::Converter<GuiKernel>;

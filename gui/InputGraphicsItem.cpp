@@ -88,16 +88,16 @@ paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * 
 void
 InputGraphicsItem::
 updateBoundingBox() {
-  Converter convert;
+  GConverter convert;
   prepareGeometryChange();
 
   if (input->vertices().size() == 0) {
     return;
   }
 
-  auto bb = (*input->vertices().begin()).p.bbox();
+  auto bb = GuiPoint((*input->vertices().begin()).p).bbox();
   for (auto& v : input->vertices()) {
-    bb += v.p.bbox();
+    bb += GuiPoint(v.p).bbox();
   }
 
   //std::cout << "bb " << bb << std::endl;

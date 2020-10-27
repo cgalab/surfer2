@@ -116,18 +116,18 @@ paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * 
 void
 SkeletonGraphicsItem::
 updateBoundingBox() {
-  Converter convert;
+  GConverter convert;
   prepareGeometryChange();
 
   auto vit = skeleton->vertices_begin();
   if (vit->has_null_point()) { ++vit; };
   assert(! vit->has_null_point());
 
-  auto bb = project_plane(vit->point()).bbox();
+  auto bb = GuiPoint(project_plane(vit->point())).bbox();
   ++vit;
   for (; vit != skeleton->vertices_end(); ++vit) {
     if (vit->has_null_point()) continue;
-    bb += project_plane(vit->point()).bbox();
+    bb += GuiPoint(project_plane(vit->point())).bbox();
   }
 
   bounding_rect = convert(bb);

@@ -303,7 +303,6 @@ paint_labels(QPainter *painter, PainterOstream painterostream) const {
 void
 KineticTriangulationGraphicsItem::
 paint(QPainter *painter, const QStyleOptionGraphicsItem * option, QWidget * widget) {
-  Converter convert;
   PainterOstream painterostream(painter);
 
   paint_arcs(painter, painterostream);
@@ -316,7 +315,7 @@ paint(QPainter *painter, const QStyleOptionGraphicsItem * option, QWidget * widg
 void
 KineticTriangulationGraphicsItem::
 updateBoundingBox() {
-  Converter convert;
+  GConverter convert;
   prepareGeometryChange();
 
   bool first = true;
@@ -326,11 +325,11 @@ updateBoundingBox() {
   for (auto i = kt->vertices_begin(); i != kt->vertices_end(); ++i) {
     if (i->is_infinite) continue;
     if (first) {
-      bb = i->pos_start.bbox();
+      bb = GuiPoint(i->pos_start).bbox();
       first = false;
     }
 
-    bb += i->p_at_draw(draw_time()).bbox();
+    bb += GuiPoint(i->p_at_draw(draw_time())).bbox();
   }
   if (first) {
     return;
@@ -344,7 +343,7 @@ updateBoundingBox() {
     const WavefrontVertex * const u = t->vertex(t->ccw(idx));
     // const WavefrontVertex * const v = t->vertex(t->cw (idx));
 
-    bb += u->p_at_draw(draw_time()+infinite_edges_extra_time).bbox();
+    bb += GuiPoint(u->p_at_draw(draw_time()+infinite_edges_extra_time)).bbox();
     // bb += v->p_at_draw(draw_time()+infinite_edges_extra_time).bbox();
   }
 
