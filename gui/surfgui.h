@@ -26,4 +26,36 @@
 
 #include "cgaltools.h"
 
-using PainterOstream = CGAL::Qt::PainterOstream<Kernel>;
+#include <CGAL/Simple_cartesian.h>
+using GuiKernel  = CGAL::Simple_cartesian<double>;
+
+/* We might want to look into guarding this with
+ *   Kernel != GuiKernel, so we only overload this
+ *   when/if the Kernel is actually a Core::Expr kernel or something like that.
+ *
+ * If the kernel already is a double cartesian, then we could simply do
+ *    using PainterOstream = CGAL::Qt::PainterOstream<Kernel>;
+ * here.
+ */
+class PainterOstream : public CGAL::Qt::PainterOstream<GuiKernel> {
+  private:
+    using Base = CGAL::Qt::PainterOstream<GuiKernel>;
+    using GuiPoint = typename GuiKernel::Point_2;
+    using GuiSegment = typename GuiKernel::Segment_2;
+  public:
+    PainterOstream(QPainter* p) : Base(p) {};
+
+    inline PainterOstream& operator<<(const Kernel::Segment_2& s) {
+      GuiPoint a(
+        CGAL::to_double(s.source().x()),
+        CGAL::to_double(s.source().y())
+      );
+      GuiPoint b(
+        CGAL::to_double(s.target().x()),
+        CGAL::to_double(s.target().y())
+      );
+      GuiSegment g(a,b);
+      Base::operator<<(g);
+      return *this;
+    }
+};
