@@ -32,7 +32,6 @@ class InputGraphicsItem :
 
   private:
     const BasicInput * const input;
-    CGAL::Qt::PainterOstream<Kernel> painterostream;
     QPen vertices_pen;
     QPen segments_pen;
     QPen labels_pen;

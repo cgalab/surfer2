@@ -32,7 +32,6 @@ class SkeletonGraphicsItem :
 
   private:
     const SkeletonDCEL * const skeleton;
-    CGAL::Qt::PainterOstream<Kernel> painterostream;
     QPen vertices_pen;
     QPen input_segments_pen;
     QPen segments_pen;

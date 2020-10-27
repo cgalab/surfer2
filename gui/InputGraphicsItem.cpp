@@ -26,7 +26,6 @@ InputGraphicsItem::
 InputGraphicsItem(const BasicInput * const p_input)
   : Base()
   , input(p_input)
-  , painterostream(0)
   , vertices_pen(QPen(::Qt::black, 3))
   , segments_pen(QPen(::Qt::black, 0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin))
   , labels_pen(QPen(Qt::black, 0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin))
@@ -40,7 +39,7 @@ InputGraphicsItem::
 paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/) {
   CGAL::Qt::Converter<Kernel> convert;
 
-  painterostream = CGAL::Qt::PainterOstream<Kernel> (painter);
+  CGAL::Qt::PainterOstream<Kernel> painterostream(painter);
 
   painter->setPen(segmentsPen());
   for (const auto& e : input->edges()) {

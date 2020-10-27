@@ -32,7 +32,6 @@ class OffsetsGraphicsItem :
 
   private:
     std::vector<SkeletonDCEL::OffsetFamily> offsets;
-    CGAL::Qt::PainterOstream<Kernel> painterostream;
     QPen segments_pen;
 
   protected:

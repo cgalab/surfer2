@@ -26,7 +26,6 @@ SkeletonGraphicsItem::
 SkeletonGraphicsItem(const SkeletonDCEL * const skeleton_)
   : Base()
   , skeleton(skeleton_)
-  , painterostream(0)
   , vertices_pen(QPen(::Qt::blue, 3))
   , input_segments_pen(QPen(::Qt::black, 0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin))
   , segments_pen(QPen(::Qt::blue, 0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin))
@@ -42,7 +41,7 @@ SkeletonGraphicsItem::
 paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/) {
   CGAL::Qt::Converter<Kernel> convert;
 
-  painterostream = CGAL::Qt::PainterOstream<Kernel> (painter);
+  CGAL::Qt::PainterOstream<Kernel> painterostream(painter);
   int ray_length = 10;
 
   for (auto hit = skeleton->halfedges_begin(); hit != skeleton->halfedges_end(); ++hit) {

@@ -25,7 +25,6 @@
 OffsetsGraphicsItem::
 OffsetsGraphicsItem()
   : Base()
-  , painterostream(0)
   , segments_pen(QPen(::Qt::gray, 0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin))
 {
   modelChanged();
@@ -35,7 +34,7 @@ OffsetsGraphicsItem()
 void
 OffsetsGraphicsItem::
 paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/) {
-  painterostream = CGAL::Qt::PainterOstream<Kernel> (painter);
+  CGAL::Qt::PainterOstream<Kernel> painterostream(painter);
 
   painter->setPen(segmentsPen());
   for (const auto& family : offsets) {
