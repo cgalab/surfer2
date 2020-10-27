@@ -37,23 +37,28 @@ using GuiKernel  = CGAL::Simple_cartesian<double>;
  *    using PainterOstream = CGAL::Qt::PainterOstream<Kernel>;
  * here.
  */
+class GuiPoint : public GuiKernel::Point_2 {
+  private:
+    using Base = GuiKernel::Point_2;
+  public:
+    GuiPoint(const Kernel::Point_2& p)
+      : Base(
+          CGAL::to_double(p.x()),
+          CGAL::to_double(p.y())
+        )
+    {};
+};
+
 class PainterOstream : public CGAL::Qt::PainterOstream<GuiKernel> {
   private:
     using Base = CGAL::Qt::PainterOstream<GuiKernel>;
-    using GuiPoint = typename GuiKernel::Point_2;
     using GuiSegment = typename GuiKernel::Segment_2;
   public:
     PainterOstream(QPainter* p) : Base(p) {};
 
     inline PainterOstream& operator<<(const Kernel::Segment_2& s) {
-      GuiPoint a(
-        CGAL::to_double(s.source().x()),
-        CGAL::to_double(s.source().y())
-      );
-      GuiPoint b(
-        CGAL::to_double(s.target().x()),
-        CGAL::to_double(s.target().y())
-      );
+      GuiPoint a(s.source());
+      GuiPoint b(s.target());
       GuiSegment g(a,b);
       Base::operator<<(g);
       return *this;
