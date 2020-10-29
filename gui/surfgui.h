@@ -65,6 +65,10 @@ class PainterOstream : public CGAL::Qt::PainterOstream<GuiKernel> {
   public:
     PainterOstream(QPainter* p) : Base(p) {};
 
+    inline PainterOstream& operator<<(const GuiKernel::Segment_2& s) {
+      Base::operator<<(s);
+      return *this;
+    }
     inline PainterOstream& operator<<(const SurfKernel::Segment_2& s) {
       GuiSegment g(s);
       Base::operator<<(g);

@@ -72,13 +72,13 @@ paint_arcs(QPainter *painter, PainterOstream painterostream) const {
 
   for (auto i = kt->vertices_begin(); i != kt->vertices_end(); ++i) {
     if (i->is_infinite) continue;
-    if (draw_time() < i->time_start) continue;
+    if (draw_time_apx() < i->time_start) continue;
     if (! filter_component(*i) ) continue;
     painter->setPen(
       i->has_stopped() ? arcsPen()
                        : verticesMovingPen() );
     const Point_2 pu(i->pos_start);
-    const Point_2 pv(i->p_at_draw(draw_time()));
+    const Point_2 pv(i->p_at_draw(draw_time_apx()));
     painterostream << Segment_2(pu, pv);
   }
 }
@@ -105,15 +105,15 @@ paint_highlighted(QPainter *painter, PainterOstream painterostream) const {
       unsigned idx = t->infinite_vertex_idx();
       const WavefrontVertex * const u = t->vertex(t->ccw(idx));
       const WavefrontVertex * const v = t->vertex(t->cw (idx));
-      cp[0] = u->p_at_draw(draw_time() + infinite_edges_extra_time);
-      cp[1] = u->p_at_draw(draw_time()                            );
-      cp[2] = v->p_at_draw(draw_time()                            );
-      cp[3] = v->p_at_draw(draw_time() + infinite_edges_extra_time);
+      cp[0] = u->p_at_draw(draw_time_apx(infinite_edges_extra_time));
+      cp[1] = u->p_at_draw(draw_time_apx()                         );
+      cp[2] = v->p_at_draw(draw_time_apx()                         );
+      cp[3] = v->p_at_draw(draw_time_apx(infinite_edges_extra_time));
       num_pts = 4;
     } else {
       num_pts = 3;
       for (unsigned i=0; i<num_pts; ++i) {
-        cp[i] = t->vertex(i)->p_at_draw(draw_time());
+        cp[i] = t->vertex(i)->p_at_draw(draw_time_apx());
       }
     }
 
@@ -150,7 +150,7 @@ paint_vertices(QPainter *painter, PainterOstream painterostream) const {
 
   for (auto i = kt->vertices_begin(); i != kt->vertices_end(); ++i) {
     if (i->is_infinite) continue;
-    if (draw_time() < i->time_start) continue;
+    if (draw_time_apx() < i->time_start) continue;
     if (! filter_component(*i) ) continue;
     if ((i->has_stopped() && visible_arcs) ||
         (!i->has_stopped() && visible_constraints)) {
@@ -166,7 +166,7 @@ paint_vertices(QPainter *painter, PainterOstream painterostream) const {
           painter->setPen(verticesReflexPen());
           break;
       }
-      const Point_2 p(i->p_at_draw(draw_time()));
+      const Point_2 p(i->p_at_draw(draw_time_apx()));
       QPointF qp = transform.map(convert(p));
       painter->drawPoint(qp);
     }
@@ -198,8 +198,8 @@ paint_edges(QPainter *painter, PainterOstream painterostream) const {
       } else {
         continue;
       }
-      const Point_2 pu = !u->is_infinite ? u->p_at_draw(draw_time()) : v->p_at_draw(draw_time() + infinite_edges_extra_time);
-      const Point_2 pv = !v->is_infinite ? v->p_at_draw(draw_time()) : u->p_at_draw(draw_time() + infinite_edges_extra_time);
+      const Point_2 pu = u->p_at_draw(draw_time_apx( u->is_infinite ? infinite_edges_extra_time : CORE_ZERO ));
+      const Point_2 pv = v->p_at_draw(draw_time_apx( v->is_infinite ? infinite_edges_extra_time : CORE_ZERO ));
       painterostream << Segment_2(pu, pv);
     }
   }
@@ -213,12 +213,12 @@ triangle_center(const KineticTriangle& t) const {
     const WavefrontVertex * const u = t.vertex(t.ccw(idx));
     const WavefrontVertex * const v = t.vertex(t.cw (idx));
 
-    return CGAL::midpoint(u->p_at_draw(draw_time()+infinite_edges_extra_time), v->p_at_draw(draw_time()+infinite_edges_extra_time));
+    return CGAL::midpoint(u->p_at_draw(draw_time_apx(infinite_edges_extra_time)), v->p_at_draw(draw_time_apx(infinite_edges_extra_time)));
   } else {
     return CGAL::centroid(
-      t.vertex(0)->p_at_draw(draw_time()),
-      t.vertex(1)->p_at_draw(draw_time()),
-      t.vertex(2)->p_at_draw(draw_time())
+      t.vertex(0)->p_at_draw(draw_time_apx()),
+      t.vertex(1)->p_at_draw(draw_time_apx()),
+      t.vertex(2)->p_at_draw(draw_time_apx())
       );
   }
 }
@@ -243,8 +243,8 @@ paint_labels(QPainter *painter, PainterOstream painterostream) const {
   for (auto i = kt->vertices_begin(); i != kt->vertices_end(); ++i) {
     if (i->is_infinite) continue;
     if (! filter_component(*i) ) continue;
-    if (draw_time() < i->time_start) continue;
-    const Point_2 p(i->p_at_draw(draw_time()));
+    if (draw_time_apx() < i->time_start) continue;
+    const Point_2 p(i->p_at_draw(draw_time_apx()));
     QPointF qp = transform.map(convert(p));
     std::string t = "kv#"+std::to_string(i->id);
     painter->drawText(qp.x()+4, qp.y(), QString::fromStdString(t));
@@ -286,7 +286,9 @@ updateBoundingBox() {
 
   bool first = true;
   CGAL::Bbox_2 bb;
-  if (kt->vertices_begin() == kt->vertices_end()) return;
+  if (kt->vertices_begin() == kt->vertices_end()) {
+    return;
+  }
 
   for (auto i = kt->vertices_begin(); i != kt->vertices_end(); ++i) {
     if (i->is_infinite) continue;
@@ -295,7 +297,7 @@ updateBoundingBox() {
       first = false;
     }
 
-    bb += GuiPoint(i->p_at_draw(draw_time())).bbox();
+    bb += GuiPoint(i->p_at_draw(draw_time_apx())).bbox();
   }
   if (first) {
     return;
@@ -309,8 +311,7 @@ updateBoundingBox() {
     const WavefrontVertex * const u = t->vertex(t->ccw(idx));
     // const WavefrontVertex * const v = t->vertex(t->cw (idx));
 
-    bb += GuiPoint(u->p_at_draw(draw_time()+infinite_edges_extra_time)).bbox();
-    // bb += v->p_at_draw(draw_time()+infinite_edges_extra_time).bbox();
+    bb += GuiPoint(u->p_at_draw(draw_time_apx(infinite_edges_extra_time))).bbox();
   }
 
   //std::cout << "bb kt " << bb

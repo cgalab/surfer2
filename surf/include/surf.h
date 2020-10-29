@@ -91,6 +91,7 @@ class WavefrontVertex;
 #define DBG_PROP                          ( 1u << 13 )
 #define DBG_HEAP                          ( 1u << 14 )
 #define DBG_SKEL                          ( 1u << 15 )
+#define DBG_GUI                           ( 1u << 16 )
 
 #define DEBUG_MASK (                  \
                 DBG_GENERIC                       | \
@@ -107,6 +108,7 @@ class WavefrontVertex;
                 DBG_KT_EVENT2                     | \
                 DBG_PROP                          | \
                 DBG_SKEL                          | \
+                DBG_GUI                           | \
                 0 )
 /*
                 DBG_TRIANGLE_ASSERT_VALID         | \

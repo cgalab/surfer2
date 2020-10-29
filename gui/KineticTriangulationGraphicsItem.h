@@ -111,7 +111,9 @@ class KineticTriangulationGraphicsItem :
     void setTime(const NT& new_time) { now = new_time; modelChanged(); };
     void setComponent(int p_current_component) { current_component = p_current_component; modelChanged(); };
     void setDrawingOffset(const NT& new_offset) { drawing_time_offset_ = new_offset; modelChanged(); };
-    NT draw_time() const { return now + drawing_time_offset_; };
+    NT draw_time(const NT& extra_offset = CORE_ZERO) const { return now + drawing_time_offset_ + extra_offset; };
+    double draw_time_apx(const double extra_offset = 0) const { return CGAL::to_double(now + drawing_time_offset_) + extra_offset; };
+    double draw_time_apx(const NT& extra_offset) const { return CGAL::to_double(now + drawing_time_offset_ + extra_offset); };
 
     void modelChanged();
     void highlighted_clear() { highlighted.clear(); }

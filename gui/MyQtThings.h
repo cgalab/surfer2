@@ -49,6 +49,12 @@ class MyQGraphicsView : public QGraphicsView {
 
       event->ignore();
     }
+  protected:
+    void paintEvent(QPaintEvent *event) {
+      DBG_FUNC_BEGIN(DBG_GUI);
+      QGraphicsView::paintEvent(event);
+      DBG_FUNC_END(DBG_GUI);
+    }
   public:
     const QPointF& getMousePoint() { return mousePoint; };
 };
