@@ -40,40 +40,6 @@ KineticTriangulationGraphicsItem::KineticTriangulationGraphicsItem(const Kinetic
   modelChanged();
 }
 
-/*
-Point_2
-KineticTriangulationGraphicsItem::
-get_drawing_pos_for_infinite_vertex(const KineticTriangle& t, unsigned idx, const NT& time) {
-  assert(idx < 3);
-  assert(t.vertex(idx)->is_infinite);
-
-  const Point_2 a = t.vertex(ccw(idx))->p_at_draw(time);
-  const Point_2 b = t.vertex(cw (idx))->p_at_draw(time);
-
-  return CGAL::midpoint(a, b) + Vector_2(a, b).perpendicular(CGAL::COUNTERCLOCKWISE)*0.5;
-}
-*/
-
-/*
-std::tuple<Point_2,Point_2,Point_2>
-KineticTriangulationGraphicsItem::
-get_drawing_pos_triangle_v(const KineticTriangle& t, const NT& time) {
-  const WavefrontVertex * const v[3] = {
-    t.vertex(0),
-    t.vertex(1),
-    t.vertex(2),
-  };
-  assert(!!v[0]->is_infinite + !!v[1]->is_infinite + !!v[2]->is_infinite <= 1);
-  Point_2 vpos[3];
-  for (unsigned i=0; i<3; ++i) {
-    vpos[i] = v[i]->is_infinite ? get_drawing_pos_for_infinite_vertex(t, i, time)
-                                : v[i]->p_at_draw(time);
-  }
-  return {vpos[0], vpos[1], vpos[2]};
-}
-*/
-
-
 /** figure out if we want to draw this element depending on which component we currently handle */
 bool
 KineticTriangulationGraphicsItem::

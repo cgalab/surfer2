@@ -119,6 +119,4 @@ class KineticTriangulationGraphicsItem :
     bool highlighted_has(const KineticTriangle * const i) const { return highlighted.find(i) != highlighted.end(); }
 
   private:
-    //static Point_2 get_drawing_pos_for_infinite_vertex(const KineticTriangle& t, unsigned idx, const NT& time);
-    //static std::tuple<Point_2,Point_2,Point_2> get_drawing_pos_triangle_v(const KineticTriangle& t, const NT& time);
 };
