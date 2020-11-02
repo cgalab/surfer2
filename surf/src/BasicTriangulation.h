@@ -18,6 +18,7 @@
 #pragma once
 
 #include "surf.h"
+#include "surf/surfconfig.h"
 
 #include "BasicInput.h"
 
@@ -46,7 +47,12 @@ class BasicTriangulation : public
         CGAL::Triangulation_vertex_base_with_info_2<BasicVertexInfo, Kernel>,
         CGAL::Triangulation_face_base_with_info_2<BasicFaceInfo, Kernel, CGAL::Constrained_triangulation_face_base_2<Kernel> >
       >,
-      CGAL::No_intersection_tag> {
+#ifdef HAVE_CGAL_NO_CONSTRAINT_INTERSECTION_TAG
+      CGAL::No_constraint_intersection_tag
+#else
+      CGAL::No_intersection_tag
+#endif
+      > {
   private:
     using Base = Constrained_Delaunay_triangulation_2;
     bool consistent_sidedness;

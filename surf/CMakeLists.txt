@@ -1,5 +1,8 @@
 project (surf VERSION "${SURFVERSION}" DESCRIPTION "surflib")
 
+INCLUDE (CheckTypeSize)
+
+
 if ( NOT MSVC )
   set_source_files_properties(easyloggingpp/src/easylogging++.cc PROPERTIES COMPILE_FLAGS "-Wno-float-equal -Wno-missing-noreturn")
 endif()
@@ -74,6 +77,13 @@ try_compile(HAVE_INTERSECTION_OF_CONSTRAINTS_EXCEPTION
   "${CMAKE_BINARY_DIR}/temp"
   SOURCES "${PROJECT_SOURCE_DIR}/../cmake/tests/test_CGAL__Intersection_of_constraints_exception.cpp"
   CMAKE_FLAGS "-DCMAKE_CXX_LINK_EXECUTABLE='echo not linking now...'" )
+
+# also checks for existance and puts it into HAVE_...
+set(CMAKE_EXTRA_INCLUDE_FILES "CGAL/Constrained_triangulation_2.h")
+check_type_size("CGAL::No_constraint_intersection_tag" CGAL_NO_CONSTRAINT_INTERSECTION_TAG
+                 LANGUAGE CXX)
+set(CMAKE_EXTRA_INCLUDE_FILES)
+
 
 configure_file (
   "${PROJECT_SOURCE_DIR}/surfconfig.h.in"
