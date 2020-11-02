@@ -73,6 +73,7 @@ advance_step() {
     DBG(DBG_PROP) << " event#" << event_ctr_ << " handling done.  Processing pending PQ updates.";
     eq->process_pending_updates(time);
     DBG(DBG_PROP) << " event#" << event_ctr_ << " PQ updates done.  Time is now " << CGAL::to_double(time);
+    LOG(INFO) << " event#" << event_ctr_ << " done.  Time is now " << CGAL::to_double(time);
 
     last_event_time = time;
     last_event_component = current_component;
