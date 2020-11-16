@@ -198,8 +198,8 @@ paint_edges(QPainter *painter, PainterOstream painterostream) const {
       } else {
         continue;
       }
-      const Point_2 pu = u->p_at_draw(draw_time_apx( u->is_infinite ? infinite_edges_extra_time : CORE_ZERO ));
-      const Point_2 pv = v->p_at_draw(draw_time_apx( v->is_infinite ? infinite_edges_extra_time : CORE_ZERO ));
+      const Point_2 pu = !u->is_infinite ? u->p_at_draw(draw_time_apx()) : v->p_at_draw(draw_time_apx(infinite_edges_extra_time));
+      const Point_2 pv = !v->is_infinite ? v->p_at_draw(draw_time_apx()) : u->p_at_draw(draw_time_apx(infinite_edges_extra_time));
       painterostream << Segment_2(pu, pv);
     }
   }
