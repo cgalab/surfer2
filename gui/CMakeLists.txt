@@ -16,6 +16,12 @@ add_executable(surfgui
                        SkeletonGraphicsItem.cpp
                        OffsetsGraphicsItem.cpp
                        )
+if ( MSVC )
+  target_sources(surfgui
+                       PRIVATE ../surf/getopt-for-windows/getopt.c )
+  target_include_directories(surfgui PRIVATE ../surf/getopt-for-windows )
+endif()
+
 target_link_libraries(surfgui ${QT_LIBRARIES} Qt5::Widgets )
 target_link_libraries(surfgui ${CGAL_LIBRARIES} ${CGAL_3RD_PARTY_LIBRARIES})
 TARGET_LINK_LIBRARIES( surfgui

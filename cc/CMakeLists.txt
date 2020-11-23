@@ -9,10 +9,15 @@ if ( NOT Boost_FOUND )
 endif()
 include_directories(${Boost_INCLUDE_DIRS})
 
-
 add_executable(surfer
-                       main.cpp
-                       )
+                       main.cpp )
+
+
+if ( MSVC )
+  target_sources(surfer
+                       PRIVATE ../surf/getopt-for-windows/getopt.c )
+  target_include_directories(surfer PRIVATE ../surf/getopt-for-windows )
+endif()
 
 target_link_libraries(surfer surflib)
 target_link_libraries(surfer ${Boost_LIBRARIES} )
