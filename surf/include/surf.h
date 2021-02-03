@@ -1,6 +1,6 @@
 /**  surfer2 -- a straight skeleton implementation
  *
- *  Copyright 2018, 2019 Peter Palfraader
+ *  Copyright 2018, 2019 Peter Palfrader
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -44,8 +44,8 @@
   #define assert_expensive_eq_ptr(X, Y) { \
     const Point_2& __p(X); \
     const Point_2& __q(Y); \
-    assert( abs(CGAL::to_double(__p.x()) - CGAL::to_double(__p.x())) <= 0.0 && \
-            abs(CGAL::to_double(__p.y()) - CGAL::to_double(__p.y())) <= 0.0); \
+    assert( abs(CGAL::to_double(__p.x()) - CGAL::to_double(__q.x())) <= 0.0 && \
+            abs(CGAL::to_double(__p.y()) - CGAL::to_double(__q.y())) <= 0.0); \
     }
 #endif
 
